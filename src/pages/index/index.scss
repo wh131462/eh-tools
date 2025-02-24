@@ -1,0 +1,12 @@
+.item{
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  .icon{
+    width: 80rpx;
+    aspect-ratio: 1;
+  }
+  .name{
+    font-size:18rpx;
+  }
+}
