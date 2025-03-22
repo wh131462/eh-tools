@@ -1,0 +1,28 @@
+{
+  "light": {
+    "textColor": "#191919",
+    "bgColor": "#FFFFFF",
+    "textStyle": "dark",
+    "navTextColor": "#999999",
+    "navTextSelectColor": "#333333",
+    "navBgColor": "#FFFFFF",
+    "navTextStyle": "black",
+    "homePath": "assets/icons/tools.png",
+    "homePathActive": "assets/icons/tools_active.png",
+    "profilePath": "assets/icons/profile.png",
+    "profilePathActive": "assets/icons/profile_active.png"
+  },
+  "dark": {
+    "textColor": "#FFFFFF",
+    "bgColor": "#333333",
+    "textStyle": "light",
+    "navTextColor": "#cacaca",
+    "navTextSelectColor": "#FFFFFF",
+    "navBgColor": "#191919",
+    "navTextStyle": "white",
+    "homePath": "assets/icons/tools_dark.png",
+    "homePathActive": "assets/icons/tools_active_dark.png",
+    "profilePath": "assets/icons/profile_dark.png",
+    "profilePathActive": "assets/icons/profile_active_dark.png"
+  }
+}

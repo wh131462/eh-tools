@@ -2,7 +2,7 @@
 	"miniprogramRoot": "dist/",
 	"projectname": "eh-tools",
 	"description": "A powerful tool library for EternalHeart.",
-	"appid": "touristappid",
+	"appid": "${TARO_APP_ID}",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
@@ -16,7 +16,7 @@
 		"coverView": true,
 		"showShadowRootInWxmlPanel": false,
 		"scopeDataCheck": false,
-		"useCompilerModule": false
+		"useCompilerModule": true
 	},
 	"compileType": "miniprogram",
 	"simulatorType": "wechat",

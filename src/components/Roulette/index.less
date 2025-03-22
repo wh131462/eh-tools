@@ -1,0 +1,91 @@
+.roulette-component {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+
+  .roulette-wheel {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    margin-bottom: 40px;
+    transition: transform 3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    overflow: hidden;
+
+    &.spinning {
+      transform: rotate(1800deg);
+    }
+
+    .roulette-item {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform-origin: 0% 50%;
+      
+      .item-text {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform-origin: 0 50%;
+        white-space: nowrap;
+        color: #fff;
+        font-size: 14px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      }
+    }
+  }
+
+  .roulette-pointer {
+    width: 20px;
+    height: 40px;
+    background-color: #fa2c19;
+    position: absolute;
+    top: 140px;
+    right: 20px;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+    z-index: 1;
+  }
+
+  .scroll-list {
+    height: 40px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    .scroll-item {
+      font-size: 16px;
+      color: #333;
+      animation: scrollUp 0.2s ease-in-out;
+    }
+  }
+
+  @keyframes scrollUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+
+  .spin-button {
+    margin-top: 20px;
+    width: 120px;
+  }
+
+  .result {
+    margin-top: 16px;
+    font-size: 16px;
+    color: #fa2c19;
+    font-weight: bold;
+  }
+}

@@ -1,11 +1,41 @@
 export default defineAppConfig({
   pages: [
-    'pages/index/index'
+    'pages/index/index',
+    'pages/profile/index',
+    'pages/about/index',
+    'pages/setting/index',
+    'pages/calendar/index',
+    'pages/roulette/index/index',
+    'pages/roulette/config/index',
+    'pages/roulette/list/index',
+    'pages/roulette/history/index'
   ],
+  darkmode: true,
+  themeLocation: 'theme.json',
   window: {
-    backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText: 'WeChat',
-    navigationBarTextStyle: 'black'
+    backgroundTextStyle: '@textStyle',
+    backgroundColor: '@bgColor',
+    navigationBarTextStyle: '@navTextStyle',
+    navigationBarBackgroundColor: '@navBgColor',
+    navigationBarTitleText: 'EH工具库'
+  },
+  tabBar: {
+    color: '@navTextColor',
+    selectedColor: '@navTextSelectColor',
+    backgroundColor: '@navBgColor',
+    list: [
+      {
+        pagePath: 'pages/index/index',
+        text: '工具',
+        iconPath: '@homePath',
+        selectedIconPath: '@homePathActive'
+      },
+      {
+        pagePath: 'pages/profile/index',
+        text: '我的',
+        iconPath: '@profilePath',
+        selectedIconPath: '@profilePathActive'
+      }
+    ]
   }
 })

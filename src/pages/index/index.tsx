@@ -1,49 +1,43 @@
-import { useState } from 'react'
 import { View } from '@tarojs/components'
-import { Button, ConfigProvider, TextArea, Dialog } from '@nutui/nutui-react-taro'
-import enUS from '@nutui/nutui-react-taro/dist/locales/en-US'
-import zhCN from '@nutui/nutui-react-taro/dist/locales/zh-CN'
+import { Grid } from '@nutui/nutui-react-taro'
+import Taro from '@tarojs/taro'
+import { useTranslation } from '@/i18n'
+import { useEffect } from 'react'
+import { updatePageTitle } from '@/i18n/utils'
+import { useAppSelector } from '@/store/hooks'
 import './index.less'
+import Layout from "@/components/Layout";
+
 function Index() {
-  const [locale, setLocale] = useState(zhCN)
-  const localeKey = locale === zhCN ? 'zhCN' : 'enUS'
-  const [visible, setVisible] = useState(false)
-  const [translated] = useState({
-    zhCN: {
-      welcome: '欢迎使用 NutUI React 开发 Taro 多端项目。',
-      button: '使用英文',
-      open: '点击打开',
-    },
-    enUS: {
-      welcome: 'Welcome to use NutUI React to develop Taro multi-terminal projects.',
-      button: 'Use Chinese',
-      open: 'Click Me',
-    },
-  })
-  const handleSwitchLocale = () => {
-    setLocale(locale === zhCN ? enUS : zhCN)
+  const { t } = useTranslation();
+  const { language } = useAppSelector(state => state.app);
+
+  useEffect(() => {
+    updatePageTitle(language, 'tools');
+  }, [language]);
+  const tools = [
+    { id: 'calendar', text: t('calendar'), path: '/pages/calendar/index' },
+    { id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index' }
+  ]
+
+  const handleToolClick = (path: string) => {
+    Taro.navigateTo({ url: path })
   }
+
   return (
-    <ConfigProvider locale={locale}>
-      <View className='nutui-react-demo'>
-        <View>{translated[localeKey].welcome}</View>
-        <View>
-          <Button type='primary' onClick={handleSwitchLocale}>
-            {translated[localeKey].button}
-          </Button>
-          <Button type='success' onClick={() => setVisible(true)}>
-            {translated[localeKey].open}
-          </Button>
-          <Dialog
-            visible={visible}
-            onConfirm={() => setVisible(false)}
-            onCancel={() => setVisible(false)}>
-            {translated[localeKey].welcome}
-          </Dialog>
-          <TextArea disabled showCount maxLength={20} />
-        </View>
+    <Layout>
+      <View className='index-page'>
+        <Grid columns={2}>
+          {tools.map(tool => (
+            <Grid.Item key={tool.id} onClick={() => handleToolClick(tool.path)}>
+              <View className='tool-item'>
+                <View className='tool-name'>{tool.text}</View>
+              </View>
+            </Grid.Item>
+          ))}
+        </Grid>
       </View>
-    </ConfigProvider>
+    </Layout>
   )
 }
 

@@ -2,7 +2,7 @@
   "miniprogramRoot": "./",
   "projectname": "eh-tools",
   "description": "A powerful tool library for EternalHeart.",
-  "appid": "touristappid",
+  "appid": "${TARO_APP_ID}",
   "setting": {
     "urlCheck": true,
     "es6": false,
