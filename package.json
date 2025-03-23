@@ -37,6 +37,7 @@
   "author": "EternalHeart",
   "dependencies": {
     "@babel/runtime": "^7.21.5",
+    "@lucky-canvas/taro": "^0.0.15",
     "@nutui/nutui-react-taro": "^2.6.14",
     "@reduxjs/toolkit": "^2.6.1",
     "@tarojs/components": "4.0.9",

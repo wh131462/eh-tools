@@ -1,31 +1,50 @@
-import { View } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { Avatar, Cell, Button } from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
 import { useTranslation } from '@/i18n'
 import { useEffect } from 'react'
 import { updatePageTitle } from '@/i18n/utils'
-import { useAppSelector } from '@/store/hooks'
+import { useAppSelector, useAppDispatch } from '@/store/hooks'
+import { setUserInfo } from '@/store/slices/userSlice'
 import './index.less'
 import Layout from "@/components/Layout";
 
 function Profile() {
   const { t } = useTranslation();
   const { language } = useAppSelector(state => state.app);
+  const { userInfo } = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     updatePageTitle(language, 'profile');
   }, [language]);
 
-  const userInfo = {
-    avatar: 'https://img12.360buyimg.com/imagetools/jfs/t1/143702/31/16654/116794/5fc6f541Edebf8a57/4138097748889987.png',
-    nickname: t('notLoggedIn'),
-    isLogin: false
-  }
   const handleLogin = () => {
-    // TODO: 实现登录逻辑
-    console.log('登录')
+    Taro.getUserProfile({
+      desc: '用于完善会员资料',
+      success: (res) => {
+        const { userInfo: wxUserInfo } = res;
+        dispatch(setUserInfo({
+          avatar: wxUserInfo.avatarUrl,
+          nickname: wxUserInfo.nickName,
+          isLogin: true
+        }));
+      },
+      fail: (err) => {
+        console.error('获取用户信息失败：', err);
+        Taro.showToast({
+          title: '获取用户信息失败',
+          icon: 'error'
+        });
+      }
+    });
   }
 
-
+  const getYearRange = (startYear: number) => {
+    const currentYear = new Date().getFullYear();
+    const years =  Array.from({ length: currentYear - startYear + 1 }, (_, index) => startYear + index);
+    return years.join('-');
+  }
   return (
       <Layout>
         <View className='profile-page'>
@@ -40,6 +59,10 @@ function Profile() {
           <View className='settings'>
             <Cell title={t('setting')} onClick={() => Taro.navigateTo({ url: '/pages/setting/index' })} />
             <Cell title={t('about')} onClick={() => Taro.navigateTo({ url: '/pages/about/index' })} />
+          </View>
+
+          <View className='copyright'>
+            <Text>Copyright © EternalHeart {getYearRange(2025)}</Text>
           </View>
         </View>
       </Layout>

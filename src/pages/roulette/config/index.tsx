@@ -1,79 +1,160 @@
-import React, { useState } from 'react';
-import { View } from '@tarojs/components';
-import { Form, Input, Button, Toast } from '@nutui/nutui-react-taro';
+import React, {useEffect, useState} from 'react';
+import {View} from '@tarojs/components';
+import {Button, Form, FormItemRuleWithoutValidator, Input} from '@nutui/nutui-react-taro';
 import './index.less';
+import ColorPicker from "@/components/ColorPicker";
+import Taro from "@tarojs/taro";
+import {RouletteConfig, RouletteItem, updateConfig} from "@/store/slices/rouletteSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "@/store";
+import {getCurrentInstance} from "@tarojs/runtime";
 
-interface RouletteItem {
-  id: string;
-  name: string;
-  probability?: number;
+interface ConfigProps {
+  id?: string;
 }
 
-const RouletteConfigPage: React.FC = () => {
-  const [items, setItems] = useState<RouletteItem[]>([]);
-  const [newItem, setNewItem] = useState<{ name: string; probability?: number }>({ name: '' });
-
-  const handleAddItem = () => {
-    if (!newItem.name.trim()) {
-      Toast.show('请输入选项名称');
-      return;
+const RouletteConfigPage: React.FC<ConfigProps> = () => {
+  const instance = getCurrentInstance();
+  const dispatch = useDispatch();
+  const configs = useSelector((state: RootState) => state.roulette.configs);
+  const newConfig: RouletteConfig = {createTime: Date.now(), items: [], id: Date.now().toString(), name: ""};
+  const [config, setConfig] = useState<RouletteConfig>(newConfig);
+  const [setForm] = Form.useForm()
+  const [itemForm] = Form.useForm()
+  useEffect(() => {
+    const {id} = instance.router?.params ?? {};
+    if (id) {
+      const cur = configs.find(o => o.id == id)
+      cur && setConfig(cur)
+      console.log("cur", cur)
     }
-
-    const item: RouletteItem = {
-      id: Date.now().toString(),
-      name: newItem.name.trim(),
-      probability: newItem.probability
-    };
-
-    setItems([...items, item]);
-    setNewItem({ name: '' });
+  }, []);
+  const handleSetName = () => {
+    const newName = setForm.getFieldValue("name")
+    setConfig({...config, name: newName})
+  }
+  const getItems = () => {
+    return config.items;
+  }
+  const setItems = (items: RouletteItem[]) => {
+    setConfig({...config, items});
+  }
+  const handleUpdateItem = (newItem: RouletteItem) => {
+    if (!newItem.id) {
+      newItem.id = Date.now().toString()
+      setItems([...getItems(), newItem])
+    } else {
+      const newList = getItems().slice()
+      newList.splice(newList.findIndex(o => o.id == newItem.id), 1, newItem)
+      setItems(newList)
+    }
+    itemForm.resetFields()
   };
 
   const handleDeleteItem = (id: string) => {
-    setItems(items.filter(item => item.id !== id));
+    setItems(getItems().slice().filter(o => o.id != id))
   };
 
   const handleSaveConfig = () => {
-    if (items.length < 2) {
-      Toast.show('至少需要2个选项');
+    if (config.items.length < 2) {
+      Taro.showToast({title: '至少需要2个选项', icon: "none"});
       return;
     }
-
-    // TODO: 保存配置到本地存储
-    Toast.show('保存成功');
+    dispatch(updateConfig(config))
+    Taro.showToast({title: `合集[${config?.name}]保存成功~`});
   };
+
+  const editItem = (item: RouletteItem) => {
+    itemForm.setFieldsValue(item);
+  }
 
   return (
     <View className='roulette-config'>
-      <Form>
-        <Form.Item label='选项名称'>
-          <Input 
-            value={newItem.name}
-            onChange={(val) => setNewItem({ ...newItem, name: val })}
+      <Form form={setForm}>
+        <Form.Item label='合集名称'
+                   align="center"
+                   required
+                   name="name"
+                   initialValue={config.name}
+                   rules={[
+                     {required: true, message: '请输入合集名称'},
+                   ]}
+        >
+          <Input
+            placeholder='请输入合集名称'
+            onChange={handleSetName}
+            onBlur={handleSetName}
+          />
+        </Form.Item>
+      </Form>
+      <Form
+        form={itemForm}
+        labelPosition="right"
+        onFinish={handleUpdateItem}
+        footer={
+          <>
+            <Button nativeType="submit" block type="primary">
+              更新选项
+            </Button>
+          </>
+        }>
+        <Form.Item label='选项名称'
+                   align="center"
+                   required
+                   name="name"
+                   rules={[
+                     {required: true, message: '请输入选项名称'},
+                   ]}
+        >
+          <Input
             placeholder='请输入选项名称'
           />
         </Form.Item>
-        <Form.Item label='概率权重'>
-          <Input 
+        <Form.Item label='选项颜色'
+                   align="center"
+                   required
+                   name="color"
+                   rules={[
+                     {required: true, message: '请选择颜色'},
+                   ]}
+        >
+          <ColorPicker/>
+        </Form.Item>
+        <Form.Item label='指定概率'
+                   align="center"
+                   name="probability"
+                   rules={[
+                     {
+                       message: "取值范围0~100",
+                       validator: (
+                         ruleCfg: FormItemRuleWithoutValidator,
+                         value: number
+                       ) => {
+                         return !value || (value > 0 && value <= 100)
+                       },
+                     }
+                   ]}>
+          <Input
             type='number'
-            value={newItem.probability?.toString()}
-            onChange={(val) => setNewItem({ ...newItem, probability: Number(val) })}
             placeholder='可选，默认平均概率'
           />
         </Form.Item>
-        <Button block type='primary' onClick={handleAddItem}>添加选项</Button>
       </Form>
 
       <View className='items-list'>
-        {items.map(item => (
-          <View key={item.id} className='item'>
+        {config?.items.map(item => (
+          <View key={item.id} className='item'
+                onClick={() => editItem(item)}
+                style={{backgroundColor: item.color}}>
             <View className='item-content'>
-              <View className='item-name'>{item.name}</View>
-              {item.probability && (
-                <View className='item-probability'>{item.probability}</View>
-              )}
+              <View className='item-name' style={{color: !item.color && "#333333" || "#FFFFFF"}}>{item.name}</View>
+              <View className='item-info'>
+                {item.probability && (
+                  <View className='item-probability'>权重: {item.probability}</View>
+                )}
+              </View>
             </View>
-            <Button 
+            <Button
               size='small'
               type='danger'
               onClick={() => handleDeleteItem(item.id)}
@@ -84,10 +165,10 @@ const RouletteConfigPage: React.FC = () => {
         ))}
       </View>
 
-      {items.length > 0 && (
-        <Button 
-          block 
-          type='success'
+      {config.items.length > 0 && (
+        <Button
+          block
+          type='primary'
           className='save-button'
           onClick={handleSaveConfig}
         >

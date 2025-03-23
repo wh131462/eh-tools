@@ -1,44 +1,54 @@
-import React, { useState } from 'react';
-import { View } from '@tarojs/components';
-import { Cell } from '@nutui/nutui-react-taro';
+import React, {useState} from 'react';
+import {View} from '@tarojs/components';
+import {Button, Cell, Dialog} from '@nutui/nutui-react-taro';
 import './index.less';
-
-interface RouletteConfig {
-  id: string;
-  name: string;
-  items: Array<{ id: string; name: string; probability?: number }>;
-  createTime: string;
-}
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "@/store";
+import {deleteConfig, RouletteConfig} from "@/store/slices/rouletteSlice";
+import Taro from "@tarojs/taro";
+import {formatDate} from "@/utils/date";
 
 const RouletteListPage: React.FC = () => {
-  const [configs] = useState<RouletteConfig[]>([
-    {
-      id: '1',
-      name: '默认转盘',
-      items: [
-        { id: '1', name: '选项1' },
-        { id: '2', name: '选项2' },
-        { id: '3', name: '选项3' },
-      ],
-      createTime: '2024-01-01 12:00:00'
-    }
-  ]);
-
-  const handleSelectConfig = (config: RouletteConfig) => {
-    // TODO: 选中配置后跳转到首页并应用配置
-    console.log('选中配置:', config);
+  const dispatch = useDispatch()
+  const configs = useSelector((state: RootState) => state.roulette.configs);
+  const [visible, setVisible] = useState(false)
+  const handleNavigation = (config?: RouletteConfig) => {
+    Taro.navigateTo({url: '/pages/roulette/config/index' + (config && `?id=${config?.id}` || '')});
   };
 
   return (
     <View className='roulette-list'>
       {configs.map(config => (
-        <Cell
+        <View><Cell
           key={config.id}
-          title={config.name}
-          description={`${config.items.length}个选项 · ${config.createTime}`}
-          onClick={() => handleSelectConfig(config)}
+          title={
+            <View>{config.name} ({config.items.length}个选项) </View>
+          }
+          description={<View>
+            <span>{config.description}</span>
+            <span>{formatDate(config.createTime, 'yyyy-MM-dd HH:mm:ss')}</span>
+          </View>}
+          extra={<View><Button block type="primary"
+                               onClick={(e) => {
+                                 e.stopPropagation()
+                                 setVisible(true)
+                               }}>删除</Button>
+          </View>}
+          onClick={() => handleNavigation(config)}
         />
+          <Dialog
+            visible={visible}
+            onClose={() => setVisible(false)}
+            title='确认删除'
+            content={`确定要删除合集[${config.name}]吗？`}
+            onCancel={() => setVisible(false)}
+            onConfirm={() => {
+              dispatch(deleteConfig(config.id))
+            }}></Dialog></View>
       ))}
+
+      {!configs.length && <View className='no-items'>无可用合集,点击创建合集开始创建吧~</View>}
+      <Button block type="primary" onClick={() => handleNavigation()}>创建合集</Button>
     </View>
   );
 };

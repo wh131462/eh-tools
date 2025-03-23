@@ -7,9 +7,12 @@ interface Translations {
 export const translations: Translations = {
   zh: {
     home: '首页',
+    adLoading: '广告加载中',
+    adError: '广告加载失败',
+    adClose: '关闭广告',
     profile: '我的',
-    calendar: '日历',
-    roulette: '转盘',
+    calendar: '万年历',
+    roulette: '大转盘',
     about: '关于',
     setting: '设置',
     darkMode: '暗黑模式',
@@ -25,12 +28,16 @@ export const translations: Translations = {
     appInfo: '应用信息',
     appName: '应用名称',
     appVersion: '版本号',
-    appDescription: '一个实用的小工具集合',
+    appDescription: '应用描述',
+    appDescriptionContent: '一个有用的小程序合集,在这里找到你想要的~',
     appAuthor: '开发者',
     appGithub: '项目地址',
   },
   en: {
     home: 'Home',
+    adLoading: 'Loading Advertisement',
+    adError: 'Failed to Load Advertisement',
+    adClose: 'Close Advertisement',
     profile: 'Profile',
     calendar: 'Calendar',
     roulette: 'Roulette',
@@ -49,7 +56,8 @@ export const translations: Translations = {
     appInfo: 'App Info',
     appName: 'App Name',
     appVersion: 'Version',
-    appDescription: 'A collection of useful tools',
+    appDescription: 'Description',
+    appDescriptionContent: 'A useful tool collections, you can find all you need here.',
     appAuthor: 'Developer',
     appGithub: 'GitHub Repository'
   }

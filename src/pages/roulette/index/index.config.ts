@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '转盘'
+  navigationBarTitleText: '大转盘'
 })

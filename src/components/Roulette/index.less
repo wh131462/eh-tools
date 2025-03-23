@@ -1,91 +1,103 @@
 .roulette-component {
   width: 100%;
-  padding: 20px;
+  padding: 36px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 0 !important;
 
   .roulette-wheel {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 320px;
     position: relative;
     border-radius: 50%;
-    border: 2px solid #ccc;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), inset 0 4px 8px rgba(255, 255, 255, 0.2);
     margin-bottom: 40px;
     transition: transform 3s cubic-bezier(0.25, 0.1, 0.25, 1);
-    overflow: hidden;
 
     &.spinning {
       transform: rotate(1800deg);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), inset 0 4px 8px rgba(255, 255, 255, 0.2);
     }
 
     .roulette-item {
       position: absolute;
-      top: 0;
       left: 50%;
-      transform-origin: 0% 50%;
-      
-      .item-text {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform-origin: 0 50%;
-        white-space: nowrap;
-        color: #fff;
-        font-size: 14px;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-      }
+      width: 50%;
+      height: 2px;
+      transform-origin: left center;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 10px 20px;
+      font-size: 15px;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
     }
   }
 
   .roulette-pointer {
-    width: 20px;
-    height: 40px;
-    background-color: #fa2c19;
+    width: 24px;
+    height: 48px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
     position: absolute;
-    top: 140px;
+    top: 136px;
     right: 20px;
     clip-path: polygon(0 0, 100% 50%, 0 100%);
-    z-index: 1;
-  }
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
 
-  .scroll-list {
-    height: 40px;
-    margin: 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-
-    .scroll-item {
-      font-size: 16px;
-      color: #333;
-      animation: scrollUp 0.2s ease-in-out;
+    &:hover {
+      transform: scale(1.05);
     }
   }
-
-  @keyframes scrollUp {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
 
   .spin-button {
-    margin-top: 20px;
-    width: 120px;
+    margin-top: 24px;
+    width: 140px;
+    height: 44px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    box-shadow: 0 4px 8px rgba(255, 75, 43, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(255, 75, 43, 0.4);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      background: linear-gradient(135deg, #ccc, #999);
+      box-shadow: none;
+    }
   }
 
   .result {
-    margin-top: 16px;
-    font-size: 16px;
-    color: #fa2c19;
+    margin-top: 20px;
+    font-size: 18px;
+    color: #ff416c;
     font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    animation: resultPop 0.3s ease;
+  }
+
+  @keyframes resultPop {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 }
