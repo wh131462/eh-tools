@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
-import { View } from '@tarojs/components';
-import { Cell, Picker, Switch } from '@nutui/nutui-react-taro';
-import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import React, {useState} from 'react';
+import {View} from '@tarojs/components';
+import {Cell, Picker, Switch} from '@nutui/nutui-react-taro';
+import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {setDarkMode, setLanguage} from '@/store/slices/appSlice';
 import {useTranslation} from "@/i18n";
 import './index.less';
 import {updatePageTitle} from "@/i18n/utils";
+import Taro from "@tarojs/taro";
 
 const SettingPage: React.FC = () => {
   const {t} = useTranslation()
   const dispatch = useAppDispatch();
-  const { language, isDarkMode } = useAppSelector(state => state.app);
+  const {language, isDarkMode} = useAppSelector(state => state.app);
   const [visible, setVisible] = useState(false);
   const langList = [{
-      text: "中文",
-      value: "zh"
-    },
+    text: "中文",
+    value: "zh"
+  },
     {
       text: "English",
       value: "en"
@@ -29,6 +30,11 @@ const SettingPage: React.FC = () => {
     updatePageTitle(language, "setting")
   };
 
+  const handleDarkMode = (value: boolean) => {
+    dispatch(setDarkMode(value))
+    Taro.showToast({title: "数据切换成功,但功能暂时无效!", icon: "none"})
+  }
+
   return (
     <View className='setting'>
       <Cell.Group>
@@ -38,14 +44,14 @@ const SettingPage: React.FC = () => {
           visible={visible}
           options={langList}
           defaultValue={[language]}
-          onConfirm={(list, values:string[]) => handleLanguageChange(list, values)}
+          onConfirm={(list, values: string[]) => handleLanguageChange(list, values)}
           onClose={() => setVisible(false)}
         />
       </Cell.Group>
       <Cell title={t("settingDarkMode")} extra={<Switch
         checked={isDarkMode}
-        onChange={(value) => dispatch(setDarkMode(value))}
-      />} />
+        onChange={(value) => handleDarkMode(value)}
+      />}/>
     </View>
   );
 };

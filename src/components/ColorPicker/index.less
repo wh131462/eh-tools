@@ -15,27 +15,24 @@
 
   .color-picker-popup {
     padding: 16px 4px;
+
     .custom-color {
       margin-bottom: 20px;
-      &-input{
-        padding: 0 16px;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        justify-content: space-between;
-        .custom-color-preview{
-          width: 20px;
-          height: 20px;
-          border-radius: 8px;
-          border: 2px solid #eee;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-      }
-      :global(.nut-input) {
-        border: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .custom-color-preview {
+        width: 20px;
+        height: 20px;
         border-radius: 8px;
-        padding: 8px 12px;
+        border: 2px solid #eee;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      &-input {
+        padding: 0 16px;
       }
     }
 

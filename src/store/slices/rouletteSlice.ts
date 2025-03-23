@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {eatToday} from "@/store/constants/rouletteConfigs";
+import {eatToday, languageSelect} from "@/store/constants/rouletteConfigs";
 
 export interface RouletteItem {
   id: string;
@@ -31,9 +31,7 @@ interface RouletteState {
 }
 
 const initialState: RouletteState = {
-  configs: [
-    eatToday
-  ],
+  configs: [eatToday, languageSelect],
   currentConfig: eatToday,
   history: []
 };
@@ -44,6 +42,9 @@ export const rouletteSlice = createSlice({
   reducers: {
     setConfigs: (state, action: PayloadAction<RouletteConfig[]>) => {
       state.configs = action.payload;
+      if (!state.currentConfig) {
+        state.currentConfig = action.payload[0];
+      }
     },
     deleteHistory: (state, action: PayloadAction<string>) => {
       state.history = state.history.filter(record => record.id !== action.payload);

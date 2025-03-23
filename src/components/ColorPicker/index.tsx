@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View } from '@tarojs/components';
-import {Popup, Input, Cell} from '@nutui/nutui-react-taro';
+import React, {useState} from 'react';
+import {View} from '@tarojs/components';
+import {Button, Cell, Input, Popup} from '@nutui/nutui-react-taro';
 import './index.less';
 import {useTranslation} from "@/i18n";
 
@@ -17,38 +17,41 @@ const presetColors = [
 ];
 
 const ColorPicker: React.FC<ColorPickerProps> = ({
-  value = '#FF416C',
-  onChange
-}) => {
+                                                   value,
+                                                   onChange
+                                                 }) => {
   const {t} = useTranslation()
   const [visible, setVisible] = useState(false);
   const [currentColor, setCurrentColor] = useState(value);
-
+  const [customColor, setCustomColor] = useState('');
   const handleColorChange = (color: string) => {
     setCurrentColor(color);
     onChange?.(color);
     setVisible(false);
   };
 
-  const handleCustomColorChange = (color: any) => {
-    console.log(color)
-    // if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
-    //   handleColorChange(color);
-    // }
+  const handleCustomColorChange = (color: string) => {
+    setCustomColor(color);
   };
+  const saveCustomColor = () => {
+    if (/^#[0-9A-Fa-f]{6}$/.test(customColor)) {
+      handleColorChange(customColor);
+    }
+  }
 
   return (
     <View className='color-picker-component'>
       <View
         className='color-preview'
-        style={{ backgroundColor: currentColor }}
+        style={{backgroundColor: currentColor ?? 'transparent'}}
         onClick={() => setVisible(true)}
       />
       <Popup
         visible={visible}
+        duration={300}
         position='bottom'
         onClose={() => setVisible(false)}
-        style={{ height: '40vh' }}
+        style={{minHeight: '40vh'}}
       >
         <View className='color-picker-popup'>
           <Cell title={t("预设颜色")}></Cell>
@@ -57,23 +60,23 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
               <View
                 key={color}
                 className='color-item'
-                style={{ backgroundColor: color }}
+                style={{backgroundColor: color}}
                 onClick={() => handleColorChange(color)}
               />
             ))}
           </View>
           <View className='custom-color'>
-            <Cell title={t("颜色")} description={t("可输入指定颜色值,限制为#RRGGBB")}>
+            <Cell title={t("customColor")} description={t("可输入指定颜色值,格式为#RRGGBB")}
+                  extra={<View className='custom-color-preview' style={{backgroundColor: customColor}}></View>}>
             </Cell>
-            <View className='custom-color-input'>
-              <View className='custom-color-preview' style={{ backgroundColor: currentColor }}></View>
-              <Input
-                type='text'
-                placeholder='#RRGGBB'
-                value={currentColor}
-                onChange={handleCustomColorChange}
-              />
-            </View>
+            <Input
+              className='custom-color-input'
+              type='text'
+              placeholder='#RRGGBB'
+              value={customColor ?? ''}
+              onChange={handleCustomColorChange}
+            ></Input>
+            <Button className='custom-color-input' type='primary' block onClick={saveCustomColor}>确认</Button>
           </View>
         </View>
       </Popup>

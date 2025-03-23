@@ -5,7 +5,6 @@ import {useTranslation} from '@/i18n'
 import {useEffect} from 'react'
 import {updatePageTitle} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
-import Layout from "@/components/Layout"
 import CustomSwiper, {SwiperItem} from '@/components/Swiper'
 import calendarIcon from '@/assets/icons/calendar.png'
 import rouletteIcon from '@/assets/icons/star.png'
@@ -35,31 +34,29 @@ function Index() {
   }
 
   return (
-    <Layout>
-      <View className='index-page'>
-        <View className='banner-section'>
-          <CustomSwiper
-            items={banners}
-            height={150}
-            autoPlay={true}
-          />
-        </View>
-
-        <View className='tools-section'>
-          <View className='section-title'>{t("tools")}</View>
-          <Grid columns={2}>
-            {tools.map(tool => (
-              <Grid.Item key={tool.id} onClick={() => handleToolClick(tool.path)}>
-                <View className='tool-item'>
-                  <Image className='tool-icon' src={tool.icon}/>
-                  <View className='tool-name'>{tool.text}</View>
-                </View>
-              </Grid.Item>
-            ))}
-          </Grid>
-        </View>
+    <View className='index-page'>
+      <View className='banner-section'>
+        <CustomSwiper
+          items={banners}
+          height={150}
+          autoPlay={true}
+        />
       </View>
-    </Layout>
+
+      <View className='tools-section'>
+        <View className='section-title'>{t("tools")}</View>
+        <Grid columns={2}>
+          {tools.map(tool => (
+            <Grid.Item key={tool.id} onClick={() => handleToolClick(tool.path)}>
+              <View className='tool-item'>
+                <Image className='tool-icon' src={tool.icon}/>
+                <View className='tool-name'>{tool.text}</View>
+              </View>
+            </Grid.Item>
+          ))}
+        </Grid>
+      </View>
+    </View>
   )
 }
 

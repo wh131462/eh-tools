@@ -17,7 +17,7 @@ const AboutPage: React.FC = () => {
 
   return (
     <View className='about-page'>
-      <Cell.Group title={t('appInfo')}>
+      <Cell.Group>
         <Cell title={t('appName')} extra={appInfo.name}/>
         <Cell title={t('appVersion')} extra={appInfo.version}/>
         <Cell title={t('appDescription')} extra={appInfo.description}/>

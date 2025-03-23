@@ -23,12 +23,12 @@ const RouletteComponent: React.FC<RouletteProps> = ({
   const currentConfig = useSelector((state: RootState) => state.roulette.currentConfig);
   const ref = useRef<LuckyWheel | SlotMachine>(null);
   const [wheelWidth, setWheelWidth] = useState('200px');
-  const [isSpinning, setIsSpinning] = React.useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
 
   const [rouletteState, setRouletteState] = useState<any>(null)
   const [slotState, setSlotState] = useState<any>();
 
-  const [selectedItem, setSelectedItem] = React.useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
   const initState = () => {
     if (currentConfig) {
       if (mode === 'roulette') {
@@ -97,8 +97,9 @@ const RouletteComponent: React.FC<RouletteProps> = ({
     setIsSpinning(false);
     const result = {id: prize.id, name: prize.name};
     setSelectedItem(result);
-    onResult?.(result);
-
+    setTimeout(() => {
+      onResult?.(result);
+    }, 500)
     // 添加历史记录
     if (currentConfig) {
       dispatch(addHistory({
@@ -118,7 +119,10 @@ const RouletteComponent: React.FC<RouletteProps> = ({
   useEffect(() => {
     initState()
     initWidth()
-    console.log("current", currentConfig, rouletteState)
+    setTimeout(() => {
+      ref.current?.hideCanvas()
+      setSelectedItem(null);
+    }, 500)
   }, [currentConfig, mode]);
 
   return (
@@ -147,10 +151,17 @@ const RouletteComponent: React.FC<RouletteProps> = ({
           onEnd={handleEnd}
         />))
       }
+      {
+        !currentConfig && (
+          <View className='empty'>
+            请先配置合集
+          </View>
+        )
+      }
       <Button
         type='primary'
         className='spin-button'
-        disabled={isSpinning || currentConfig?.items.length === 0}
+        disabled={currentConfig === null || isSpinning || currentConfig?.items.length === 0}
         onClick={handleStart}
       >
         {isSpinning ? '旋转中...' : '开始'}

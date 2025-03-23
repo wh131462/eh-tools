@@ -29,9 +29,13 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
       console.log("cur", cur)
     }
   }, []);
-  const handleSetName = () => {
+  const handleName = () => {
     const newName = setForm.getFieldValue("name")
     setConfig({...config, name: newName})
+  }
+  const handleDescription = () => {
+    const newDescription = setForm.getFieldValue("description")
+    setConfig({...config, description: newDescription})
   }
   const getItems = () => {
     return config.items;
@@ -61,7 +65,7 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
       return;
     }
     dispatch(updateConfig(config))
-    Taro.showToast({title: `合集[${config?.name}]保存成功~`});
+    Taro.showToast({title: `保存成功~`});
   };
 
   const editItem = (item: RouletteItem) => {
@@ -82,8 +86,19 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
         >
           <Input
             placeholder='请输入合集名称'
-            onChange={handleSetName}
-            onBlur={handleSetName}
+            onChange={handleName}
+            onBlur={handleName}
+          />
+        </Form.Item>
+        <Form.Item label='描述信息'
+                   align="center"
+                   name="description"
+                   initialValue={config.description}
+        >
+          <Input
+            placeholder='请输入描述信息'
+            onChange={handleDescription}
+            onBlur={handleDescription}
           />
         </Form.Item>
       </Form>
@@ -112,11 +127,11 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
         </Form.Item>
         <Form.Item label='选项颜色'
                    align="center"
-                   required
+          // required
                    name="color"
-                   rules={[
-                     {required: true, message: '请选择颜色'},
-                   ]}
+          // rules={[
+          //   {required: true, message: '请选择颜色'},
+          // ]}
         >
           <ColorPicker/>
         </Form.Item>

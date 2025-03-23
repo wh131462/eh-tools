@@ -32,6 +32,9 @@ export const translations: Translations = {
     appDescriptionContent: '一个有用的小程序合集,在这里找到你想要的~',
     appAuthor: '开发者',
     appGithub: '项目地址',
+
+    // Color
+    customColor: "自定义颜色",
   },
   en: {
     home: 'Home',
@@ -59,6 +62,7 @@ export const translations: Translations = {
     appDescription: 'Description',
     appDescriptionContent: 'A useful tool collections, you can find all you need here.',
     appAuthor: 'Developer',
-    appGithub: 'GitHub Repository'
+    appGithub: 'GitHub Repository',
+    customColor: "Custom Color",
   }
 };

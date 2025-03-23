@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Provider } from 'react-redux';
-import { store } from '@/store';
-import { useAppSelector } from '@/store/hooks';
-import { updateTabBarText, updatePageTitle } from '@/i18n/utils';
-import Taro, { useDidShow } from '@tarojs/taro';
+import React, {useEffect, useState} from 'react';
+import {Provider} from 'react-redux';
+import {store} from '@/store';
+import {useAppSelector} from '@/store/hooks';
+import {updatePageTitle, updateTabBarText} from '@/i18n/utils';
+import Taro, {useDidShow} from '@tarojs/taro';
 import Advertisement from '@/components/Advertisement';
 import './app.less';
 
-const AppContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { language } = useAppSelector(state => state.app);
-  const [showSplashAd, setShowSplashAd] = useState(true);
 
+const AppContent: React.FC<{ children: React.ReactNode }> = ({children}) => {
+  const {language} = useAppSelector(state => state.app);
+
+  const [showSplashAd, setShowSplashAd] = useState(false);
   useDidShow(() => {
     updateTabBarText(language);
     const pages = Taro.getCurrentPages();
@@ -50,7 +51,8 @@ const AppContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 };
 
-const App: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const App: React.FC<{ children: React.ReactNode }> = ({children}) => {
+
   return (
     <Provider store={store}>
       <AppContent>{children}</AppContent>
