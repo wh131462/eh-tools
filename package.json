@@ -10,7 +10,7 @@
     "framework": "React"
   },
   "scripts": {
-    "build:weapp": "taro build --type weapp --env.TARO_APP_ID=$TARO_APP_ID",
+    "build:weapp": "NODE_ENV=production taro build --type weapp --env.TARO_APP_ID=$TARO_APP_ID",
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
     "build:tt": "taro build --type tt",
