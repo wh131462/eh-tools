@@ -8,6 +8,7 @@ import './index.less';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/store';
 import {addHistory} from "@/store/slices/rouletteSlice";
+import {useTranslation} from "@/i18n";
 
 interface RouletteProps {
   maxItems?: number;
@@ -20,6 +21,7 @@ const RouletteComponent: React.FC<RouletteProps> = ({
                                                       mode = 'roulette'
                                                     }) => {
   const dispatch = useDispatch()
+  const {t} = useTranslation()
   const currentConfig = useSelector((state: RootState) => state.roulette.currentConfig);
   const ref = useRef<LuckyWheel | SlotMachine>(null);
   const [wheelWidth, setWheelWidth] = useState('200px');
@@ -154,7 +156,7 @@ const RouletteComponent: React.FC<RouletteProps> = ({
       {
         !currentConfig && (
           <View className='empty'>
-            请先配置合集
+            {t('rouletteEmpty')}
           </View>
         )
       }
@@ -164,11 +166,11 @@ const RouletteComponent: React.FC<RouletteProps> = ({
         disabled={currentConfig === null || isSpinning || currentConfig?.items.length === 0}
         onClick={handleStart}
       >
-        {isSpinning ? '旋转中...' : '开始'}
+        {isSpinning ? t('spinning') + '...' : t('start')}
       </Button>
       {selectedItem && (
         <View className='result'>
-          选中: {selectedItem.name}
+          {t('selected')} : {selectedItem.name}
         </View>
       )}
     </View>

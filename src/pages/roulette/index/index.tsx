@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from '@tarojs/components';
 import RouletteComponent from '@/components/Roulette';
 import {Button, Cell, Checkbox, Dialog, Popup, VirtualList} from "@nutui/nutui-react-taro";
@@ -7,14 +7,23 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/store';
 import {RouletteConfig, setCurrentConfig} from "@/store/slices/rouletteSlice";
 import './index.less';
+import {useAppSelector} from "@/store/hooks";
+import {updatePageTitle} from "@/i18n/utils";
+import {useTranslation} from "@/i18n";
 
 const RoulettePage: React.FC = () => {
   const dispatch = useDispatch();
+  const {t} = useTranslation()
   const currentConfig = useSelector((state: RootState) => state.roulette.currentConfig);
   const configs = useSelector((state: RootState) => state.roulette.configs);
   const [mode, setMode] = useState<'roulette' | 'slot'>('roulette');
   const [showPopup, setShowPopup] = useState(false);
   const [showChangePopup, setShowChangePopup] = useState(false);
+  const {language} = useAppSelector(state => state.app);
+
+  useEffect(() => {
+    updatePageTitle(language, 'roulette');
+  }, [language]);
 
   const toggleMode = () => {
     setMode(mode == "roulette" ? "slot" : "roulette")
@@ -22,9 +31,11 @@ const RoulettePage: React.FC = () => {
   const handleResult = (item: { id: string; name: string }) => {
     console.log('选中:', item);
     Dialog.open('selected', {
-      title: "提示",
-      content: "命运的抉择是: " + item.name,
+      title: t('info'),
+      content: t('rouletteChoiceTip') + item.name,
       closeOnOverlayClick: true,
+      confirmText: t('confirm'),
+      cancelText: t('cancel'),
       onConfirm: () => {
         console.log('onConfirm');
         Dialog.close('selected');
@@ -71,7 +82,7 @@ const RoulettePage: React.FC = () => {
           className='action-button'
           onClick={() => toggleMode()}
         >
-          {mode === "roulette" ? "老虎机" : "大转盘"}
+          {mode === "roulette" ? t('slotMachine') : t('roulette')}
         </Button>
 
         <Button
@@ -79,7 +90,7 @@ const RoulettePage: React.FC = () => {
           className='action-button'
           onClick={() => setShowPopup(true)}
         >
-          设置
+          {t('setting')}
         </Button>
       </View>
       <View className='dataset'>
@@ -90,7 +101,7 @@ const RoulettePage: React.FC = () => {
           </View>
         ) : (
           <View className='no-dataset' onClick={handleNavigateToConfig}>
-            <View className="name">+ 去创建合集</View>
+            <View className="name">+ {t('rouletteCreate')}</View>
           </View>
         )}
       </View>
@@ -110,8 +121,8 @@ const RoulettePage: React.FC = () => {
       >
         <View className='popup-content'>
           <View className='current-dataset'>
-            当前合集: {currentConfig?.name ?? "默认"}
-            <Button type='primary' onClick={handleDatasetChange}>切换</Button>
+            {t('rouletteCurrent')}: {currentConfig?.name ?? t('default')}
+            <Button type='primary' onClick={handleDatasetChange}>{t('change')}</Button>
           </View>
           <Button
             block
@@ -119,7 +130,7 @@ const RoulettePage: React.FC = () => {
             className='popup-button'
             onClick={handleNavigateToConfig}
           >
-            配置合集
+            {t('rouletteSetConfig')}
           </Button>
 
           <Button
@@ -128,7 +139,7 @@ const RoulettePage: React.FC = () => {
             className='popup-button'
             onClick={handleNavigateToList}
           >
-            合集列表
+            {t('rouletteConfigList')}
           </Button>
 
           <Button
@@ -137,7 +148,7 @@ const RoulettePage: React.FC = () => {
             className='popup-button'
             onClick={handleNavigateToHistory}
           >
-            选择历史
+            {t('rouletteChoiceHistory')}
           </Button>
         </View>
       </Popup>
@@ -148,10 +159,10 @@ const RoulettePage: React.FC = () => {
         onClose={() => setShowChangePopup(false)}
       >
         <View className='dataset-list'>
-          <View className='title'>切换合集</View>
+          <View className='title'>{t('change') + t('Roulette')}</View>
           {!configs?.length ?
             <View className='no-dataset'>
-              <Button type='primary' onClick={handleNavigateToConfig}>+ 去创建合集</Button>
+              <Button type='primary' onClick={handleNavigateToConfig}>+ {t('rouletteCreate')}</Button>
             </View> :
             <VirtualList
               itemHeight={80}
@@ -160,7 +171,7 @@ const RoulettePage: React.FC = () => {
               itemRender={(config: RouletteConfig, dataIndex: number, index: number) => (
                 <Cell
                   key={config.id}
-                  title={config.name + ` (${config.items.length}个选项)`}
+                  title={config.name + ` (${config.items.length}${t('ge') + t('item')})`}
                   description={config.description}
                   extra={<View><Checkbox
                     checked={config.id === currentConfig?.id}></Checkbox><View></View></View>}

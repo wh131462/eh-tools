@@ -21,7 +21,7 @@ function ProfileInfo() {
   const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
-    updatePageTitle(language, 'profileInfo');
+    updatePageTitle(language, 'profile');
   }, [language]);
 
   const handleLogin = () => {

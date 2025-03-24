@@ -3,7 +3,7 @@ import {Grid} from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
 import {useTranslation} from '@/i18n'
 import {useEffect} from 'react'
-import {updatePageTitle} from '@/i18n/utils'
+import {updatePageTitle, updateTabBarText} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
 import CustomSwiper, {SwiperItem} from '@/components/Swiper'
 import calendarIcon from '@/assets/icons/calendar.png'
@@ -15,10 +15,11 @@ import releaseBanner from '@/assets/banner/release.jpg'
 function Index() {
   const {t} = useTranslation();
   const {language} = useAppSelector(state => state.app);
-
   useEffect(() => {
     updatePageTitle(language, 'tools');
+    updateTabBarText(language)
   }, [language]);
+
   const banners: SwiperItem[] = [
     {id: '1', type: 'content', image: releaseBanner, title: 'EH工具发布'},
     // {id: '2', type: 'ad', adUnitId: 'adunit-8f71700fb343c1c4'}

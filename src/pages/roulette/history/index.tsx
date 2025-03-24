@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from '@tarojs/components';
 import {Button, Cell, Dialog} from '@nutui/nutui-react-taro';
 import './index.less';
@@ -6,13 +6,21 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store";
 import {deleteHistory} from "@/store/slices/rouletteSlice";
 import {formatDate} from "@/utils/date";
+import {useAppSelector} from "@/store/hooks";
+import {updatePageTitle} from "@/i18n/utils";
+import {useTranslation} from "@/i18n";
 
 const RouletteHistoryPage: React.FC = () => {
   const dispatch = useDispatch();
+  const {t} = useTranslation()
   const history = useSelector((state: RootState) => state.roulette.history);
   const [visible, setVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<string>();
+  const {language} = useAppSelector(state => state.app);
 
+  useEffect(() => {
+    updatePageTitle(language, 'rouletteHistory');
+  }, [language]);
   return (
     <View className='roulette-history'>
       {history.map(record => (
@@ -20,22 +28,24 @@ const RouletteHistoryPage: React.FC = () => {
           <Cell
             title={record.selectedItem.name}
             description={`${record.configName} · ${formatDate(record.timestamp, 'yyyy-MM-dd HH:mm:ss')}`}
-            extra={<Button 
-              type="primary" 
+            extra={<Button
+              type="primary"
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedId(record.id);
                 setVisible(true);
               }}
             >
-              删除
+              {t('delete')}
             </Button>}
           />
           <Dialog
             visible={visible && selectedId === record.id}
             onClose={() => setVisible(false)}
-            title='确认删除'
-            content='确定要删除这条历史记录吗？'
+            title={t('info')}
+            content={t('rouletteHistoryDeleteTip')}
+            confirmText={t('confirm')}
+            cancelText={t('cancel')}
             onCancel={() => setVisible(false)}
             onConfirm={() => {
               dispatch(deleteHistory(record.id));
@@ -44,7 +54,7 @@ const RouletteHistoryPage: React.FC = () => {
           />
         </View>
       ))}
-      {!history.length && <View className='no-items'>暂无历史记录</View>}
+      {!history.length && <View className='no-items'>{t('rouletteHistoryNoItems')}</View>}
     </View>
   );
 };

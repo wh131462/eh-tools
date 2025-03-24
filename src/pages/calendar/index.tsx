@@ -1,16 +1,20 @@
-import React from 'react';
-import { View } from '@tarojs/components';
+import React, {useEffect} from 'react';
+import {View} from '@tarojs/components';
 import './index.less';
 import CalendarComponent from "@/components/Calendar";
+import {useAppSelector} from "@/store/hooks";
+import {updatePageTitle} from "@/i18n/utils";
 
 const CalendarPage: React.FC = () => {
-  const handleDayClick = (date: string) => {
-    console.log('Selected date:', date);
-  };
+  const {language} = useAppSelector(state => state.app);
+
+  useEffect(() => {
+    updatePageTitle(language, 'calendar');
+  }, [language]);
 
   return (
     <View className='calendar-page'>
-      <CalendarComponent onDayClick={handleDayClick}></CalendarComponent>
+      <CalendarComponent isLunar={true}></CalendarComponent>
     </View>
   );
 };

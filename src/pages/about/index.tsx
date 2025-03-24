@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View} from '@tarojs/components';
 import {Cell} from '@nutui/nutui-react-taro';
 import {useTranslation} from '@/i18n';
 import './index.less';
 import {copyToClipboard} from "@/utils/clipboard";
+import {useAppSelector} from "@/store/hooks";
+import {updatePageTitle} from "@/i18n/utils";
 
 const AboutPage: React.FC = () => {
   const {t} = useTranslation();
+  const {language} = useAppSelector(state => state.app);
+  useEffect(() => {
+    updatePageTitle(language, 'about');
+  }, [language]);
+
   const appInfo = {
     name: 'EH Tools',
     version: '1.0.0',

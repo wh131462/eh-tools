@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from '@tarojs/components';
 import {Button, Cell, Dialog} from '@nutui/nutui-react-taro';
 import './index.less';
@@ -7,11 +7,20 @@ import {RootState} from "@/store";
 import {deleteConfig, RouletteConfig} from "@/store/slices/rouletteSlice";
 import Taro from "@tarojs/taro";
 import {formatDate} from "@/utils/date";
+import {useAppSelector} from "@/store/hooks";
+import {updatePageTitle} from "@/i18n/utils";
+import {useTranslation} from "@/i18n";
 
 const RouletteListPage: React.FC = () => {
   const dispatch = useDispatch()
+  const {t} = useTranslation()
   const configs = useSelector((state: RootState) => state.roulette.configs);
   const [visible, setVisible] = useState(false)
+  const {language} = useAppSelector(state => state.app);
+
+  useEffect(() => {
+    updatePageTitle(language, 'rouletteList');
+  }, [language]);
   const handleNavigation = (config?: RouletteConfig) => {
     Taro.navigateTo({url: '/pages/roulette/config/index' + (config && `?id=${config?.id}` || '')});
   };
@@ -22,7 +31,7 @@ const RouletteListPage: React.FC = () => {
         <View><Cell
           key={config.id}
           title={
-            <View>{config.name} ({config.items.length}个选项) </View>
+            <View>{config.name} ({config.items.length}{t('ge') + t('item')}) </View>
           }
           description={<View>
             <span>{config.description}</span>
@@ -39,16 +48,18 @@ const RouletteListPage: React.FC = () => {
           <Dialog
             visible={visible}
             onClose={() => setVisible(false)}
-            title='确认删除'
-            content={`确定要删除合集[${config.name}]吗？`}
+            title={t("info")}
+            content={t("rouletteListDeleteTip") + `[${config.name}]`}
+            confirmText={t('confirm')}
+            cancelText={t('cancel')}
             onCancel={() => setVisible(false)}
             onConfirm={() => {
               dispatch(deleteConfig(config.id))
             }}></Dialog></View>
       ))}
 
-      {!configs.length && <View className='no-items'>无可用合集,点击创建合集开始创建吧~</View>}
-      <Button block type="primary" onClick={() => handleNavigation()}>创建合集</Button>
+      {!configs.length && <View className='no-items'>{t('rouletteListNoItems')}</View>}
+      <Button block type="primary" onClick={() => handleNavigation()}>{t('rouletteCreate')}</Button>
     </View>
   );
 };

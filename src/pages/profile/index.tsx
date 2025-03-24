@@ -3,7 +3,7 @@ import {Avatar, Cell} from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
 import {useTranslation} from '@/i18n'
 import {useEffect} from 'react'
-import {updatePageTitle} from '@/i18n/utils'
+import {updatePageTitle, updateTabBarText} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
 import './index.less'
 
@@ -13,6 +13,7 @@ function Profile() {
   const {userInfo} = useAppSelector(state => state.user);
   useEffect(() => {
     updatePageTitle(language, 'profile');
+    updateTabBarText(language)
   }, [language]);
 
   const handleAvatarClick = () => {

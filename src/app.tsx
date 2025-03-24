@@ -10,25 +10,23 @@ import './app.less';
 
 const AppContent: React.FC<{ children: React.ReactNode }> = ({children}) => {
   const {language} = useAppSelector(state => state.app);
-
   const [showSplashAd, setShowSplashAd] = useState(false);
+  // 初始化一次
   useDidShow(() => {
     updateTabBarText(language);
-    const pages = Taro.getCurrentPages();
-    const currentPage = pages[pages.length - 1];
-    if (currentPage && currentPage.route) {
-      updatePageTitle(language, currentPage.route);
-    }
-  });
+    updatePageTitle(language, 'tools');
+  })
 
   useEffect(() => {
     const handleRouteChange = () => {
       const pages = Taro.getCurrentPages();
       const currentPage = pages[pages.length - 1];
+      console.log(currentPage)
       if (currentPage && currentPage.route) {
         updatePageTitle(language, currentPage.route);
       }
     };
+
 
     Taro.eventCenter.on('routeChange', handleRouteChange);
     return () => {

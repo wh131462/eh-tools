@@ -8,6 +8,9 @@ import {RouletteConfig, RouletteItem, updateConfig} from "@/store/slices/roulett
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store";
 import {getCurrentInstance} from "@tarojs/runtime";
+import {useAppSelector} from "@/store/hooks";
+import {updatePageTitle} from "@/i18n/utils";
+import {useTranslation} from "@/i18n";
 
 interface ConfigProps {
   id?: string;
@@ -16,6 +19,7 @@ interface ConfigProps {
 const RouletteConfigPage: React.FC<ConfigProps> = () => {
   const instance = getCurrentInstance();
   const dispatch = useDispatch();
+  const {t} = useTranslation()
   const configs = useSelector((state: RootState) => state.roulette.configs);
   const newConfig: RouletteConfig = {createTime: Date.now(), items: [], id: Date.now().toString(), name: ""};
   const [config, setConfig] = useState<RouletteConfig>(newConfig);
@@ -26,9 +30,13 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
     if (id) {
       const cur = configs.find(o => o.id == id)
       cur && setConfig(cur)
-      console.log("cur", cur)
     }
   }, []);
+  const {language} = useAppSelector(state => state.app);
+
+  useEffect(() => {
+    updatePageTitle(language, 'rouletteConfig');
+  }, [language]);
   const handleName = () => {
     const newName = setForm.getFieldValue("name")
     setConfig({...config, name: newName})
@@ -76,28 +84,28 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
   return (
     <View className='roulette-config'>
       <Form form={setForm}>
-        <Form.Item label='合集名称'
+        <Form.Item label={t('rouletteConfigName')}
                    align="center"
                    required
                    name="name"
                    initialValue={config.name}
                    rules={[
-                     {required: true, message: '请输入合集名称'},
+                     {required: true, message: `${t('pleaseInput')}${t('rouletteConfigName')}`},
                    ]}
         >
           <Input
-            placeholder='请输入合集名称'
+            placeholder={`${t('pleaseInput')}${t('rouletteConfigName')}`}
             onChange={handleName}
             onBlur={handleName}
           />
         </Form.Item>
-        <Form.Item label='描述信息'
+        <Form.Item label={t('rouletteConfigDescription')}
                    align="center"
                    name="description"
                    initialValue={config.description}
         >
           <Input
-            placeholder='请输入描述信息'
+            placeholder={`${t('pleaseInput')}${t('rouletteConfigDescription')}`}
             onChange={handleDescription}
             onBlur={handleDescription}
           />
@@ -110,23 +118,23 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
         footer={
           <>
             <Button nativeType="submit" block type="primary">
-              更新选项
+              {t('updateItem')}
             </Button>
           </>
         }>
-        <Form.Item label='选项名称'
+        <Form.Item label={t('rouletteConfigItemName')}
                    align="center"
                    required
                    name="name"
                    rules={[
-                     {required: true, message: '请输入选项名称'},
+                     {required: true, message: `${t('pleaseInput')}${t('rouletteConfigItemName')}`},
                    ]}
         >
           <Input
-            placeholder='请输入选项名称'
+            placeholder={`${t('pleaseInput')}${t('rouletteConfigItemName')}`}
           />
         </Form.Item>
-        <Form.Item label='选项颜色'
+        <Form.Item label={t('rouletteConfigItemColor')}
                    align="center"
           // required
                    name="color"
@@ -136,12 +144,12 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
         >
           <ColorPicker/>
         </Form.Item>
-        <Form.Item label='指定概率'
+        <Form.Item label={t('rouletteConfigItemProbability')}
                    align="center"
                    name="probability"
                    rules={[
                      {
-                       message: "取值范围0~100",
+                       message: "Range: 0~100 ",
                        validator: (
                          ruleCfg: FormItemRuleWithoutValidator,
                          value: number
@@ -152,7 +160,7 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
                    ]}>
           <Input
             type='number'
-            placeholder='可选，默认平均概率'
+            placeholder={t('rouletteConfigItemProbabilityPlaceholder')}
           />
         </Form.Item>
       </Form>
@@ -166,7 +174,7 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
               <View className='item-name' style={{color: !item.color && "#333333" || "#FFFFFF"}}>{item.name}</View>
               <View className='item-info'>
                 {item.probability && (
-                  <View className='item-probability'>权重: {item.probability}</View>
+                  <View className='item-probability'>{t('rouletteConfigItemProbability')}: {item.probability}</View>
                 )}
               </View>
             </View>
@@ -175,7 +183,7 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
               type='danger'
               onClick={() => handleDeleteItem(item.id)}
             >
-              删除
+              {t('delete')}
             </Button>
           </View>
         ))}
@@ -188,7 +196,7 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
           className='save-button'
           onClick={handleSaveConfig}
         >
-          保存配置
+          {t('saveConfig')}
         </Button>
       )}
     </View>
