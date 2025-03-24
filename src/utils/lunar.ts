@@ -1,10 +1,9 @@
-import { Taro } from '@tarojs/taro';
+import {EarthBranch, LunarDay, LunarYear, SolarDay} from "tyme4ts";
 
 interface LunarDate {
   year: number;
   month: number;
   day: number;
-  isLeap: boolean;
 }
 
 interface SolarDate {
@@ -13,60 +12,57 @@ interface SolarDate {
   day: number;
 }
 
+interface AlmanacInfo {
+  suitable: string[];
+  avoid: string[];
+  taishen: string;
+  direction: string;
+}
+
 class LunarCalendar {
-  private static readonly lunarInfo = [
-    0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
-    0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
-    0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970
-  ];
-
-  private static readonly Gan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
-  private static readonly Zhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
-  private static readonly Animals = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
-  private static readonly solarTerm = [
-    '小寒', '大寒', '立春', '雨水', '惊蛰', '春分',
-    '清明', '谷雨', '立夏', '小满', '芒种', '夏至',
-    '小暑', '大暑', '立秋', '处暑', '白露', '秋分',
-    '寒露', '霜降', '立冬', '小雪', '大雪', '冬至'
-  ];
-
   public static solarToLunar(solar: SolarDate): LunarDate {
-    // 实现公历转农历的逻辑
-    // 这里需要根据农历算法实现具体转换
-    // 为了示例，这里返回一个模拟值
+    const solarDate = SolarDay.fromYmd(solar.year, solar.month, solar.day);
+    const lunarDate = solarDate.getLunarDay();
     return {
-      year: solar.year,
-      month: solar.month,
-      day: solar.day,
-      isLeap: false
+      year: lunarDate.getYear(),
+      month: lunarDate.getMonth(),
+      day: lunarDate.getDay(),
     };
   }
 
   public static lunarToSolar(lunar: LunarDate): SolarDate {
-    // 实现农历转公历的逻辑
-    // 这里需要根据农历算法实现具体转换
-    // 为了示例，这里返回一个模拟值
+    const lunarDate = LunarDay.fromYmd(lunar.year, lunar.month, lunar.day);
+    const solarDate = lunarDate.getSolarDay();
     return {
-      year: lunar.year,
-      month: lunar.month,
-      day: lunar.day
+      year: solarDate.getYear(),
+      month: solarDate.getMonth(),
+      day: solarDate.getDay()
     };
   }
 
   public static getAnimalYear(year: number): string {
-    return this.Animals[(year - 4) % 12];
+    const name = LunarYear.fromYear(year).getSixtyCycle()
+    return EarthBranch.fromName(name.getName()).getZodiac().toString()
   }
 
   public static getGanZhiYear(year: number): string {
-    const gan = this.Gan[(year - 4) % 10];
-    const zhi = this.Zhi[(year - 4) % 12];
-    return `${gan}${zhi}`;
+    return LunarYear.fromYear(year).getSixtyCycle().toString()
   }
 
   public static getSolarTerm(month: number, day: number): string | null {
-    // 实现节气判断逻辑
-    // 这里需要根据具体的节气表实现
-    return null;
+    const solar = SolarDay.fromYmd(new Date().getFullYear(), month, day);
+    const jieQi = solar.getTerm().toString()
+    return jieQi ? jieQi : null;
+  }
+
+  public static getAlmanacInfo(year: number, month: number, day: number): AlmanacInfo {
+    const lunar = LunarDay.fromYmd(year, month, day);
+    return {
+      suitable: lunar.getRecommends().map(o => o.toString()),
+      avoid: lunar.getAvoids().map(o => o.toString()),
+      taishen: lunar.getFetusDay().toString(),
+      direction: lunar.getJupiterDirection().toString()
+    };
   }
 }
 

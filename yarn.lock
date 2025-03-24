@@ -1252,6 +1252,11 @@
   resolved "https://registry.npmmirror.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
+"@eternalheart/utils@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.npmmirror.com/@eternalheart/utils/-/utils-1.0.6.tgz#3501fab86aae232ad977fd71c035779a5a75b8a8"
+  integrity sha512-amURXSgFVcO7XCgU9XuvptN7ge2geyCNWGVRTRuqERYZwoSOqG+DfcBYcJJKSiUVwt0mJv0u9DYOJxp3h5gOYA==
+
 "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.3.0":
   version "9.3.0"
   resolved "https://registry.npmmirror.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
@@ -9774,6 +9779,11 @@ tunnel-agent@^0.6.0:
   integrity sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==
   dependencies:
     safe-buffer "^5.0.1"
+
+tyme4ts@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npmmirror.com/tyme4ts/-/tyme4ts-1.2.2.tgz#11f81265702c77a2388f17d77eb3f58db5776d88"
+  integrity sha512-vuKf3fkVmoJH//p9oJ6h2h+iYvry73IuP70xpsdja47cUqGFxf4L7ugIl7DzajYOe8jYVf2I3TuLCeniI2eirQ==
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"

@@ -1,13 +1,15 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import appReducer from './slices/appSlice';
 import rouletteReducer from './slices/rouletteSlice';
 import userReducer from './slices/userSlice';
+import calendarReducer from './slices/calendarSlice';
 
 export const store = configureStore({
   reducer: {
     app: appReducer,
     roulette: rouletteReducer,
-    user: userReducer
+    user: userReducer,
+    calendar: calendarReducer
   },
 });
 
