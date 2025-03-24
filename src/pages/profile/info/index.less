@@ -1,0 +1,54 @@
+.profile-info-page {
+  padding: 20px;
+  height: calc(100vh - 32px);
+  background-color: #f5f5f5;
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 0;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    background-color: #fff;
+
+
+    .nut-avatar {
+      margin-bottom: 16px;
+    }
+
+    .user-nickname {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    width: 100%;
+
+    .nut-button {
+      width: 80%;
+    }
+  }
+
+  .avatar-input {
+    border: none !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    min-width: 0;
+    opacity: 0;
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    z-index: 1;
+  }
+
+}

@@ -66,6 +66,7 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
     }
     dispatch(updateConfig(config))
     Taro.showToast({title: `保存成功~`});
+    Taro.navigateBack();
   };
 
   const editItem = (item: RouletteItem) => {

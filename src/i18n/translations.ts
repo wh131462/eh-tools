@@ -35,6 +35,13 @@ export const translations: Translations = {
 
     // Color
     customColor: "自定义颜色",
+    avatar: "头像",
+    nickname: "昵称",
+    inputNickname: "请输入昵称",
+    pleaseInputNickname: "请输入您的昵称",
+    loginSuccess: "登录成功",
+    logout: "退出登录",
+    confirmModify: "确认修改",
   },
   en: {
     home: 'Home',
@@ -63,6 +70,15 @@ export const translations: Translations = {
     appDescriptionContent: 'A useful tool collections, you can find all you need here.',
     appAuthor: 'Developer',
     appGithub: 'GitHub Repository',
+
+    // Color
     customColor: "Custom Color",
+    avatar: "Avatar",
+    nickname: "Nickname",
+    inputNickname: "Input Nickname",
+    pleaseInputNickname: "Please input your nickname",
+    loginSuccess: "Login Success",
+    logout: "Logout",
+    confirmModify: "Confirm Modify"
   }
 };

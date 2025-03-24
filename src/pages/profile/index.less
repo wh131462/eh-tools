@@ -6,19 +6,29 @@
   .user-info {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     padding: 30px 0;
     border-radius: 12px;
     margin-bottom: 20px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
 
     .nut-avatar {
       margin-bottom: 16px;
     }
 
     .user-nickname {
+      text-align: center;
       font-size: 18px;
       font-weight: 500;
-      margin-bottom: 16px;
+      margin-bottom: 0;
     }
   }
 
