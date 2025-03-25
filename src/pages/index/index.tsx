@@ -29,6 +29,9 @@ function Index() {
   const tools = [
     {id: 'calendar', text: t('calendar'), path: '/pages/calendar/index', icon: calendarIcon},
     {id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index', icon: rouletteIcon},
+  ]
+
+  const games = [
     {id: '2048', text: t('2048'), path: '/pages/game2048/index', icon: game2048Icon},
   ]
 
@@ -54,6 +57,20 @@ function Index() {
               <View className='tool-item'>
                 <Image className='tool-icon' src={tool.icon}/>
                 <View className='tool-name'>{tool.text}</View>
+              </View>
+            </Grid.Item>
+          ))}
+        </Grid>
+      </View>
+
+      <View className='games-section'>
+        <View className='section-title'>{t("games")}</View>
+        <Grid columns={2}>
+          {games.map(game => (
+            <Grid.Item key={game.id} onClick={() => handleToolClick(game.path)}>
+              <View className='game-item'>
+                <Image className='game-icon' src={game.icon}/>
+                <View className='game-name'>{game.text}</View>
               </View>
             </Grid.Item>
           ))}

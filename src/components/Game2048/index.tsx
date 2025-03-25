@@ -2,9 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {ITouchEvent, View} from '@tarojs/components';
 import {Button, Dialog} from '@nutui/nutui-react-taro';
 import {useTranslation} from '@/i18n';
-import {useAppDispatch} from '@/store/hooks';
-import {addRecord} from '@/store/slices/game2048Slice';
-import {v4 as uuidv4} from 'uuid';
+import {useAppDispatch, useAppSelector} from '@/store/hooks';
+import {addRecord, clearGameState, saveGameState} from '@/store/slices/game2048Slice';
 import './index.less';
 import Taro from "@tarojs/taro";
 
@@ -18,7 +17,8 @@ interface BoardState {
 const Game2048: React.FC = () => {
   const {t} = useTranslation();
   const dispatch = useAppDispatch();
-  const [board, setBoard] = useState<BoardState>({
+  const currentGame = useAppSelector(state => state.game2048.currentGame);
+  const [board, setBoard] = useState<BoardState>(currentGame || {
     grid: Array(4).fill(null).map(() => Array(4).fill(0)),
     score: 0,
     gameOver: false,
@@ -141,7 +141,7 @@ const Game2048: React.FC = () => {
           confirmText: t('confirm'),
           onConfirm: () => {
             dispatch(addRecord({
-              id: uuidv4(),
+              id: Date.now().toString(),
               score: newScore,
               nickname: nickname || t('anonymous'),
               timestamp: Date.now()
@@ -244,8 +244,17 @@ const Game2048: React.FC = () => {
 
   // 初始化游戏
   useEffect(() => {
-    initGame();
+    if (!currentGame) {
+      initGame();
+    }
   }, []);
+
+  // 保存游戏状态
+  useEffect(() => {
+    if (board.grid.some(row => row.some(cell => cell !== 0))) {
+      dispatch(saveGameState(board));
+    }
+  }, [board]);
 
   return (
     <View className='game-2048'>

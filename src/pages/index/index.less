@@ -2,9 +2,11 @@
   min-height: calc(100vh - 32px);
   background-color: #f5f5f5;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 
   .banner-section {
-    margin-bottom: 20px;
     border-radius: 8px;
     overflow: hidden;
 
@@ -25,7 +27,7 @@
     }
   }
 
-  .tools-section {
+  .tools-section, .games-section {
     background-color: #fff;
     border-radius: 8px;
     padding: 16px;
@@ -39,19 +41,19 @@
       border-left: 4px solid #2196f3;
     }
 
-    .tool-item {
+    .tool-item, .game-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 16px;
 
-      .tool-icon {
+      .tool-icon, .game-icon {
         width: 40px;
         height: 40px;
         margin-bottom: 8px;
       }
 
-      .tool-name {
+      .tool-name, .game-name {
         font-size: 14px;
         color: #333;
       }

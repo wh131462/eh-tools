@@ -9,10 +9,17 @@ interface Game2048Record {
 
 interface Game2048State {
   records: Game2048Record[];
+  currentGame: {
+    grid: number[][];
+    score: number;
+    gameOver: boolean;
+    history: Array<{ grid: number[][]; score: number }>;
+  } | null;
 }
 
 const initialState: Game2048State = {
-  records: []
+  records: [],
+  currentGame: null
 };
 
 const game2048Slice = createSlice({
@@ -28,9 +35,20 @@ const game2048Slice = createSlice({
     },
     clearRecords: (state) => {
       state.records = [];
+    },
+    saveGameState: (state, action: PayloadAction<{
+      grid: number[][];
+      score: number;
+      gameOver: boolean;
+      history: Array<{ grid: number[][]; score: number }>;
+    }>) => {
+      state.currentGame = action.payload;
+    },
+    clearGameState: (state) => {
+      state.currentGame = null;
     }
   }
 });
 
-export const {addRecord, deleteRecord, clearRecords} = game2048Slice.actions;
+export const {addRecord, deleteRecord, clearRecords, saveGameState, clearGameState} = game2048Slice.actions;
 export default game2048Slice.reducer;
