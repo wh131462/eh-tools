@@ -8,6 +8,7 @@ import {useAppSelector} from '@/store/hooks'
 import CustomSwiper, {SwiperItem} from '@/components/Swiper'
 import calendarIcon from '@/assets/icons/calendar.png'
 import rouletteIcon from '@/assets/icons/star.png'
+import game2048Icon from '@/assets/icons/2048.png'
 import './index.less'
 
 import releaseBanner from '@/assets/banner/release.jpg'
@@ -27,7 +28,8 @@ function Index() {
 
   const tools = [
     {id: 'calendar', text: t('calendar'), path: '/pages/calendar/index', icon: calendarIcon},
-    {id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index', icon: rouletteIcon}
+    {id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index', icon: rouletteIcon},
+    {id: '2048', text: t('2048'), path: '/pages/game2048/index', icon: game2048Icon},
   ]
 
   const handleToolClick = (path: string) => {

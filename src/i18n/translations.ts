@@ -6,6 +6,23 @@ interface Translations {
 
 export const translations: Translations = {
   zh: {
+    // 2048游戏
+    game2048: "2048游戏",
+    score: "分数",
+    newGame: "新游戏",
+    gameOver: "游戏结束",
+    tryAgain: "再试一次",
+    history: "历史记录",
+    noRecords: "暂无历史记录",
+    deleteRecord: "删除记录",
+    deleteRecordConfirm: "确定要删除这条记录吗？",
+    sortByScore: "按分数排序",
+    sortByTime: "按时间排序",
+    anonymous: "匿名玩家",
+    congratulations: "恭喜",
+    reach2048: "你已经达到2048！",
+    enterNickname: "请输入你的昵称",
+    undo: "撤销",
     // common
     delete: "删除",
     start: "开始",
@@ -15,6 +32,8 @@ export const translations: Translations = {
     ge: "个",
     item: "选项",
     selected: "选中",
+    copy: "复制",
+    success: "成功",
     // dialog
     confirm: "确定",
     cancel: "取消",
@@ -89,6 +108,23 @@ export const translations: Translations = {
     confirmModify: "确认修改",
   },
   en: {
+    // 2048 Game
+    game2048: "2048 Game",
+    score: "Score",
+    history: "History",
+    noRecords: "No Records",
+    deleteRecord: "Delete Record",
+    deleteRecordConfirm: "Are you sure you want to delete this record?",
+    sortByScore: "Sort by Score",
+    sortByTime: "Sort by Time",
+    anonymous: "Anonymous",
+    congratulations: "Congratulations",
+    reach2048: "You've reached 2048!",
+    enterNickname: "Enter your nickname",
+    undo: "Undo",
+    newGame: "New Game",
+    gameOver: "Game Over",
+    tryAgain: "Try Again",
     // common
     delete: "Delete",
     start: "Start",
@@ -98,6 +134,8 @@ export const translations: Translations = {
     ge: " ",
     item: "Item",
     selected: "Selected",
+    copy: "Copy",
+    success: "Success",
 
     // dialog
     confirm: "Confirm",

@@ -3,12 +3,11 @@ import {View} from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import {Button} from '@nutui/nutui-react-taro';
 import {LuckyWheel, SlotMachine} from '@lucky-canvas/taro/react'
-import './index.less';
-
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/store';
 import {addHistory} from "@/store/slices/rouletteSlice";
 import {useTranslation} from "@/i18n";
+import './index.less';
 
 interface RouletteProps {
   maxItems?: number;
@@ -35,7 +34,16 @@ const RouletteComponent: React.FC<RouletteProps> = ({
     if (currentConfig) {
       if (mode === 'roulette') {
         setRouletteState({
-          blocks: [{padding: '10px', background: '#E44537'}],
+          blocks: [
+            {
+              padding: '10px',
+              background: '#FF6F00'
+            },
+            {
+              padding: '10px',
+              background: '#FFEE58',
+            },
+          ],
           prizes: currentConfig.items.map((item, index) => ({
             id: item.id,
             name: item.name,
@@ -43,10 +51,10 @@ const RouletteComponent: React.FC<RouletteProps> = ({
             background: item.color || `hsl(${(360 / currentConfig.items.length) * index}, 70%, 50%)`
           })),
           buttons: [
-            {radius: '50px', background: '#f5f5f5'},
-            {radius: '45px', background: '#e8e8e8'},
+            {radius: '20%', background: '#FFEE58'},
             {
-              radius: '40px', background: '#E54535',
+              radius: '15%',
+              background: '#FF6F00',
               pointer: true,
             },],
           defaultConfig: {
@@ -58,28 +66,31 @@ const RouletteComponent: React.FC<RouletteProps> = ({
           },
         })
       } else {
+        const slotColors = ["#FFB300", "#FF8F00", "#D84315"];
+        const radius = ["10px", "30px", "50px"];
         setSlotState({
           width: '240px',
           height: '180px',
           blocks: [
-            {padding: '10px', background: '#E54535', borderRadius: "10px"},
-            {padding: '10px', background: '#e9e8fe', borderRadius: "10px"},
+            {padding: '10px', background: '#FF6D00', borderRadius: "20px"},
+            {padding: '10px', background: '#FFF3E0', borderRadius: "25px"},
           ],
           slots: [
-            {speed: 5},
-            {speed: 8},
-            {speed: 7},
+            {speed: 10},
+            {speed: 20},
+            {speed: 15},
           ],
-          prizes: currentConfig?.items.map((item) => ({
+          prizes: currentConfig?.items.map((item, index) => ({
             id: item.id,
             name: item.name,
-            fonts: [{text: item.name, fontColor: "#FFFFFF", top: "18px", wordWrap: false, lineClamp: 1}],
-            background: '#E54535',
-            borderRadius: '10px',
+            fonts: [{text: item.name, fontColor: "#FFFFFF", top: "10px", wordWrap: true, lineClamp: 1}],
+            background: slotColors.at(index % slotColors.length),
+            borderRadius: radius.at(index % slotColors.length),
           })) || [],
           defaultConfig: {
             rowSpacing: '10px',
             colSpacing: '10px',
+            mode: 'horizontal',
           }
         })
       }

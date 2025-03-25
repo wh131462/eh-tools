@@ -10,6 +10,7 @@ import './index.less';
 import {useAppSelector} from "@/store/hooks";
 import {updatePageTitle} from "@/i18n/utils";
 import {useTranslation} from "@/i18n";
+import {copyToClipboard} from "@/utils/clipboard";
 
 const RoulettePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -32,16 +33,18 @@ const RoulettePage: React.FC = () => {
     console.log('选中:', item);
     Dialog.open('selected', {
       title: t('info'),
-      content: t('rouletteChoiceTip') + item.name,
+      content: `${t('rouletteChoiceTip')} ${item.name}`,
       closeOnOverlayClick: true,
       confirmText: t('confirm'),
-      cancelText: t('cancel'),
+      cancelText: t('copy'),
       onConfirm: () => {
-        console.log('onConfirm');
         Dialog.close('selected');
       },
       onCancel: () => {
         console.log('onCancel');
+        copyToClipboard(item.name).then(() => {
+          Taro.showToast({title: `${t('copy')}${t('success')}!`, icon: "success"})
+        })
         Dialog.close('selected');
       }
     });

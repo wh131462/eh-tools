@@ -40,7 +40,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({
 
     setCurrentLunarInfo({
       date,
-      lunarDate: `${lunar.year}年${lunar.month}月${lunar.day}日${lunar.isLeap ? '(闰)' : ''}`,
+      lunarDate: `${lunar.year}年${lunar.month}月${lunar.day}日}`,
       ganZhi: LunarCalendar.getGanZhiYear(lunar.year),
       animal: LunarCalendar.getAnimalYear(lunar.year),
       solarTerm: LunarCalendar.getSolarTerm(day.month, day.date)
@@ -74,7 +74,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({
         renderDayTop={renderDayTop}
         renderDay={renderDay}
         renderDayBottom={renderDayBottom}
-        // onDayClick={handleDayClick}
+        onDayClick={handleDayClick}
       />
       <Popup
         visible={showLunarInfo}
