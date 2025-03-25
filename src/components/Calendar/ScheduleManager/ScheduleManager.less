@@ -1,0 +1,71 @@
+.schedule-manager {
+  padding: 16px;
+
+  .schedule-header {
+    margin-bottom: 16px;
+  }
+
+  .schedule-list {
+    margin-bottom: 16px;
+
+    :global {
+      .nut-cell {
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        background-color: #f8f8f8;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &__title {
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+        }
+
+        &__description {
+          font-size: 14px;
+          color: #666;
+          margin-top: 4px;
+        }
+
+        &__extra {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+
+  :global {
+    .nut-form-item {
+      margin-bottom: 16px;
+
+      &__label {
+        font-size: 14px;
+        color: #333;
+      }
+
+      .nut-input {
+        --nutui-input-padding: 12px;
+        --nutui-input-font-size: 14px;
+        border-radius: 8px;
+        background-color: #f8f8f8;
+      }
+
+      .nut-radio {
+        margin-right: 16px;
+
+        &__label {
+          font-size: 14px;
+          color: #333;
+        }
+      }
+    }
+
+    .nut-button {
+      margin-top: 24px;
+    }
+  }
+}

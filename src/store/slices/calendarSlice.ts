@@ -11,7 +11,7 @@ export interface Schedule {
 
 interface CalendarState {
   schedules: Schedule[];
-  selectedDate: string | null;
+  selectedDate: Date | null;
 }
 
 const initialState: CalendarState = {
@@ -35,7 +35,7 @@ const calendarSlice = createSlice({
         state.schedules[index] = action.payload;
       }
     },
-    setSelectedDate: (state, action: PayloadAction<string | null>) => {
+    setSelectedDate: (state, action: PayloadAction<Date | null>) => {
       state.selectedDate = action.payload;
     },
   },

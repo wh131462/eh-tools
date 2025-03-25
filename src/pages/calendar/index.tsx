@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View} from '@tarojs/components';
 import './index.less';
 import CalendarComponent from "@/components/Calendar";
-import ScheduleManager from "@/components/Calendar/ScheduleManager";
+import ScheduleManager from "@/components/Calendar/ScheduleManager/ScheduleManager";
 import {useAppSelector} from "@/store/hooks";
 import {updatePageTitle} from "@/i18n/utils";
 
@@ -17,7 +17,7 @@ const CalendarPage: React.FC = () => {
 
   useEffect(() => {
     if (selectedDate) {
-      setShowScheduleManager(true);
+      // setShowScheduleManager(true);
     }
   }, [selectedDate]);
 

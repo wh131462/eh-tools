@@ -8,7 +8,7 @@ import {addSchedule, removeSchedule, Schedule} from '@/store/slices/calendarSlic
 interface ScheduleManagerProps {
   visible: boolean;
   onClose: () => void;
-  selectedDate: string | null;
+  selectedDate: Date | null;
 }
 
 const ScheduleManager: React.FC<ScheduleManagerProps> = ({

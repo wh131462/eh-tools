@@ -3,11 +3,57 @@
   background-color: #fff;
   min-height: 100%;
 
-  :global {
-    .nut-calendar {
-      --nutui-calendar-base-font-size: 14px;
-      --nutui-calendar-day-width: 40px;
-      --nutui-calendar-day-height: 40px;
+  .lunar-info {
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%); // 暖色渐变背景
+    border-radius: 16rpx; // 圆角尺寸
+    box-shadow: 0 8rpx 24rpx rgba(255, 165, 0, 0.1); // 柔和阴影
+    padding: 32rpx;
+    margin: 20rpx;
+    transition: all 0.3s ease; // 交互动画
+
+    // 日期显示
+    .lunar-date {
+      font-family: '楷体', cursive; // 传统字体
+      font-size: 40rpx;
+      color: #d35400; // 主标题色
+      text-align: center;
+      margin-bottom: 24rpx;
+      border-bottom: 2rpx solid #f39c12; // 装饰分隔线
+      padding-bottom: 16rpx;
+      text-shadow: 1rpx 1rpx 2rpx rgba(0, 0, 0, 0.1); // 文字投影
+    }
+
+    // 详细信息区域
+    .lunar-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 16rpx; // 子项间距
+
+      > view {
+        font-size: 28rpx;
+        color: #2c3e50; // 正文深灰色
+        display: flex;
+        align-items: center;
+
+        // 标签样式
+        &::before {
+          content: '·';
+          color: #e67e22;
+          margin-right: 12rpx;
+          font-weight: bold;
+        }
+      }
+
+      // 节气特殊样式
+      [class*="solarTerm"] {
+        color: #27ae60; // 节气绿色
+        font-weight: 500;
+
+        &::before {
+          content: '🌱'; // 节气图标
+          margin-right: 8rpx;
+        }
+      }
     }
   }
 }

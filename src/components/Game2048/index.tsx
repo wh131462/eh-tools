@@ -3,7 +3,7 @@ import {ITouchEvent, View} from '@tarojs/components';
 import {Button, Dialog} from '@nutui/nutui-react-taro';
 import {useTranslation} from '@/i18n';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
-import {addRecord, clearGameState, saveGameState} from '@/store/slices/game2048Slice';
+import {addRecord, saveGameState} from '@/store/slices/game2048Slice';
 import './index.less';
 import Taro from "@tarojs/taro";
 

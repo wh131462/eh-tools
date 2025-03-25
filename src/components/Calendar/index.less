@@ -4,11 +4,81 @@
   background-color: #fff;
   box-sizing: border-box;
 
-  :global {
-    .nut-calendar {
-      --nutui-calendar-base-font-size: 14px;
-      --nutui-calendar-day-active-background-color: #fa2c19;
-      --nutui-calendar-day-active-color: #fff;
+  .hot-point {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 50%;
+    background-color: #fa2c19;
+    width: 5px;
+    height: 5px;
+  }
+
+  .day-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .lunar-festival {
+    font-size: 9px;
+  }
+
+  .lunar-date {
+    font-size: 12px;
+  }
+
+  .lunar-info {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .lunar-date {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #ff4d4f;
+    }
+
+    .lunar-detail {
+      font-size: 14px;
+      color: #666;
+
+      > View {
+        margin-bottom: 5px;
+      }
+
+      .almanac-info {
+        margin-top: 15px;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+
+        .almanac-section {
+          display: flex;
+          margin-bottom: 10px;
+          align-items: flex-start;
+
+          .almanac-title {
+            width: 60px;
+            color: #666;
+            font-weight: bold;
+          }
+
+          .almanac-content {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+          }
+        }
+      }
     }
   }
 }
