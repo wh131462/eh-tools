@@ -3,7 +3,7 @@ import {View} from '@tarojs/components';
 import {useAppSelector} from '@/store/hooks';
 import {updatePageTitle} from "@/i18n/utils";
 import {Button} from '@nutui/nutui-react-taro';
-import Taro from '@tarojs/taro';
+import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro';
 import "./index.less"
 
 const Game2048Page: React.FC = () => {
@@ -12,6 +12,21 @@ const Game2048Page: React.FC = () => {
   useEffect(() => {
     updatePageTitle(language, 'game2048');
   }, [language]);
+
+  useShareAppMessage(() => {
+    return {
+      title: '游戏源码级教学!免费学~',
+      path: '/pages/game2048/index',
+      imageUrl: '/assets/shares/2048share.png'
+    };
+  });
+
+  useShareTimeline(() => {
+    return {
+      title: '2048游戏源码教学，开始学习游戏开发！',
+      imageUrl: '/assets/shares/2048share.png'
+    };
+  });
 
   const handlePreviewClick = () => {
     Taro.navigateTo({

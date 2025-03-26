@@ -5,7 +5,7 @@ import {useTranslation} from '@/i18n';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {addRecord, saveGameState} from '@/store/slices/game2048Slice';
 import './index.less';
-import Taro from "@tarojs/taro";
+import Taro, {useShareAppMessage} from "@tarojs/taro";
 
 interface BoardState {
   grid: number[][];
@@ -25,6 +25,14 @@ const Game2048: React.FC = () => {
     history: []
   });
   const [nickname, setNickname] = useState("")
+
+  useShareAppMessage(() => {
+    return {
+      title: `我在2048游戏中获得了${board.score}分，快来挑战我吧！`,
+      path: '/pages/game2048/game/index',
+      imageUrl: '/assets/icons/2048.png'
+    };
+  });
 
   // 初始化游戏
   const initGame = () => {
@@ -117,12 +125,13 @@ const Game2048: React.FC = () => {
       const gameOver = isGameOver(newGrid);
       // 检查是否达成2048
       const has2048 = newGrid.some(row => row.some(cell => cell === 2048));
-      if (has2048) {
+      if (has2048 || gameOver) {
         Dialog.open('record2048', {
           title: t('congratulations'),
           content: (
             <View>
-              {t('reach2048')}
+              {has2048 ? t('reach2048') : t('gameOver')}
+              <View>{t('finalScore')}: {newScore}</View>
               <input
                 type="text"
                 placeholder={t('enterNickname')}
@@ -147,6 +156,11 @@ const Game2048: React.FC = () => {
               timestamp: Date.now()
             }));
             Dialog.close('record2048');
+            // 显示分享菜单
+            Taro.showShareMenu({
+              withShareTicket: true,
+              showShareItems: ['wechat', 'wework', 'qq']
+            });
           }
         });
       }
