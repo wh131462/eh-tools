@@ -8,7 +8,7 @@ import {translations} from './translations';
 export const updateTabBarText = (language: string) => {
   Taro.setTabBarItem({
     index: 0,
-    text: translations[language].tools
+    text: translations[language].tools,
   });
   Taro.setTabBarItem({
     index: 1,

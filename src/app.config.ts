@@ -6,6 +6,7 @@ export default defineAppConfig({
     'pages/about/index',
     'pages/setting/index',
     'pages/calendar/index',
+    'pages/color-card/index',
     'pages/game2048/index',
     'pages/game2048/history/index',
     'pages/game2048/game/index',

@@ -109,6 +109,12 @@ export const translations: Translations = {
     loginSuccess: "登录成功",
     logout: "退出登录",
     confirmModify: "确认修改",
+    // color card
+    colorCard: "色卡",
+    selectColor: "选择颜色",
+    addToFavorites: "加入收藏",
+    removeFromFavorites: "从收藏中移除",
+    favorites: "收藏夹",
   },
   en: {
     teaches: "Teaches",
@@ -211,6 +217,12 @@ export const translations: Translations = {
     pleaseInputNickname: "Please input your nickname",
     loginSuccess: "Login Success",
     logout: "Logout",
-    confirmModify: "Confirm Modify"
+    confirmModify: "Confirm Modify",
+    // color card
+    colorCard: "Color Card",
+    selectColor: "Select Color",
+    addToFavorites: "Add to Favorites",
+    removeFromFavorites: "Remove from Favorites",
+    favorites: "Favorites",
   }
 };
