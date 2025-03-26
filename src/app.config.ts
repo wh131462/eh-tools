@@ -8,6 +8,7 @@ export default defineAppConfig({
     'pages/calendar/index',
     'pages/game2048/index',
     'pages/game2048/history/index',
+    'pages/game2048/game/index',
     'pages/roulette/index/index',
     'pages/roulette/config/index',
     'pages/roulette/list/index',

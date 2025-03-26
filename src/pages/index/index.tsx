@@ -31,7 +31,7 @@ function Index() {
     {id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index', icon: rouletteIcon},
   ]
 
-  const games = [
+  const teaches = [
     {id: '2048', text: t('2048'), path: '/pages/game2048/index', icon: game2048Icon},
   ]
 
@@ -51,6 +51,7 @@ function Index() {
 
       <View className='tools-section'>
         <View className='section-title'>{t("tools")}</View>
+        <View className='section-description'>{t("toolsDescription")}</View>
         <Grid columns={2}>
           {tools.map(tool => (
             <Grid.Item key={tool.id} onClick={() => handleToolClick(tool.path)}>
@@ -63,14 +64,15 @@ function Index() {
         </Grid>
       </View>
 
-      <View className='games-section'>
-        <View className='section-title'>{t("games")}</View>
+      <View className='teaches-section'>
+        <View className='section-title'>{t("teaches")}</View>
+        <View className='section-description'>{t("teachesDescription")}</View>
         <Grid columns={2}>
-          {games.map(game => (
-            <Grid.Item key={game.id} onClick={() => handleToolClick(game.path)}>
-              <View className='game-item'>
-                <Image className='game-icon' src={game.icon}/>
-                <View className='game-name'>{game.text}</View>
+          {teaches.map(teach => (
+            <Grid.Item key={teach.id} onClick={() => handleToolClick(teach.path)}>
+              <View className='teach-item'>
+                <Image className='teach-icon' src={teach.icon}/>
+                <View className='teach-name'>{teach.text}</View>
               </View>
             </Grid.Item>
           ))}

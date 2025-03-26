@@ -6,8 +6,9 @@ interface Translations {
 
 export const translations: Translations = {
   zh: {
+    teaches: "案例教学",
     // 2048游戏
-    game2048: "2048游戏",
+    game2048: "教学资源预览-2048",
     score: "分数",
     newGame: "新游戏",
     gameOver: "游戏结束",
@@ -79,6 +80,8 @@ export const translations: Translations = {
     setting: '设置',
     darkMode: '暗黑模式',
     tools: '工具',
+    toolsDescription: '提供实用的工具集合，包括万年历查询和趣味抽奖转盘等功能',
+    teachesDescription: '提供丰富的教学案例，帮助你更好地理解和学习',
     language: '语言',
     settingLang: '语言设置',
     settingLangPlaceholder: '请选择语言',
@@ -108,8 +111,9 @@ export const translations: Translations = {
     confirmModify: "确认修改",
   },
   en: {
+    teaches: "Teaches",
     // 2048 Game
-    game2048: "2048 Game",
+    game2048: "Teach preview - 2048",
     score: "Score",
     history: "History",
     noRecords: "No Records",
@@ -181,6 +185,8 @@ export const translations: Translations = {
     setting: 'Settings',
     darkMode: 'Dark Mode',
     tools: 'Tools',
+    toolsDescription: 'Provides a collection of useful tools, including perpetual calendar and fun lottery wheel',
+    teachesDescription: 'Provides rich teaching cases to help you better understand and learn',
     language: 'Language',
     settingLang: 'Setting Language',
     settingLangPlaceholder: 'Please select the language',
