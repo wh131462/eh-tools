@@ -54,7 +54,6 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({
   };
 
   const currentDateSchedules = schedules.filter(schedule => schedule.date === new Date(selectedDate!).valueOf());
-
   return (
     <Popup
       visible={visible}

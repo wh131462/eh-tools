@@ -1,81 +1,203 @@
 .calendar-component {
-  width: 100%;
-  padding: 16px;
-  background-color: #fff;
-  box-sizing: border-box;
-
-  .hot-point {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    pointer-events: none;
-    border-radius: 50%;
-    background-color: #fa2c19;
-    width: 5px;
-    height: 5px;
-  }
-
-  .day-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
-
-  .lunar-festival {
-    font-size: 9px;
-  }
-
-  .lunar-date {
-    font-size: 12px;
-  }
+  --primary-color: #2c3e50;
+  --secondary-color: #95a5a6;
+  --good-color: #27ae60;
+  --bad-color: #e74c3c;
+  --border-color: #ecf0f1;
 
   .lunar-info {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #fff;
+    margin: 20px 0;
+    background: #FFFFFF;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.5);
 
-    .lunar-date {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #ff4d4f;
-    }
+    .lunar-header {
+      padding: 16px;
+      border-radius: 12px 12px 0 0;
 
-    .lunar-detail {
-      font-size: 14px;
-      color: #666;
-
-      > View {
-        margin-bottom: 5px;
+      .lunar-date {
+        font-size: 24px;
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 12px;
+        font-weight: 600;
       }
 
-      .almanac-info {
-        margin-top: 15px;
-        border-top: 1px solid #eee;
-        padding-top: 15px;
+      .ganzhi-section {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
 
-        .almanac-section {
+        .ganzhi-item {
+          padding: 8px 12px;
+          background: rgba(41, 128, 185, 0.1);
+          border-radius: 8px;
+          color: #2980b9;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .lunar-content {
+      padding: 20px;
+
+      .action-section {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 25px;
+
+        .suitable, .unsuitable {
+          padding: 8px;
+          border-radius: 8px;
           display: flex;
-          margin-bottom: 10px;
           align-items: flex-start;
 
-          .almanac-title {
-            width: 60px;
-            color: #666;
-            font-weight: bold;
+          .tag {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 400;
+            margin-right: 10px;
           }
 
-          .almanac-content {
+          .action-content {
             flex: 1;
-            color: #333;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.4;
+          }
+        }
+
+        .suitable {
+
+          .tag {
+            background: var(--good-color);
+            color: white;
+          }
+        }
+
+        .unsuitable {
+          .tag {
+            background: var(--bad-color);
+            color: white;
+          }
+        }
+      }
+
+      .grid-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+      }
+
+      .info-section {
+        padding: 18px;
+        background: #f8f9fa;
+        border-radius: 8px;
+
+        .section-title {
+          font-size: 16px;
+          color: var(--primary-color);
+          font-weight: 600;
+          margin-bottom: 8px;
+          padding-bottom: 8px;
+          border-bottom: 2px solid var(--border-color);
+        }
+
+        .info-item {
+          display: flex;
+          margin-bottom: 12px;
+          font-size: 14px;
+
+          .label {
+            color: var(--secondary-color);
+            min-width: 80px;
+          }
+
+          .value {
+            color: var(--primary-color);
+            flex: 1;
+          }
+        }
+
+        .time-grid {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          gap: 8px;
+
+          .time-item {
+            text-align: center;
+            padding: 6px;
+            border-radius: 4px;
+
+            .hour {
+              font-size: 12px;
+              color: var(--secondary-color);
+            }
+
+            .luck {
+              font-weight: 500;
+
+              &.good {
+                color: var(--good-color);
+              }
+
+              &.bad {
+                color: var(--bad-color);
+              }
+            }
+          }
+        }
+
+        &.gods-section {
+          .god-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+
+            .good-gods, .bad-gods {
+              padding: 12px;
+              border-radius: 8px;
+              display: inline-flex;
+              flex-wrap: wrap;
+              gap: 4px;
+
+              .god-tag {
+                display: inline-block;
+                padding: 4px 8px;
+                margin-bottom: 8px;
+                font-size: 12px;
+                border-radius: 4px;
+              }
+
+              .god-item {
+                font-size: 12px;
+                padding: 4px 0;
+                color: var(--primary-color);
+              }
+            }
+
+            .good-gods {
+              background: rgba(39, 174, 96, 0.06);
+
+              .god-tag {
+                background: var(--good-color);
+                color: white;
+              }
+            }
+
+            .bad-gods {
+              background: rgba(231, 76, 60, 0.06);
+
+              .god-tag {
+                background: var(--bad-color);
+                color: white;
+              }
+            }
           }
         }
       }
