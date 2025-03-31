@@ -84,6 +84,42 @@ export const translations: Translations = {
     appDonate: '赞赏支持',
     appDonateTip: '感谢您的支持！点击图片长按识别赞赏码~',
 
+    // Tool Categories
+    timeTools: "时间工具",
+    calculatorTools: "计算工具",
+    textTools: "文本工具",
+    lifeTools: "生活工具",
+    devTools: "开发工具",
+    imageTools: "图片工具",
+
+    // Time Tools
+    countdown: "倒计时器",
+    timeDiff: "时间差计算",
+    worldClock: "世界时钟",
+
+    // Calculator Tools
+    mortgage: "房贷计算器",
+    unitConverter: "单位换算器",
+    bmi: "BMI计算器",
+
+    // Text Tools
+    qrcode: "二维码工具",
+    crypto: "文本加密解密",
+    markdown: "Markdown预览",
+
+    // Life Tools
+    randomFood: "随机点餐",
+    bazi: "生辰八字",
+
+    // Dev Tools
+    regex: "正则测试器",
+    json: "JSON格式化",
+
+    // Image Tools
+    imageCompress: "图片压缩",
+    imageConvert: "格式转换",
+    imageFilter: "滤镜效果",
+
     // Color
     customColor: "自定义颜色",
     avatar: "头像",

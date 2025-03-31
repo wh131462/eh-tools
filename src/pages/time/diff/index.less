@@ -1,0 +1,78 @@
+.time-diff-page {
+  padding: 20px;
+
+  .time-inputs {
+    margin-bottom: 30px;
+
+    .input-group {
+      margin-bottom: 20px;
+
+      .input-label {
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .time-picker {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+    }
+  }
+
+  .result-section {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+
+    .result-title {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 6px;
+
+      .item-label {
+        color: #666;
+      }
+
+      .item-value {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .quick-options {
+    margin-top: 30px;
+
+    .options-title {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+
+      .option-item {
+        text-align: center;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        
+        &:active {
+          background-color: #e0e0e0;
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,11 @@ import CustomSwiper, {SwiperItem} from '@/components/Swiper'
 import calendarIcon from '@/assets/icons/calendar.png'
 import rouletteIcon from '@/assets/icons/star.png'
 import colorCardIcon from '@/assets/icons/color-card.png'
+import timeIcon from '@/assets/icons/time.png'
+import calculatorIcon from '@/assets/icons/calculator.png'
+import textIcon from '@/assets/icons/text.png'
+import devIcon from '@/assets/icons/dev.png'
+import imageIcon from '@/assets/icons/image.png'
 import './index.less'
 
 import releaseBanner from '@/assets/banner/release.jpg'
@@ -41,9 +46,63 @@ function Index() {
   ]
 
   const tools = [
-    {id: 'calendar', text: t('calendar'), path: '/pages/calendar/index', icon: calendarIcon},
-    {id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index', icon: rouletteIcon},
-    {id: 'colorCard', text: t('colorCard'), path: '/pages/color-card/index', icon: colorCardIcon},
+    {
+      id: 'time',
+      title: t('timeTools'),
+      tools: [
+        {id: 'countdown', text: t('countdown'), path: '/pages/time/countdown/index', icon: timeIcon},
+        {id: 'timeDiff', text: t('timeDiff'), path: '/pages/time/diff/index', icon: timeIcon},
+        {id: 'worldClock', text: t('worldClock'), path: '/pages/time/world-clock/index', icon: timeIcon}
+      ]
+    },
+    {
+      id: 'calculator',
+      title: t('calculatorTools'),
+      tools: [
+        {id: 'mortgage', text: t('mortgage'), path: '/pages/calculator/mortgage/index', icon: calculatorIcon},
+        {
+          id: 'unitConverter',
+          text: t('unitConverter'),
+          path: '/pages/calculator/unit-converter/index',
+          icon: calculatorIcon
+        },
+        {id: 'bmi', text: t('bmi'), path: '/pages/calculator/bmi/index', icon: calculatorIcon}
+      ]
+    },
+    {
+      id: 'text',
+      title: t('textTools'),
+      tools: [
+        {id: 'qrcode', text: t('qrcode'), path: '/pages/text/qrcode/index', icon: textIcon},
+        {id: 'crypto', text: t('crypto'), path: '/pages/text/crypto/index', icon: textIcon},
+      ]
+    },
+    {
+      id: 'life',
+      title: t('lifeTools'),
+      tools: [
+        {id: 'calendar', text: t('calendar'), path: '/pages/calendar/index', icon: calendarIcon},
+        {id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index', icon: rouletteIcon},
+      ]
+    },
+    {
+      id: 'dev',
+      title: t('devTools'),
+      tools: [
+        {id: 'regex', text: t('regex'), path: '/pages/dev/regex/index', icon: devIcon},
+        {id: 'json', text: t('json'), path: '/pages/dev/json/index', icon: devIcon},
+        {id: 'colorCard', text: t('colorCard'), path: '/pages/color-card/index', icon: colorCardIcon}
+      ]
+    },
+    {
+      id: 'image',
+      title: t('imageTools'),
+      tools: [
+        {id: 'compress', text: t('imageCompress'), path: '/pages/image/compress/index', icon: imageIcon},
+        {id: 'convert', text: t('imageConvert'), path: '/pages/image/convert/index', icon: imageIcon},
+        {id: 'filter', text: t('imageFilter'), path: '/pages/image/filter/index', icon: imageIcon}
+      ]
+    }
   ]
 
   const handleToolClick = (path: string) => {
@@ -63,16 +122,21 @@ function Index() {
       <View className='tools-section'>
         <View className='section-title'>{t("tools")}</View>
         <View className='section-description'>{t("toolsDescription")}</View>
-        <Grid columns={2}>
-          {tools.map(tool => (
-            <Grid.Item key={tool.id} onClick={() => handleToolClick(tool.path)}>
-              <View className='tool-item'>
-                <Image className='tool-icon' src={tool.icon}/>
-                <View className='tool-name'>{tool.text}</View>
-              </View>
-            </Grid.Item>
-          ))}
-        </Grid>
+        {tools.map(category => (
+          <View key={category.id} className='tool-category'>
+            <View className='category-title'>{category.title}</View>
+            <Grid columns={3}>
+              {category.tools.map(tool => (
+                <Grid.Item key={tool.id} onClick={() => handleToolClick(tool.path)}>
+                  <View className='tool-item'>
+                    <Image className='tool-icon' src={tool.icon}/>
+                    <View className='tool-name'>{tool.text}</View>
+                  </View>
+                </Grid.Item>
+              ))}
+            </Grid>
+          </View>
+        ))}
       </View>
     </View>
   )

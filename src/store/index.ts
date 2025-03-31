@@ -4,6 +4,8 @@ import rouletteReducer from './slices/rouletteSlice';
 import userReducer from './slices/userSlice';
 import calendarReducer from './slices/calendarSlice';
 import colorCardReducer from './slices/colorCardSlice';
+import qrcodeReducer from "./slices/qrcodeSlice"
+import cryptoReducer from "./slices/cryptoSlice"
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +13,9 @@ export const store = configureStore({
     roulette: rouletteReducer,
     user: userReducer,
     calendar: calendarReducer,
-    colorCard: colorCardReducer
+    colorCard: colorCardReducer,
+    qrcode: qrcodeReducer,
+    crypto: cryptoReducer
   },
 });
 

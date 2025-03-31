@@ -21,7 +21,6 @@ const SettingPage: React.FC = () => {
       text: "English",
       value: "en"
     }];
-
   useEffect(() => {
     updatePageTitle(language, 'setting');
   }, [language]);

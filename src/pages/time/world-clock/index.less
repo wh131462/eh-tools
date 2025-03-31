@@ -1,0 +1,121 @@
+.world-clock-page {
+  padding: 20px;
+
+  .current-time {
+    text-align: center;
+    margin-bottom: 30px;
+
+    .time-display {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .date-display {
+      font-size: 16px;
+      color: #666;
+    }
+  }
+
+  .timezone-list {
+    .timezone-item {
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .location-info {
+        .city-name {
+          font-size: 16px;
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+
+        .timezone-name {
+          font-size: 14px;
+          color: #666;
+        }
+      }
+
+      .time-info {
+        text-align: right;
+
+        .time {
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+
+        .date {
+          font-size: 14px;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  .add-timezone {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: #1890ff;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+    &:active {
+      background-color: #096dd9;
+    }
+  }
+
+  .timezone-picker {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+
+    .picker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .title {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .close {
+        font-size: 20px;
+        color: #999;
+      }
+    }
+
+    .picker-content {
+      max-height: 300px;
+      overflow-y: auto;
+
+      .timezone-option {
+        padding: 10px;
+        border-bottom: 1px solid #f0f0f0;
+
+        &:active {
+          background-color: #f5f5f5;
+        }
+      }
+    }
+  }
+}
