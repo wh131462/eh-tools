@@ -8,7 +8,6 @@ import {useAppSelector} from '@/store/hooks'
 import CustomSwiper, {SwiperItem} from '@/components/Swiper'
 import calendarIcon from '@/assets/icons/calendar.png'
 import rouletteIcon from '@/assets/icons/star.png'
-import game2048Icon from '@/assets/icons/2048.png'
 import colorCardIcon from '@/assets/icons/color-card.png'
 import './index.less'
 
@@ -47,10 +46,6 @@ function Index() {
     {id: 'colorCard', text: t('colorCard'), path: '/pages/color-card/index', icon: colorCardIcon},
   ]
 
-  const teaches = [
-    {id: '2048', text: t('2048'), path: '/pages/game2048/index', icon: game2048Icon},
-  ]
-
   const handleToolClick = (path: string) => {
     Taro.navigateTo({url: path})
   }
@@ -74,21 +69,6 @@ function Index() {
               <View className='tool-item'>
                 <Image className='tool-icon' src={tool.icon}/>
                 <View className='tool-name'>{tool.text}</View>
-              </View>
-            </Grid.Item>
-          ))}
-        </Grid>
-      </View>
-
-      <View className='teaches-section'>
-        <View className='section-title'>{t("teaches")}</View>
-        <View className='section-description'>{t("teachesDescription")}</View>
-        <Grid columns={2}>
-          {teaches.map(teach => (
-            <Grid.Item key={teach.id} onClick={() => handleToolClick(teach.path)}>
-              <View className='teach-item'>
-                <Image className='teach-icon' src={teach.icon}/>
-                <View className='teach-name'>{teach.text}</View>
               </View>
             </Grid.Item>
           ))}

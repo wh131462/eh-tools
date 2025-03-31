@@ -6,24 +6,6 @@ interface Translations {
 
 export const translations: Translations = {
   zh: {
-    teaches: "案例教学",
-    // 2048游戏
-    game2048: "教学资源预览-2048",
-    score: "分数",
-    newGame: "新游戏",
-    gameOver: "游戏结束",
-    tryAgain: "再试一次",
-    history: "历史记录",
-    noRecords: "暂无历史记录",
-    deleteRecord: "删除记录",
-    deleteRecordConfirm: "确定要删除这条记录吗？",
-    sortByScore: "按分数排序",
-    sortByTime: "按时间排序",
-    anonymous: "匿名玩家",
-    congratulations: "恭喜",
-    reach2048: "你已经达到2048！",
-    enterNickname: "请输入你的昵称",
-    undo: "撤销",
     // common
     delete: "删除",
     start: "开始",
@@ -117,24 +99,6 @@ export const translations: Translations = {
     favorites: "收藏夹",
   },
   en: {
-    teaches: "Teaches",
-    // 2048 Game
-    game2048: "Teach preview - 2048",
-    score: "Score",
-    history: "History",
-    noRecords: "No Records",
-    deleteRecord: "Delete Record",
-    deleteRecordConfirm: "Are you sure you want to delete this record?",
-    sortByScore: "Sort by Score",
-    sortByTime: "Sort by Time",
-    anonymous: "Anonymous",
-    congratulations: "Congratulations",
-    reach2048: "You've reached 2048!",
-    enterNickname: "Enter your nickname",
-    undo: "Undo",
-    newGame: "New Game",
-    gameOver: "Game Over",
-    tryAgain: "Try Again",
     // common
     delete: "Delete",
     start: "Start",
