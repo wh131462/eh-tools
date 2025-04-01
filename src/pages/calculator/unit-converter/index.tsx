@@ -3,6 +3,7 @@ import {Input, Picker} from '@nutui/nutui-react-taro'
 import {useEffect, useState} from 'react'
 import {updatePageTitle} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
+import {useTranslation} from '@/i18n'
 import './index.less'
 
 interface UnitCategory {
@@ -15,54 +16,57 @@ interface UnitCategory {
   }>
 }
 
-const unitCategories: UnitCategory[] = [
-  {
-    value: 'length',
-    text: '长度',
-    units: [
-      {value: 'km', text: '千米', rate: 1000},
-      {value: 'm', text: '米', rate: 1},
-      {value: 'dm', text: '分米', rate: 0.1},
-      {value: 'cm', text: '厘米', rate: 0.01},
-      {value: 'mm', text: '毫米', rate: 0.001},
-      {value: 'mile', text: '英里', rate: 1609.344},
-      {value: 'yard', text: '码', rate: 0.9144},
-      {value: 'foot', text: '英尺', rate: 0.3048},
-      {value: 'inch', text: '英寸', rate: 0.0254}
-    ]
-  },
-  {
-    value: 'area',
-    text: '面积',
-    units: [
-      {value: 'km2', text: '平方千米', rate: 1000000},
-      {value: 'm2', text: '平方米', rate: 1},
-      {value: 'dm2', text: '平方分米', rate: 0.01},
-      {value: 'cm2', text: '平方厘米', rate: 0.0001},
-      {value: 'mm2', text: '平方毫米', rate: 0.000001},
-      {value: 'ha', text: '公顷', rate: 10000},
-      {value: 'acre', text: '英亩', rate: 4046.856},
-      {value: 'ft2', text: '平方英尺', rate: 0.092903}
-    ]
-  },
-  {
-    value: 'volume',
-    text: '体积',
-    units: [
-      {value: 'm3', text: '立方米', rate: 1000},
-      {value: 'dm3', text: '立方分米', rate: 1},
-      {value: 'cm3', text: '立方厘米', rate: 0.001},
-      {value: 'mm3', text: '立方毫米', rate: 0.000001},
-      {value: 'l', text: '升', rate: 1},
-      {value: 'ml', text: '毫升', rate: 0.001},
-      {value: 'gal', text: '加仑', rate: 3.78541},
-      {value: 'ft3', text: '立方英尺', rate: 28.3168}
-    ]
-  }
-]
+function getUnitCategories(t: (key: string) => string): UnitCategory[] {
+  return [
+    {
+      value: 'length',
+      text: t('length'),
+      units: [
+        {value: 'km', text: t('kilometer'), rate: 1000},
+        {value: 'm', text: t('meter'), rate: 1},
+        {value: 'dm', text: t('decimeter'), rate: 0.1},
+        {value: 'cm', text: t('centimeter'), rate: 0.01},
+        {value: 'mm', text: t('millimeter'), rate: 0.001},
+        {value: 'mile', text: t('mile'), rate: 1609.344},
+        {value: 'yard', text: t('yard'), rate: 0.9144},
+        {value: 'foot', text: t('foot'), rate: 0.3048},
+        {value: 'inch', text: t('inch'), rate: 0.0254}
+      ]
+    },
+    {
+      value: 'area',
+      text: t('area'),
+      units: [
+        {value: 'km2', text: t('squareKilometer'), rate: 1000000},
+        {value: 'm2', text: t('squareMeter'), rate: 1},
+        {value: 'dm2', text: t('squareDecimeter'), rate: 0.01},
+        {value: 'cm2', text: t('squareCentimeter'), rate: 0.0001},
+        {value: 'mm2', text: t('squareMillimeter'), rate: 0.000001},
+        {value: 'ha', text: t('hectare'), rate: 10000},
+        {value: 'acre', text: t('acre'), rate: 4046.856},
+        {value: 'ft2', text: t('squareFoot'), rate: 0.092903}
+      ]
+    },
+    {
+      value: 'volume',
+      text: t('volume'),
+      units: [
+        {value: 'm3', text: t('cubicMeter'), rate: 1000},
+        {value: 'dm3', text: t('cubicDecimeter'), rate: 1},
+        {value: 'cm3', text: t('cubicCentimeter'), rate: 0.001},
+        {value: 'mm3', text: t('cubicMillimeter'), rate: 0.000001},
+        {value: 'l', text: t('liter'), rate: 1},
+        {value: 'ml', text: t('milliliter'), rate: 0.001},
+        {value: 'gal', text: t('gallon'), rate: 3.78541},
+        {value: 'ft3', text: t('cubicFoot'), rate: 28.3168}
+      ]
+    }
+  ]
+}
 
 function UnitConverter() {
   const {language} = useAppSelector(state => state.app)
+  const {t} = useTranslation()
   const [categoryIndex, setCategoryIndex] = useState(0)
   const [fromUnitIndex, setFromUnitIndex] = useState(0)
   const [toUnitIndex, setToUnitIndex] = useState(1)
@@ -76,6 +80,7 @@ function UnitConverter() {
     updatePageTitle(language, 'unitConverter')
   }, [language])
 
+  const unitCategories = getUnitCategories(t)
   const currentCategory = unitCategories[categoryIndex]
 
   const handleCategoryChange = (list, values: string[]) => {
@@ -113,7 +118,7 @@ function UnitConverter() {
     }
     const number = parseFloat(value)
     if (isNaN(number)) {
-      setResult('无效输入')
+      setResult(t('invalidInput'))
       return
     }
 
@@ -132,7 +137,7 @@ function UnitConverter() {
             {currentCategory.text}
           </View>
           <Picker
-            title="单位类别"
+            title={t('unitCategory')}
             visible={categoryVisible}
             options={unitCategories}
             onConfirm={handleCategoryChange}
@@ -145,14 +150,14 @@ function UnitConverter() {
             type='number'
             value={inputValue}
             onChange={handleInputChange}
-            placeholder='请输入数值'
+            placeholder={t('pleaseInput')}
           /></View>
         <View className='input-group'>
           <View className='picker-value' onClick={() => setFromVisible(true)}>
             {currentCategory.units[fromUnitIndex].text}
           </View>
           <Picker
-            title="选择单位"
+            title={t('selectUnit')}
             visible={fromVisible}
             options={currentCategory.units}
             onConfirm={handleFromUnitChange}
@@ -166,7 +171,7 @@ function UnitConverter() {
             {currentCategory.units[toUnitIndex].text}
           </View>
           <Picker
-            title="选择转化单位"
+            title={t('selectTargetUnit')}
             visible={toVisible}
             options={currentCategory.units}
             onConfirm={handleToUnitChange}

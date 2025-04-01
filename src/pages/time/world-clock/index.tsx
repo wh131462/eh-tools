@@ -1,5 +1,5 @@
 import {View} from '@tarojs/components'
-import {useState, useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import {useTranslation} from '@/i18n'
 import {updatePageTitle} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
@@ -12,21 +12,21 @@ interface TimeZone {
   offset: number
 }
 
-const timeZones: TimeZone[] = [
-  {id: 'asia-shanghai', city: '上海', name: 'Asia/Shanghai', offset: 8},
-  {id: 'america-new_york', city: '纽约', name: 'America/New_York', offset: -4},
-  {id: 'europe-london', city: '伦敦', name: 'Europe/London', offset: 1},
-  {id: 'asia-tokyo', city: '东京', name: 'Asia/Tokyo', offset: 9},
-  {id: 'australia-sydney', city: '悉尼', name: 'Australia/Sydney', offset: 10},
-  {id: 'europe-paris', city: '巴黎', name: 'Europe/Paris', offset: 2},
-  {id: 'america-los_angeles', city: '洛杉矶', name: 'America/Los_Angeles', offset: -7},
-  {id: 'asia-dubai', city: '迪拜', name: 'Asia/Dubai', offset: 4},
-  {id: 'asia-singapore', city: '新加坡', name: 'Asia/Singapore', offset: 8},
-  {id: 'europe-moscow', city: '莫斯科', name: 'Europe/Moscow', offset: 3}
-]
 
 function WorldClock() {
   const {t} = useTranslation()
+  const timeZones: TimeZone[] = [
+    {id: 'asia-shanghai', city: t('shanghai'), name: 'Asia/Shanghai', offset: 8},
+    {id: 'america-new_york', city: t('newYork'), name: 'America/New_York', offset: -4},
+    {id: 'europe-london', city: t('london'), name: 'Europe/London', offset: 1},
+    {id: 'asia-tokyo', city: t('tokyo'), name: 'Asia/Tokyo', offset: 9},
+    {id: 'australia-sydney', city: t('sydney'), name: 'Australia/Sydney', offset: 10},
+    {id: 'europe-paris', city: t('paris'), name: 'Europe/Paris', offset: 2},
+    {id: 'america-los_angeles', city: t('losAngeles'), name: 'America/Los_Angeles', offset: -7},
+    {id: 'asia-dubai', city: t('dubai'), name: 'Asia/Dubai', offset: 4},
+    {id: 'asia-singapore', city: t('singapore'), name: 'Asia/Singapore', offset: 8},
+    {id: 'europe-moscow', city: t('moscow'), name: 'Europe/Moscow', offset: 3}
+  ]
   const {language} = useAppSelector(state => state.app)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [selectedTimeZones, setSelectedTimeZones] = useState<TimeZone[]>([
@@ -110,7 +110,7 @@ function WorldClock() {
       {showPicker && (
         <View className='timezone-picker'>
           <View className='picker-header'>
-            <View className='title'>选择时区</View>
+            <View className='title'>{t('selectTimezone')}</View>
             <View className='close' onClick={() => setShowPicker(false)}>×</View>
           </View>
           <View className='picker-content'>

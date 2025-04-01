@@ -1,16 +1,18 @@
-import {View, Picker} from '@tarojs/components'
-import {useState, useEffect} from 'react'
+import {View} from '@tarojs/components'
+import {useEffect, useState} from 'react'
 import {useTranslation} from '@/i18n'
 import {updatePageTitle} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
 import './index.less'
+import {DatePicker} from "@nutui/nutui-react-taro";
 
 function TimeDiff() {
   const {t} = useTranslation()
   const {language} = useAppSelector(state => state.app)
   const [startTime, setStartTime] = useState(new Date())
   const [endTime, setEndTime] = useState(new Date())
-
+  const [showStart, setShowStart] = useState(false)
+  const [showEnd, setShowEnd] = useState(false)
   useEffect(() => {
     updatePageTitle(language, 'timeDiff')
   }, [language])
@@ -43,18 +45,23 @@ function TimeDiff() {
       seconds: diffSec % 60
     }
   }
-
-  const handleStartTimeChange = (e) => {
-    setStartTime(new Date(e.detail.value.replace(' ', 'T')))
+  const startDate = new Date(2020, 0, 1)
+  const endDate = new Date(2025, 10, 1)
+  const handleStartTimeChange = (values, options) => {
+    const date = values.slice(0, 3).join('-')
+    const time = values.slice(3).join(':')
+    setStartTime(new Date(`${date} ${time}`))
   }
 
-  const handleEndTimeChange = (e) => {
-    setEndTime(new Date(e.detail.value.replace(' ', 'T')))
+  const handleEndTimeChange = (values, options) => {
+    const date = values.slice(0, 3).join('-')
+    const time = values.slice(3).join(':')
+    setEndTime(new Date(`${date} ${time}`))
   }
 
   const quickOptions = [
     {
-      label: '一周前',
+      label: t('oneWeekAgo'),
       setTime: () => {
         const now = new Date()
         setStartTime(new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000))
@@ -62,7 +69,7 @@ function TimeDiff() {
       }
     },
     {
-      label: '一个月前',
+      label: t('oneMonthAgo'),
       setTime: () => {
         const now = new Date()
         const lastMonth = new Date(now)
@@ -72,7 +79,7 @@ function TimeDiff() {
       }
     },
     {
-      label: '一年前',
+      label: t('oneYearAgo'),
       setTime: () => {
         const now = new Date()
         const lastYear = new Date(now)
@@ -82,7 +89,7 @@ function TimeDiff() {
       }
     },
     {
-      label: '下周',
+      label: t('nextWeek'),
       setTime: () => {
         const now = new Date()
         setStartTime(now)
@@ -97,62 +104,70 @@ function TimeDiff() {
     <View className='time-diff-page'>
       <View className='time-inputs'>
         <View className='input-group'>
-          <View className='input-label'>开始时间</View>
-          <Picker
-            mode='datetime'
-            value={formatDate(startTime)}
-            onChange={handleStartTimeChange}
-          >
-            <View className='time-picker'>{formatDate(startTime)}</View>
-          </Picker>
+          <View className='input-label'>{t('startTime')}</View>
+          <View className='time-picker' onClick={() => setShowStart(true)}>{formatDate(startTime)}</View>
+          <DatePicker
+            title={t('dateTimeSelect')}
+            startDate={startDate}
+            endDate={endDate}
+            defaultValue={new Date()}
+            visible={showStart}
+            type="datetime"
+            onClose={() => setShowStart(false)}
+            onConfirm={(options, values) => handleStartTimeChange(values, options)}
+          />
         </View>
 
         <View className='input-group'>
-          <View className='input-label'>结束时间</View>
-          <Picker
-            mode='datetime'
-            value={formatDate(endTime)}
-            onChange={handleEndTimeChange}
-          >
-            <View className='time-picker'>{formatDate(endTime)}</View>
-          </Picker>
+          <View className='input-label'>{t('endTime')}</View>
+          <View className='time-picker' onClick={() => setShowEnd(true)}>{formatDate(endTime)}</View>
+          <DatePicker
+            title={t('dateTimeSelect')}
+            startDate={startDate}
+            endDate={endDate}
+            defaultValue={new Date()}
+            visible={showEnd}
+            type="datetime"
+            onClose={() => setShowEnd(false)}
+            onConfirm={(options, values) => handleEndTimeChange(values, options)}
+          />
         </View>
       </View>
 
       <View className='result-section'>
-        <View className='result-title'>时间差</View>
+        <View className='result-title'>{t('timeDifference')}</View>
         <View className='result-item'>
-          <View className='item-label'>年</View>
+          <View className='item-label'>{t('year')}</View>
           <View className='item-value'>{diff.years}</View>
         </View>
         <View className='result-item'>
-          <View className='item-label'>月</View>
+          <View className='item-label'>{t('month')}</View>
           <View className='item-value'>{diff.months}</View>
         </View>
         <View className='result-item'>
-          <View className='item-label'>周</View>
+          <View className='item-label'>{t('week')}</View>
           <View className='item-value'>{diff.weeks}</View>
         </View>
         <View className='result-item'>
-          <View className='item-label'>天</View>
+          <View className='item-label'>{t('day')}</View>
           <View className='item-value'>{diff.days}</View>
         </View>
         <View className='result-item'>
-          <View className='item-label'>小时</View>
+          <View className='item-label'>{t('hour')}</View>
           <View className='item-value'>{diff.hours}</View>
         </View>
         <View className='result-item'>
-          <View className='item-label'>分钟</View>
+          <View className='item-label'>{t('minute')}</View>
           <View className='item-value'>{diff.minutes}</View>
         </View>
         <View className='result-item'>
-          <View className='item-label'>秒</View>
+          <View className='item-label'>{t('second')}</View>
           <View className='item-value'>{diff.seconds}</View>
         </View>
       </View>
 
       <View className='quick-options'>
-        <View className='options-title'>快速选项</View>
+        <View className='options-title'>{t('quickOptions')}</View>
         <View className='options-grid'>
           {quickOptions.map((option, index) => (
             <View

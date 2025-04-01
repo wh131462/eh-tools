@@ -1,0 +1,72 @@
+.calculator {
+  padding: 20px;
+  background-color: var(--nutui-gray-1);
+  min-height: 100vh;
+
+  .mode-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    
+    .mode-text {
+      font-size: 16px;
+      color: var(--nutui-black);
+    }
+  }
+
+  .display {
+    background-color: var(--nutui-white);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .expression {
+      font-size: 18px;
+      color: var(--nutui-gray-7);
+      text-align: right;
+      min-height: 27px;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    .result {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: right;
+      color: var(--nutui-black);
+      word-break: break-all;
+    }
+  }
+
+  .keypad {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .row {
+      display: flex;
+      gap: 10px;
+
+      .nut-button {
+        flex: 1;
+        height: 60px;
+        font-size: 24px;
+        border-radius: 12px;
+        background-color: var(--nutui-white);
+        color: var(--nutui-black);
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        min-width: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:active {
+          background-color: var(--nutui-gray-2);
+        }
+      }
+    }
+  }
+}

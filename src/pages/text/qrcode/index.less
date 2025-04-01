@@ -1,0 +1,53 @@
+.qrcode-page {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  .input-section {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    .text-input {
+      flex: 1;
+    }
+  }
+
+  .canvas-section {
+    width: 210px;
+    height: 210px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .scan-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .result-section {
+    width: 100%;
+    padding: 16px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .result-text {
+      margin-bottom: 12px;
+      word-break: break-all;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+    }
+  }
+}

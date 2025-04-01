@@ -1,19 +1,17 @@
-import {View, Input, Button} from '@tarojs/components'
-import {useState, useEffect} from 'react'
+import {Button, View} from '@tarojs/components'
+import {useEffect, useState} from 'react'
 import {useTranslation} from '@/i18n'
 import {updatePageTitle} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
 import './index.less'
+import {DatePicker, PickerOption} from "@nutui/nutui-react-taro";
 
 function CountdownTimer() {
   const {t} = useTranslation()
   const {language} = useAppSelector(state => state.app)
-  const [hours, setHours] = useState('00')
-  const [minutes, setMinutes] = useState('00')
-  const [seconds, setSeconds] = useState('00')
   const [totalSeconds, setTotalSeconds] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
-  const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null)
+  const [intervalId, setIntervalId] = useState<any>(null)
 
   useEffect(() => {
     updatePageTitle(language, 'countdown')
@@ -59,16 +57,7 @@ function CountdownTimer() {
     }
     setIsRunning(false)
     setTotalSeconds(0)
-    setHours('00')
-    setMinutes('00')
-    setSeconds('00')
-  }
 
-  const handleTimeInput = () => {
-    const h = parseInt(hours) || 0
-    const m = parseInt(minutes) || 0
-    const s = parseInt(seconds) || 0
-    setTotalSeconds(h * 3600 + m * 60 + s)
   }
 
   const formatTime = (time: number): string => {
@@ -79,78 +68,56 @@ function CountdownTimer() {
   }
 
   const presetTimes = [
-    {label: '1分钟', seconds: 60},
-    {label: '3分钟', seconds: 180},
-    {label: '5分钟', seconds: 300},
-    {label: '10分钟', seconds: 600},
-    {label: '15分钟', seconds: 900},
-    {label: '30分钟', seconds: 1800},
+    {label: '1' + t('minute'), seconds: 60},
+    {label: '3' + t('minute'), seconds: 180},
+    {label: '5' + t('minute'), seconds: 300},
+    {label: '10' + t('minute'), seconds: 600},
+    {label: '15' + t('minute'), seconds: 900},
+    {label: '30' + t('minute'), seconds: 1800},
   ]
 
   const setPresetTime = (seconds: number) => {
     setTotalSeconds(seconds)
-    setHours(Math.floor(seconds / 3600).toString().padStart(2, '0'))
-    setMinutes(Math.floor((seconds % 3600) / 60).toString().padStart(2, '0'))
-    setSeconds((seconds % 60).toString().padStart(2, '0'))
   }
-
+  const handleTimeSelect = (values: string[], options: PickerOption[]) => {
+    const duration: number = values.reverse().reduce((dur, cur, idx) => {
+      return dur + Number(cur) * Math.pow(60, idx)
+    }, 0)
+    setTotalSeconds(duration)
+  }
+  const [show, setShow] = useState(false)
   return (
     <View className='countdown-page'>
-      <View className='timer-display'>
+      <View className='timer-display' onClick={() => setShow(true)}>
         {formatTime(totalSeconds)}
       </View>
-
-      <View className='time-input'>
-        <View className='input-group'>
-          <View className='input-label'>时</View>
-          <Input
-            className='input-field'
-            type='number'
-            value={hours}
-            onInput={e => setHours(e.detail.value)}
-            onBlur={handleTimeInput}
-          />
-        </View>
-        <View className='input-group'>
-          <View className='input-label'>分</View>
-          <Input
-            className='input-field'
-            type='number'
-            value={minutes}
-            onInput={e => setMinutes(e.detail.value)}
-            onBlur={handleTimeInput}
-          />
-        </View>
-        <View className='input-group'>
-          <View className='input-label'>秒</View>
-          <Input
-            className='input-field'
-            type='number'
-            value={seconds}
-            onInput={e => setSeconds(e.detail.value)}
-            onBlur={handleTimeInput}
-          />
-        </View>
-      </View>
+      <DatePicker
+        title={t('timeSelect')}
+        type="time"
+        defaultValue={new Date("00:00:00")}
+        visible={show}
+        onClose={() => setShow(false)}
+        onConfirm={(options, values) => handleTimeSelect(values as string[], options)}
+      />
 
       <View className='timer-controls'>
         <Button
           className='control-button'
-          type={isRunning ? 'default' : 'primary'}
+          type={isRunning ? 'warn' : 'primary'}
           onClick={isRunning ? pauseTimer : startTimer}
         >
-          {isRunning ? '暂停' : '开始'}
+          {isRunning ? t('pause') : t('start')}
         </Button>
         <Button
           className='control-button'
           onClick={resetTimer}
         >
-          重置
+          {t('reset')}
         </Button>
       </View>
 
       <View className='preset-times'>
-        <View className='preset-title'>预设时间</View>
+        <View className='preset-title'>{t('presetTime')}</View>
         <View className='preset-grid'>
           {presetTimes.map(preset => (
             <View

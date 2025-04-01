@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import {updatePageTitle} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
+import {useTranslation} from '@/i18n'
 import './index.less'
 import {View} from "@tarojs/components";
 import {Input} from "@nutui/nutui-react-taro";
@@ -13,12 +14,13 @@ interface BMIResult {
 
 function BMICalculator() {
   const {language} = useAppSelector(state => state.app)
+  const {t} = useTranslation()
   const [height, setHeight] = useState('')
   const [weight, setWeight] = useState('')
   const [result, setResult] = useState<BMIResult | null>(null)
 
   useEffect(() => {
-    updatePageTitle(language, 'bmiCalculator')
+    updatePageTitle(language, 'bmi')
   }, [language])
 
   const calculateBMI = () => {
@@ -34,20 +36,20 @@ function BMICalculator() {
     let advice = ''
 
     if (bmi < 18.5) {
-      category = '体重过轻'
-      advice = '建议适当增加营养摄入，保持均衡饮食，适量运动以增强体质。'
+      category = t('underweight')
+      advice = t('underweightAdvice')
     } else if (bmi < 24) {
-      category = '体重正常'
-      advice = '恭喜！请继续保持健康的生活方式。'
+      category = t('normal')
+      advice = t('normalAdvice')
     } else if (bmi < 28) {
-      category = '超重'
-      advice = '建议控制饮食摄入，增加运动量，逐步将体重降至正常范围。'
+      category = t('overweight')
+      advice = t('overweightAdvice')
     } else if (bmi < 32) {
-      category = '肥胖'
-      advice = '需要注意控制饮食，规律运动，必要时请咨询医生或营养师。'
+      category = t('obese')
+      advice = t('obeseAdvice')
     } else {
-      category = '重度肥胖'
-      advice = '建议在医生指导下进行减重，注意饮食控制和适量运动。'
+      category = t('severelyObese')
+      advice = t('severelyObeseAdvice')
     }
 
     return {
@@ -80,24 +82,24 @@ function BMICalculator() {
     <View className='bmi-calculator'>
       <View className='input-section'>
         <View className='input-group'>
-          <View className='label'>身高 (cm)</View>
+          <View className='label'>{t('height')} ({t('heightUnit')})</View>
           <Input
             className='input'
             type='digit'
             value={height}
             onChange={handleHeightChange}
-            placeholder='请输入身高'
+            placeholder={t('pleaseInput') + t('height')}
           />
         </View>
 
         <View className='input-group'>
-          <View className='label'>体重 (kg)</View>
+          <View className='label'>{t('weight')} ({t('weightUnit')})</View>
           <Input
             className='input'
             type='digit'
             value={weight}
             onChange={handleWeightChange}
-            placeholder='请输入体重'
+            placeholder={t('pleaseInput') + t('weight')}
           />
         </View>
       </View>
@@ -106,7 +108,7 @@ function BMICalculator() {
         <View className='result-section'>
           <View className='bmi-result'>
             <View className='value'>{result.bmi}</View>
-            <View className='label'>BMI 指数</View>
+            <View className='label'>{t('bmiIndex')}</View>
           </View>
 
           <View className='category-section'>
@@ -115,26 +117,26 @@ function BMICalculator() {
           </View>
 
           <View className='reference'>
-            <View className='title'>BMI 参考标准</View>
+            <View className='title'>{t('bmiReference')}</View>
             <View className='standard-item'>
               <View className='range'>{'<18.5'}</View>
-              <View className='desc'>体重过轻</View>
+              <View className='desc'>{t('underweight')}</View>
             </View>
             <View className='standard-item'>
               <View className='range'>18.5-23.9</View>
-              <View className='desc'>体重正常</View>
+              <View className='desc'>{t('normal')}</View>
             </View>
             <View className='standard-item'>
               <View className='range'>24.0-27.9</View>
-              <View className='desc'>超重</View>
+              <View className='desc'>{t('overweight')}</View>
             </View>
             <View className='standard-item'>
               <View className='range'>28.0-31.9</View>
-              <View className='desc'>肥胖</View>
+              <View className='desc'>{t('obese')}</View>
             </View>
             <View className='standard-item'>
               <View className='range'>{'>32.0'}</View>
-              <View className='desc'>重度肥胖</View>
+              <View className='desc'>{t('severelyObese')}</View>
             </View>
           </View>
         </View>

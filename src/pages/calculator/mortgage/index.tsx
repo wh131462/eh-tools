@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react'
 import {updatePageTitle} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
 import './index.less'
+import {useTranslation} from "@/i18n";
+import {VirtualList} from "@nutui/nutui-react-taro";
 
 interface LoanResult {
   monthlyPayment: number
@@ -18,6 +20,7 @@ interface LoanResult {
 }
 
 function MortgageCalculator() {
+  const {t} = useTranslation()
   const {language} = useAppSelector(state => state.app)
   const [loanAmount, setLoanAmount] = useState('')
   const [loanTerm, setLoanTerm] = useState('')
@@ -26,7 +29,7 @@ function MortgageCalculator() {
   const [result, setResult] = useState<LoanResult | null>(null)
 
   useEffect(() => {
-    updatePageTitle(language, 'mortgageCalculator')
+    updatePageTitle(language, 'mortgage')
   }, [language])
 
   const calculateEqualPayment = () => {
@@ -121,35 +124,35 @@ function MortgageCalculator() {
     <View className='mortgage-calculator'>
       <View className='input-section'>
         <View className='input-group'>
-          <View className='label'>贷款金额 (元)</View>
+          <View className='label'>{t('loanAmount')} ({t('loanAmountUnit')})</View>
           <Input
             className='input'
             type='digit'
             value={loanAmount}
             onInput={e => setLoanAmount(e.detail.value)}
-            placeholder='请输入贷款金额'
+            placeholder={t('pleaseInput') + t('loanAmount')}
           />
         </View>
 
         <View className='input-group'>
-          <View className='label'>贷款年限 (年)</View>
+          <View className='label'>{t('loanTerm')} ({t('loanTermUnit')})</View>
           <Input
             className='input'
             type='digit'
             value={loanTerm}
             onInput={e => setLoanTerm(e.detail.value)}
-            placeholder='请输入贷款年限'
+            placeholder={t('pleaseInput') + t('loanTerm')}
           />
         </View>
 
         <View className='input-group'>
-          <View className='label'>年利率 (%)</View>
+          <View className='label'>{t('interestRate')} ({t('interestRateUnit')})</View>
           <Input
             className='input'
             type='digit'
             value={interestRate}
             onInput={e => setInterestRate(e.detail.value)}
-            placeholder='请输入年利率'
+            placeholder={t('pleaseInput') + t('interestRate')}
           />
         </View>
 
@@ -158,50 +161,51 @@ function MortgageCalculator() {
             className={`type-button ${calculationType === 'equal-payment' ? 'active' : ''}`}
             onClick={() => setCalculationType('equal-payment')}
           >
-            等额本息
+            {t('equalPayment')}
           </Button>
           <Button
             className={`type-button ${calculationType === 'equal-principal' ? 'active' : ''}`}
             onClick={() => setCalculationType('equal-principal')}
           >
-            等额本金
+            {t('equalPrincipal')}
           </Button>
         </View>
 
         <Button className='calculate-button' onClick={handleCalculate}>
-          计算
+          {t('calculate')}
         </Button>
       </View>
 
       {result && (
         <View className='result-section'>
           <View className='result-item'>
-            <View className='label'>首月还款</View>
-            <View className='value'>{formatCurrency(result.monthlyPayment)} 元</View>
+            <View className='label'>{t('monthlyPayment')}</View>
+            <View className='value'>{formatCurrency(result.monthlyPayment)} {t('loanAmountUnit')}</View>
           </View>
           <View className='result-item'>
-            <View className='label'>总还款额</View>
-            <View className='value'>{formatCurrency(result.totalPayment)} 元</View>
+            <View className='label'>{t('totalPayment')}</View>
+            <View className='value'>{formatCurrency(result.totalPayment)} {t('loanAmountUnit')}</View>
           </View>
           <View className='result-item'>
-            <View className='label'>总利息</View>
-            <View className='value'>{formatCurrency(result.totalInterest)} 元</View>
+            <View className='label'>{t('totalInterest')}</View>
+            <View className='value'>{formatCurrency(result.totalInterest)} {t('loanAmountUnit')}</View>
           </View>
 
           <View className='schedule-section'>
-            <View className='schedule-header'>还款计划</View>
+            <View className='schedule-header'>{t('paymentSchedule')}</View>
             <View className='schedule-list'>
-              {result.paymentSchedule.map((item, index) => (
-                <View key={index} className='schedule-item'>
-                  <View className='month'>第 {item.month} 期</View>
-                  <View className='details'>
-                    <View>月供：{formatCurrency(item.totalPayment)} 元</View>
-                    <View>本金：{formatCurrency(item.principal)} 元</View>
-                    <View>利息：{formatCurrency(item.interest)} 元</View>
-                    <View>剩余本金：{formatCurrency(item.remainingPrincipal)} 元</View>
-                  </View>
-                </View>
-              ))}
+              <VirtualList containerHeight={800} itemHeight={160} itemEqual={true} list={result.paymentSchedule}
+                           itemRender={(item, index) => {
+                             return (<View key={index} className='schedule-item'>
+                               <View className='month'>{t('period')} {item.month} {t('periodUnit')}</View>
+                               <View className='details'>
+                                 <View>{t('monthlyPaymentLabel')}：{formatCurrency(item.totalPayment)} {t('loanAmountUnit')}</View>
+                                 <View>{t('principalLabel')}：{formatCurrency(item.principal)} {t('loanAmountUnit')}</View>
+                                 <View>{t('interestLabel')}：{formatCurrency(item.interest)} {t('loanAmountUnit')}</View>
+                                 <View>{t('remainingPrincipal')}：{formatCurrency(item.remainingPrincipal)} {t('loanAmountUnit')}</View>
+                               </View>
+                             </View>)
+                           }}></VirtualList>
             </View>
           </View>
         </View>
