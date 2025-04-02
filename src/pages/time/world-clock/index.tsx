@@ -1,9 +1,9 @@
 import {View} from '@tarojs/components'
 import {useEffect, useState} from 'react'
 import {useTranslation} from '@/i18n'
-import {updatePageTitle} from '@/i18n/utils'
-import {useAppSelector} from '@/store/hooks'
 import './index.less'
+import {usePageTitle} from "@/hooks/usePageTitle";
+import {formatDate} from "@/utils/date";
 
 interface TimeZone {
   id: string
@@ -27,16 +27,13 @@ function WorldClock() {
     {id: 'asia-singapore', city: t('singapore'), name: 'Asia/Singapore', offset: 8},
     {id: 'europe-moscow', city: t('moscow'), name: 'Europe/Moscow', offset: 3}
   ]
-  const {language} = useAppSelector(state => state.app)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [selectedTimeZones, setSelectedTimeZones] = useState<TimeZone[]>([
     timeZones[0], // 默认显示上海时间
   ])
   const [showPicker, setShowPicker] = useState(false)
 
-  useEffect(() => {
-    updatePageTitle(language, 'worldClock')
-  }, [language])
+  usePageTitle("worldClock")
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -46,16 +43,16 @@ function WorldClock() {
     return () => clearInterval(timer)
   }, [])
 
-  const formatTime = (date: Date, offset: number): string => {
+  const formatDisplayTime = (date: Date, offset: number): string => {
     const utc = date.getTime() + (date.getTimezoneOffset() * 60000)
     const localTime = new Date(utc + (3600000 * offset))
-    return localTime.toLocaleTimeString()
+    return formatDate(localTime.valueOf(), "HH:mm:ss");
   }
 
-  const formatDate = (date: Date, offset: number): string => {
+  const formatDisplayDate = (date: Date, offset: number): string => {
     const utc = date.getTime() + (date.getTimezoneOffset() * 60000)
     const localTime = new Date(utc + (3600000 * offset))
-    return localTime.toLocaleDateString()
+    return formatDate(localTime.valueOf(), "yyyy-MM-dd");
   }
 
   const addTimeZone = (timezone: TimeZone) => {
@@ -73,10 +70,10 @@ function WorldClock() {
     <View className='world-clock-page'>
       <View className='current-time'>
         <View className='time-display'>
-          {formatTime(currentTime, timeZones[0].offset)}
+          {formatDisplayTime(currentTime, timeZones[0].offset)}
         </View>
         <View className='date-display'>
-          {formatDate(currentTime, timeZones[0].offset)}
+          {formatDisplayDate(currentTime, timeZones[0].offset)}
         </View>
       </View>
 
@@ -93,10 +90,10 @@ function WorldClock() {
             </View>
             <View className='time-info'>
               <View className='time'>
-                {formatTime(currentTime, timezone.offset)}
+                {formatDisplayTime(currentTime, timezone.offset)}
               </View>
               <View className='date'>
-                {formatDate(currentTime, timezone.offset)}
+                {formatDisplayDate(currentTime, timezone.offset)}
               </View>
             </View>
           </View>

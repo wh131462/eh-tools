@@ -1,10 +1,9 @@
 import {useEffect, useState} from 'react'
-import {updatePageTitle} from '@/i18n/utils'
-import {useAppSelector} from '@/store/hooks'
 import {useTranslation} from '@/i18n'
 import './index.less'
 import {View} from "@tarojs/components";
 import {Input} from "@nutui/nutui-react-taro";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 interface BMIResult {
   bmi: number
@@ -13,15 +12,11 @@ interface BMIResult {
 }
 
 function BMICalculator() {
-  const {language} = useAppSelector(state => state.app)
   const {t} = useTranslation()
   const [height, setHeight] = useState('')
   const [weight, setWeight] = useState('')
   const [result, setResult] = useState<BMIResult | null>(null)
-
-  useEffect(() => {
-    updatePageTitle(language, 'bmi')
-  }, [language])
+  usePageTitle('bmi');
 
   const calculateBMI = () => {
     const heightInM = parseFloat(height) / 100

@@ -1,5 +1,5 @@
 /* 全局样式 */
-:root,page {
+:root, page {
   --primary-color: #2196f3;
   --background-color: #ffffff;
   --text-color: #191919;
@@ -9,38 +9,40 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root,page{
+  :root, page {
     --primary-color: #64b5f6;
     --background-color: #121212;
     --text-color: #ffffff;
     --border-color: #121212;
     --shadow-color: #303030;
   }
+
   .nut-cell {
     background-color: var(--background-color);
     color: var(--text-color);
     border-color: var(--border-color);
     box-shadow: 0px 1px 7px 0px var(--shadow-color);
   }
+
   //
   //.nut-switch {
   //  background: #666;
   //  &.nut-switch-active {
-  //    background: var(--primary-color);
+  //    background: var(--primary-color-converter);
   //  }
   //}
   //
   //.nut-picker {
-  //  background-color: var(--background-color);
-  //  color: var(--text-color);
+  //  background-color-converter: var(--background-color-converter);
+  //  color-converter: var(--text-color-converter);
   //}
   //
   //.nut-picker-title {
-  //  color: var(--text-color);
+  //  color-converter: var(--text-color-converter);
   //}
   //
   //.nut-picker-item {
-  //  color: var(--text-color);
+  //  color-converter: var(--text-color-converter);
   //}
 
 }

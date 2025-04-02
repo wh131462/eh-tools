@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View} from '@tarojs/components';
 import {Cell, Picker, Switch} from '@nutui/nutui-react-taro';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
@@ -7,6 +7,7 @@ import {useTranslation} from "@/i18n";
 import './index.less';
 import {updatePageTitle} from "@/i18n/utils";
 import Taro from "@tarojs/taro";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 const SettingPage: React.FC = () => {
   const {t} = useTranslation()
@@ -21,9 +22,9 @@ const SettingPage: React.FC = () => {
       text: "English",
       value: "en"
     }];
-  useEffect(() => {
-    updatePageTitle(language, 'setting');
-  }, [language]);
+
+  usePageTitle("setting")
+
   const getLabel = (lang: string) => {
     return langList.find(o => o.value === lang)?.text ?? "未知语言";
   };

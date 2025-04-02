@@ -4,17 +4,15 @@ import './index.less';
 import CalendarComponent from "@/components/Calendar";
 import ScheduleManager from "@/components/Calendar/ScheduleManager/ScheduleManager";
 import {useAppSelector} from "@/store/hooks";
-import {updatePageTitle} from "@/i18n/utils";
 import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 const CalendarPage: React.FC = () => {
-  const {language} = useAppSelector(state => state.app);
   const selectedDate = useAppSelector(state => state.calendar.selectedDate);
   const [showScheduleManager, setShowScheduleManager] = useState(false);
 
-  useEffect(() => {
-    updatePageTitle(language, 'calendar');
-  }, [language]);
+  usePageTitle("calendar")
+
   useShareAppMessage(() => {
     return {
       title: '万年历,查看今日黄历',

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Image, View} from '@tarojs/components';
 import {Cell, Popup} from '@nutui/nutui-react-taro';
 import Taro from '@tarojs/taro';
@@ -6,17 +6,12 @@ import donateWechat from '@/assets/donate/微信赞赏.jpg';
 import {useTranslation} from '@/i18n';
 import './index.less';
 import {copyToClipboard} from "@/utils/clipboard";
-import {useAppSelector} from "@/store/hooks";
-import {updatePageTitle} from "@/i18n/utils";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 const AboutPage: React.FC = () => {
   const {t} = useTranslation();
-  const {language} = useAppSelector(state => state.app);
   const [showDonate, setShowDonate] = useState(false);
-
-  useEffect(() => {
-    updatePageTitle(language, 'about');
-  }, [language]);
+  usePageTitle('about');
 
   const appInfo = {
     name: 'EH Tools',

@@ -1,30 +1,29 @@
 import React, {useEffect, useRef} from 'react';
 import {View} from '@tarojs/components';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
-import {updatePageTitle} from '@/i18n/utils';
 import {Button, Dialog} from '@nutui/nutui-react-taro';
 import './index.less';
 import ColorPicker, {ColorPickerRef} from "@/components/ColorPicker";
 import {addFavorite, removeFavorite, setColor, setFavorites, toggleFullscreen} from '@/store/slices/colorCardSlice';
 import Taro from "@tarojs/taro";
 import {useTranslation} from "@/i18n";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 const ColorCardPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const {t} = useTranslation()
-  const {language} = useAppSelector(state => state.app);
   const {color, favorites, isFullscreen} = useAppSelector(state => state.colorCard);
   const colorPickerRef = useRef<ColorPickerRef>(null);
+  usePageTitle("colorCard")
 
   useEffect(() => {
-    updatePageTitle(language, 'colorCard');
     // 从本地存储加载收藏的颜色
     const savedFavorites = Taro.getStorageSync('colorCardFavorites');
     if (savedFavorites) {
       dispatch(setFavorites(JSON.parse(savedFavorites)));
     }
     Taro.setNavigationBarColor({backgroundColor: color, frontColor: '#ffffff'});
-  }, [language]);
+  }, []);
 
   const handleColorChange = (newColor: string) => {
     dispatch(setColor(newColor));

@@ -89,9 +89,7 @@ export const translations: Translations = {
     calculatorTools: "计算工具",
     textTools: "文本工具",
     lifeTools: "生活工具",
-    devTools: "开发工具",
-    imageTools: "图片工具",
-
+    artTools: "艺术工具",
     // Time Tools
     countdown: "倒计时器",
     timeDiff: "时间差计算",
@@ -102,6 +100,7 @@ export const translations: Translations = {
     pause: "暂停",
     reset: "重置",
     presetTime: "预设时间",
+    countdownEnd: "倒计时结束",
     // Time Diff
     startTime: "开始时间",
     endTime: "结束时间",
@@ -133,12 +132,18 @@ export const translations: Translations = {
     moscow: "莫斯科",
     // Calculator Tools
     calculator: "计算器",
+    clear: "清除",
     scientificMode: "科学模式",
     basicMode: "基础模式",
     sqrt: "√",
     mortgage: "房贷计算器",
     unitConverter: "单位换算器",
     bmi: "BMI计算器",
+    crypto: "加密/解密",
+    // Life Tools
+    qrcode: "二维码",
+    enterText: "输入文本",
+
     // Mortgage Calculator
     loanAmount: "贷款金额",
     loanAmountUnit: "元",
@@ -213,22 +218,8 @@ export const translations: Translations = {
     gallon: "加仑",
     cubicFoot: "立方英尺",
 
-    // Text Tools
-    qrcode: "二维码工具",
-    crypto: "文本加密解密",
-    markdown: "Markdown预览",
-
-    // Life Tools
-    randomFood: "随机点餐",
-    bazi: "生辰八字",
-
-    // Dev Tools
-    regex: "正则测试器",
-    json: "JSON格式化",
-
     // Image Tools
     imageCompress: "图片压缩",
-    imageConvert: "格式转换",
     imageFilter: "滤镜效果",
 
     // Color
@@ -246,6 +237,25 @@ export const translations: Translations = {
     addToFavorites: "加入收藏",
     removeFromFavorites: "从收藏中移除",
     favorites: "收藏夹",
+
+    colorConverter: "颜色转化",
+    // crypto
+    cryptoInputTips: "请输入文本",
+    cryptoErrorAES: "AES密钥需要16/24/32字节长度",
+    cryptoErrorDES: "DES密钥需要8字节长度",
+    cryptoHandleFailed: "处理失败",
+    cryptoEncode: "加密",
+    cryptoDecode: "解密",
+    cryptoAlgorithm: "加密算法",
+    cryptoInputKeyTips: "请输入密钥",
+    cryptoInputEncodeContentTips: "请输入要加密的文本",
+    cryptoInputDecodeContentTips: "请输入要解密的文本",
+    cryptoProcessing: "处理中",
+    cryptoStartEncrypt: "开始加密",
+    cryptoStartDecrypt: "开始解密",
+    cryptoHandleResult: "处理结果",
+    cryptoCopyResult: "复制结果",
+    cryptoCopyResultTips: "已复制到剪贴板",
   },
   en: {
     // common
@@ -326,10 +336,8 @@ export const translations: Translations = {
     // Tool Categories
     timeTools: "Time tools",
     calculatorTools: "Calculator tools",
-    textTools: "Text tools",
     lifeTools: "Life tools",
-    devTools: "Dev tools",
-    imageTools: "Image tools",
+    artTools: "Art tools",
     // Calculator Tools
     calculator: "Calculator",
     clear: "Clear",
@@ -344,6 +352,8 @@ export const translations: Translations = {
     pause: "Pause",
     reset: "Reset",
     presetTime: "Preset Time",
+    countdownEnd: "Time is out",
+
     // Time Diff
     startTime: "Start Time",
     endTime: "End Time",
@@ -380,6 +390,10 @@ export const translations: Translations = {
     mortgage: "Mortgage Calculator",
     unitConverter: "Unit Converter",
     bmi: "BMI Calculator",
+    crypto: "Text Crypto",
+    // Life Tools
+    qrcode: "QR Code",
+    enterText: "Enter Text",
     // Mortgage Calculator
     loanAmount: "Loan Amount",
     loanAmountUnit: "Yuan",
@@ -462,11 +476,33 @@ export const translations: Translations = {
     loginSuccess: "Login Success",
     logout: "Logout",
     confirmModify: "Confirm Modify",
+    // Image Tools
+    imageCompress: "Image Compress",
+    imageFilter: "Image Filter",
     // color card
     colorCard: "Color Card",
     selectColor: "Select Color",
     addToFavorites: "Add to Favorites",
     removeFromFavorites: "Remove from Favorites",
     favorites: "Favorites",
+
+    colorConverter: "Color Converter",
+    // crypto
+    cryptoInputTips: "Please input the text to be encrypted or decrypted",
+    "cryptoErrorAES": "AES key requires 16/24/32 bytes length",
+    "cryptoErrorDES": "DES key requires 8 bytes length",
+    "cryptoHandleFailed": "Processing failed",
+    "cryptoEncode": "Encrypt",
+    "cryptoDecode": "Decrypt",
+    "cryptoAlgorithm": "Encryption Algorithm",
+    "cryptoInputKeyTips": "Enter encryption key",
+    "cryptoInputEncodeContentTips": "Enter text to encrypt",
+    "cryptoInputDecodeContentTips": "Enter text to decrypt",
+    "cryptoProcessing": "Processing",
+    "cryptoStartEncrypt": "Start Encrypting",
+    "cryptoStartDecrypt": "Start Decrypting",
+    "cryptoHandleResult": "Processing Result",
+    "cryptoCopyResult": "Copy Result",
+    "cryptoCopyResultTips": "Copied to clipboard"
   }
 };

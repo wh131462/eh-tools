@@ -1,21 +1,18 @@
 import {View} from '@tarojs/components'
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import {useTranslation} from '@/i18n'
-import {updatePageTitle} from '@/i18n/utils'
-import {useAppSelector} from '@/store/hooks'
 import './index.less'
 import {DatePicker} from "@nutui/nutui-react-taro";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 function TimeDiff() {
   const {t} = useTranslation()
-  const {language} = useAppSelector(state => state.app)
   const [startTime, setStartTime] = useState(new Date())
   const [endTime, setEndTime] = useState(new Date())
   const [showStart, setShowStart] = useState(false)
   const [showEnd, setShowEnd] = useState(false)
-  useEffect(() => {
-    updatePageTitle(language, 'timeDiff')
-  }, [language])
+
+  usePageTitle("timeDiff")
 
   const formatDate = (date: Date): string => {
     return date.toISOString().slice(0, 16).replace('T', ' ')
@@ -45,8 +42,8 @@ function TimeDiff() {
       seconds: diffSec % 60
     }
   }
-  const startDate = new Date(2020, 0, 1)
-  const endDate = new Date(2025, 10, 1)
+  const startDate = new Date(0, 0, 1)
+  const endDate = new Date(2050, 10, 1)
   const handleStartTimeChange = (values, options) => {
     const date = values.slice(0, 3).join('-')
     const time = values.slice(3).join(':')

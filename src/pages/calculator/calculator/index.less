@@ -2,16 +2,20 @@
   padding: 20px;
   background-color: var(--nutui-gray-1);
   min-height: 100vh;
+  box-sizing: border-box;
 
   .mode-switch {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 20px;
-    
-    .mode-text {
-      font-size: 16px;
-      color: var(--nutui-black);
+
+
+    .nut-button {
+      flex: none;
+      padding: 0 15px;
+      height: 32px;
+      font-size: 14px;
     }
   }
 
@@ -21,6 +25,7 @@
     border-radius: 12px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
 
     .expression {
       font-size: 18px;
@@ -37,6 +42,7 @@
       text-align: right;
       color: var(--nutui-black);
       word-break: break-all;
+      font-family: monospace;
     }
   }
 
@@ -45,6 +51,7 @@
     flex-direction: column;
     gap: 10px;
 
+
     .row {
       display: flex;
       gap: 10px;
@@ -52,19 +59,32 @@
       .nut-button {
         flex: 1;
         height: 60px;
-        font-size: 24px;
+        font-size: 20px;
         border-radius: 12px;
         background-color: var(--nutui-white);
         color: var(--nutui-black);
         border: none;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         min-width: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
 
         &:active {
           background-color: var(--nutui-gray-2);
+        }
+
+        &[disabled] {
+          opacity: 0.5;
+          filter: grayscale(1);
+        }
+      }
+    }
+
+    .scientific-rows,
+    .programmer-rows {
+      margin-bottom: 10px;
+
+      .row {
+        .nut-button {
+          font-size: 18px;
         }
       }
     }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View} from '@tarojs/components';
 import {Button, Cell, Dialog} from '@nutui/nutui-react-taro';
 import './index.less';
@@ -7,20 +7,16 @@ import {RootState} from "@/store";
 import {deleteConfig, RouletteConfig} from "@/store/slices/rouletteSlice";
 import Taro from "@tarojs/taro";
 import {formatDate} from "@/utils/date";
-import {useAppSelector} from "@/store/hooks";
-import {updatePageTitle} from "@/i18n/utils";
 import {useTranslation} from "@/i18n";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 const RouletteListPage: React.FC = () => {
   const dispatch = useDispatch()
   const {t} = useTranslation()
   const configs = useSelector((state: RootState) => state.roulette.configs);
   const [visible, setVisible] = useState(false)
-  const {language} = useAppSelector(state => state.app);
 
-  useEffect(() => {
-    updatePageTitle(language, 'rouletteList');
-  }, [language]);
+  usePageTitle("rouletteList")
   const handleNavigation = (config?: RouletteConfig) => {
     Taro.navigateTo({url: '/pages/roulette/config/index' + (config && `?id=${config?.id}` || '')});
   };

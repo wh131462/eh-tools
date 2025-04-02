@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View} from '@tarojs/components';
 import {Button, Cell, Dialog} from '@nutui/nutui-react-taro';
 import './index.less';
@@ -6,9 +6,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store";
 import {deleteHistory} from "@/store/slices/rouletteSlice";
 import {formatDate} from "@/utils/date";
-import {useAppSelector} from "@/store/hooks";
-import {updatePageTitle} from "@/i18n/utils";
 import {useTranslation} from "@/i18n";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 const RouletteHistoryPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -16,11 +15,8 @@ const RouletteHistoryPage: React.FC = () => {
   const history = useSelector((state: RootState) => state.roulette.history);
   const [visible, setVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<string>();
-  const {language} = useAppSelector(state => state.app);
+  usePageTitle("rouletteHistory")
 
-  useEffect(() => {
-    updatePageTitle(language, 'rouletteHistory');
-  }, [language]);
   return (
     <View className='roulette-history'>
       {history.map(record => (

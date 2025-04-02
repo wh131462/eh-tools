@@ -8,9 +8,8 @@ import {RouletteConfig, RouletteItem, updateConfig} from "@/store/slices/roulett
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store";
 import {getCurrentInstance} from "@tarojs/runtime";
-import {useAppSelector} from "@/store/hooks";
-import {updatePageTitle} from "@/i18n/utils";
 import {useTranslation} from "@/i18n";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 interface ConfigProps {
   id?: string;
@@ -32,11 +31,8 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
       cur && setConfig(cur)
     }
   }, []);
-  const {language} = useAppSelector(state => state.app);
+  usePageTitle("rouletteConfig")
 
-  useEffect(() => {
-    updatePageTitle(language, 'rouletteConfig');
-  }, [language]);
   const handleName = () => {
     const newName = setForm.getFieldValue("name")
     setConfig({...config, name: newName})

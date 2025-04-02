@@ -1,21 +1,17 @@
 import {Button, View} from '@tarojs/components'
 import {useEffect, useState} from 'react'
 import {useTranslation} from '@/i18n'
-import {updatePageTitle} from '@/i18n/utils'
-import {useAppSelector} from '@/store/hooks'
 import './index.less'
-import {DatePicker, PickerOption} from "@nutui/nutui-react-taro";
+import {DatePicker, Dialog, PickerOption} from "@nutui/nutui-react-taro";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 function CountdownTimer() {
   const {t} = useTranslation()
-  const {language} = useAppSelector(state => state.app)
   const [totalSeconds, setTotalSeconds] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [intervalId, setIntervalId] = useState<any>(null)
 
-  useEffect(() => {
-    updatePageTitle(language, 'countdown')
-  }, [language])
+  usePageTitle("countdown")
 
   useEffect(() => {
     return () => {
@@ -32,6 +28,18 @@ function CountdownTimer() {
           if (prev <= 1) {
             clearInterval(id)
             setIsRunning(false)
+            Dialog.open('countdown', {
+              title: t('info'),
+              content: t("countdownEnd"),
+              confirmText: t('confirm'),
+              onConfirm: () => {
+                Dialog.close('countdown');
+              },
+              cancelText: t('cancel'),
+              onCancel: () => {
+                Dialog.close('countdown');
+              }
+            })
             return 0
           }
           return prev - 1
@@ -57,7 +65,6 @@ function CountdownTimer() {
     }
     setIsRunning(false)
     setTotalSeconds(0)
-
   }
 
   const formatTime = (time: number): string => {
@@ -88,6 +95,7 @@ function CountdownTimer() {
   const [show, setShow] = useState(false)
   return (
     <View className='countdown-page'>
+      <Dialog id="countdown"></Dialog>
       <View className='timer-display' onClick={() => setShow(true)}>
         {formatTime(totalSeconds)}
       </View>

@@ -1,10 +1,9 @@
 import {View} from '@tarojs/components'
 import {Input, Picker} from '@nutui/nutui-react-taro'
-import {useEffect, useState} from 'react'
-import {updatePageTitle} from '@/i18n/utils'
-import {useAppSelector} from '@/store/hooks'
+import {useState} from 'react'
 import {useTranslation} from '@/i18n'
 import './index.less'
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 interface UnitCategory {
   value: string
@@ -65,7 +64,6 @@ function getUnitCategories(t: (key: string) => string): UnitCategory[] {
 }
 
 function UnitConverter() {
-  const {language} = useAppSelector(state => state.app)
   const {t} = useTranslation()
   const [categoryIndex, setCategoryIndex] = useState(0)
   const [fromUnitIndex, setFromUnitIndex] = useState(0)
@@ -76,9 +74,7 @@ function UnitConverter() {
   const [fromVisible, setFromVisible] = useState(false)
   const [toVisible, setToVisible] = useState(false)
 
-  useEffect(() => {
-    updatePageTitle(language, 'unitConverter')
-  }, [language])
+  usePageTitle("unitConverter")
 
   const unitCategories = getUnitCategories(t)
   const currentCategory = unitCategories[categoryIndex]

@@ -2,16 +2,15 @@ import {View} from '@tarojs/components'
 import {Avatar, Button, Cell, Input} from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
 import {useTranslation} from '@/i18n'
-import {useEffect, useState} from 'react'
-import {updatePageTitle} from '@/i18n/utils'
+import {useState} from 'react'
 import {useAppDispatch, useAppSelector} from '@/store/hooks'
 import {clearUserInfo, setUserInfo} from '@/store/slices/userSlice'
 import './index.less'
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 function ProfileInfo() {
   const {t} = useTranslation();
   const dispatch = useAppDispatch();
-  const {language} = useAppSelector(state => state.app);
   const {userInfo} = useAppSelector(state => state.user);
   const [newUser, setNewUser] = useState({
     avatar: userInfo.avatar,
@@ -20,9 +19,8 @@ function ProfileInfo() {
   });
   const [isModified, setIsModified] = useState(false);
 
-  useEffect(() => {
-    updatePageTitle(language, 'profile');
-  }, [language]);
+  usePageTitle("profile")
+
 
   const handleLogin = () => {
     if (!newUser.nickname) {

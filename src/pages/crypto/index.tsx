@@ -4,10 +4,11 @@ import Layout from '@/components/Layout'
 import {setAlgorithm, setKey, setMode, setResult, setText} from '@/store/slices/cryptoSlice'
 import Taro from '@tarojs/taro'
 import CryptoJS from 'crypto-js'
-import {useAppSelector} from "@/store/hooks"
-import {useEffect, useState} from "react"
-import {updatePageTitle} from "@/i18n/utils"
+import {useState} from "react"
 import "./index.less"
+import {usePageTitle} from "@/hooks/usePageTitle";
+import base64 from 'base-64'
+import {useTranslation} from "@/i18n";
 
 const algorithms = [
   {id: 'base64', name: 'Base64'},
@@ -16,23 +17,17 @@ const algorithms = [
 ]
 
 export default function Crypto() {
-  const {language} = useAppSelector(state => state.app)
+  const {t} = useTranslation()
   const [processing, setProcessing] = useState(false)
-  useEffect(() => {
-    updatePageTitle(language, '文本加密')
-  }, [language])
+
+  usePageTitle("crypto")
 
   const dispatch = useDispatch()
   const {text, result, algorithm, key, mode} = useSelector((state: any) => state.crypto)
 
   const handleProcess = async () => {
     if (!text) {
-      Taro.showToast({title: '请输入文本', icon: 'none'})
-      return
-    }
-
-    if ((algorithm === 'aes' || algorithm === 'des') && !key) {
-      Taro.showToast({title: '请输入密钥', icon: 'none'})
+      Taro.showToast({title: t("cryptoInputTips"), icon: 'none'})
       return
     }
 
@@ -40,26 +35,64 @@ export default function Crypto() {
       setProcessing(true)
       let processedText = ''
 
-      // 模拟异步处理
-      await new Promise(resolve => setTimeout(resolve, 300))
+      // 密钥校验
+      if (algorithm === 'aes') {
+        if (!key || (key.length !== 16 && key.length !== 24 && key.length !== 32)) {
+          throw new Error(t("cryptoErrorAES"))
+        }
+      }
+      if (algorithm === 'des' && (!key || key.length !== 8)) {
+        throw new Error(t("cryptoErrorDES"))
+      }
 
       if (algorithm === 'base64') {
         processedText = mode === 'encrypt'
-          ? btoa(text)
-          : atob(text)
+          ? base64.encode(text)  // 编码
+          : base64.decode(text)  // 解码
       } else if (algorithm === 'aes') {
-        processedText = mode === 'encrypt'
-          ? CryptoJS.AES.encrypt(text, key).toString()
-          : CryptoJS.AES.decrypt(text, key).toString(CryptoJS.enc.Utf8)
+        const keyUtf8 = CryptoJS.enc.Utf8.parse(key)
+        const textUtf8 = CryptoJS.enc.Utf8.parse(text)
+
+        if (mode === 'encrypt') {
+          const encrypted = CryptoJS.AES.encrypt(textUtf8, keyUtf8, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+          })
+          processedText = encrypted.toString()
+        } else {
+          const decrypted = CryptoJS.AES.decrypt(text, keyUtf8, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+          })
+          processedText = decrypted.toString(CryptoJS.enc.Utf8)
+        }
       } else if (algorithm === 'des') {
-        processedText = mode === 'encrypt'
-          ? CryptoJS.DES.encrypt(text, key).toString()
-          : CryptoJS.DES.decrypt(text, key).toString(CryptoJS.enc.Utf8)
+        const keyUtf8 = CryptoJS.enc.Utf8.parse(key)
+        const textUtf8 = CryptoJS.enc.Utf8.parse(text)
+
+        if (mode === 'encrypt') {
+          const encrypted = CryptoJS.DES.encrypt(textUtf8, keyUtf8, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+          })
+          processedText = encrypted.toString()
+        } else {
+          const decrypted = CryptoJS.DES.decrypt(text, keyUtf8, {
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Pkcs7
+          })
+          processedText = decrypted.toString(CryptoJS.enc.Utf8)
+        }
       }
 
       dispatch(setResult(processedText))
     } catch (error) {
-      Taro.showToast({title: '处理失败: ' + error.message, icon: 'none'})
+      console.error('详细错误:', error)
+      Taro.showToast({
+        title: `${t("cryptoHandleFailed")}: ${error.message}`,
+        icon: 'none',
+        duration: 3000
+      })
     } finally {
       setProcessing(false)
     }
@@ -74,19 +107,19 @@ export default function Crypto() {
             className={`switch-btn ${mode === 'encrypt' ? 'active' : ''}`}
             onClick={() => dispatch(setMode('encrypt'))}
           >
-            🛡️ 加密
+            🛡️ {t("cryptoEncode")}
           </Button>
           <Button
             className={`switch-btn ${mode === 'decrypt' ? 'active' : ''}`}
             onClick={() => dispatch(setMode('decrypt'))}
           >
-            🔓 解密
+            🔓 {t("cryptoDecode")}
           </Button>
         </View>
 
         {/* 算法选择 */}
         <View className='algorithm-selector'>
-          <View className='section-title'>🔐 加密算法</View>
+          <View className='section-title'>🔐 {t('cryptoAlgorithm')}</View>
           <View className='algorithm-buttons'>
             {algorithms.map(algo => (
               <Button
@@ -106,7 +139,7 @@ export default function Crypto() {
             <Input
               className='input-field'
               password
-              placeholder='🔑 请输入密钥'
+              placeholder={'🔑 ' + t("cryptoInputKeyTips")}
               value={key}
               onInput={e => dispatch(setKey(e.detail.value))}
             />
@@ -116,7 +149,7 @@ export default function Crypto() {
         {/* 文本输入 */}
         <Textarea
           className='input-field text-area'
-          placeholder={mode === 'encrypt' ? '📝 请输入要加密的文本' : '📝 请输入要解密的文本'}
+          placeholder={mode === 'encrypt' ? '📝 ' + t("cryptoInputEncodeContentTips") : '📝 ' + t('cryptoInputDecodeContentTips')}
           value={text}
           onInput={e => dispatch(setText(e.detail.value))}
         />
@@ -127,22 +160,22 @@ export default function Crypto() {
           onClick={handleProcess}
           disabled={processing}
         >
-          {processing ? '⏳ 处理中...' : mode === 'encrypt' ? '🚀 开始加密' : '🚀 开始解密'}
+          {processing ? '⏳ ' + t("cryptoProcessing") + '...' : mode === 'encrypt' ? '🚀 ' + t("cryptoStartEncrypt") : '🚀 ' + t("cryptoStartDecrypt")}
         </Button>
 
         {/* 结果展示 */}
         {result && (
           <View className='result-container'>
-            <View className='section-title'>📤 处理结果</View>
+            <View className='section-title'>📤 {t('cryptoHandleResult')}</View>
             <View className='result-content'>{result}</View>
             <Button
               className='copy-btn'
               onClick={() => {
                 Taro.setClipboardData({data: result})
-                Taro.showToast({title: '已复制到剪贴板'})
+                Taro.showToast({title: t("cryptoCopyResultTips")})
               }}
             >
-              📋 复制结果
+              📋 {t("cryptoCopyResult")}
             </Button>
           </View>
         )}

@@ -1,10 +1,9 @@
 import {Button, Input, View} from '@tarojs/components'
-import {useEffect, useState} from 'react'
-import {updatePageTitle} from '@/i18n/utils'
-import {useAppSelector} from '@/store/hooks'
+import {useState} from 'react'
 import './index.less'
 import {useTranslation} from "@/i18n";
 import {VirtualList} from "@nutui/nutui-react-taro";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 interface LoanResult {
   monthlyPayment: number
@@ -21,16 +20,12 @@ interface LoanResult {
 
 function MortgageCalculator() {
   const {t} = useTranslation()
-  const {language} = useAppSelector(state => state.app)
   const [loanAmount, setLoanAmount] = useState('')
   const [loanTerm, setLoanTerm] = useState('')
   const [interestRate, setInterestRate] = useState('')
   const [calculationType, setCalculationType] = useState<'equal-payment' | 'equal-principal'>('equal-payment')
   const [result, setResult] = useState<LoanResult | null>(null)
-
-  useEffect(() => {
-    updatePageTitle(language, 'mortgage')
-  }, [language])
+  usePageTitle("mortgage")
 
   const calculateEqualPayment = () => {
     const principal = parseFloat(loanAmount)
@@ -119,7 +114,7 @@ function MortgageCalculator() {
   const formatCurrency = (value: number) => {
     return value.toFixed(2)
   }
-
+  const [expanded, setExpanded] = useState(false);
   return (
     <View className='mortgage-calculator'>
       <View className='input-section'>
@@ -190,22 +185,38 @@ function MortgageCalculator() {
             <View className='label'>{t('totalInterest')}</View>
             <View className='value'>{formatCurrency(result.totalInterest)} {t('loanAmountUnit')}</View>
           </View>
-
           <View className='schedule-section'>
             <View className='schedule-header'>{t('paymentSchedule')}</View>
             <View className='schedule-list'>
-              <VirtualList containerHeight={800} itemHeight={160} itemEqual={true} list={result.paymentSchedule}
-                           itemRender={(item, index) => {
-                             return (<View key={index} className='schedule-item'>
-                               <View className='month'>{t('period')} {item.month} {t('periodUnit')}</View>
-                               <View className='details'>
-                                 <View>{t('monthlyPaymentLabel')}：{formatCurrency(item.totalPayment)} {t('loanAmountUnit')}</View>
-                                 <View>{t('principalLabel')}：{formatCurrency(item.principal)} {t('loanAmountUnit')}</View>
-                                 <View>{t('interestLabel')}：{formatCurrency(item.interest)} {t('loanAmountUnit')}</View>
-                                 <View>{t('remainingPrincipal')}：{formatCurrency(item.remainingPrincipal)} {t('loanAmountUnit')}</View>
+              {expanded ? (
+                <VirtualList containerHeight={400}
+                             itemHeight={100}
+                             itemEqual={true} list={result.paymentSchedule}
+                             itemRender={(item, index) => (
+                               <View key={index} className='compact-item'>
+                                 <View className='header'>
+                                   <View className='month'>第{item.month}期</View>
+                                   <View className='total'>{formatCurrency(item.totalPayment)}</View>
+                                 </View>
+                                 <View className='detail-row'>
+                                   <View>本金 {formatCurrency(item.principal)}</View>
+                                   <View>利息 {formatCurrency(item.interest)}</View>
+                                 </View>
+                                 <View className='remaining'>
+                                   剩余 {formatCurrency(item.remainingPrincipal)}
+                                 </View>
                                </View>
-                             </View>)
-                           }}></VirtualList>
+                             )}></VirtualList>
+              ) : (
+                <View className='summary-stats'>
+                  <View>首月还款：{formatCurrency(result.paymentSchedule[0].totalPayment)}</View>
+                  <View>末月还款：{formatCurrency(result.paymentSchedule.slice(-1)[0].totalPayment)}</View>
+                </View>
+              )}
+              <Button onClick={() => setExpanded(!expanded)}>
+                {expanded ? '收起明细' : '展开全部'}
+              </Button>
+
             </View>
           </View>
         </View>

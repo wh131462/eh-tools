@@ -2,9 +2,6 @@ import {Image, View} from '@tarojs/components'
 import {Grid} from '@nutui/nutui-react-taro'
 import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro'
 import {useTranslation} from '@/i18n'
-import {useEffect} from 'react'
-import {updatePageTitle, updateTabBarText} from '@/i18n/utils'
-import {useAppSelector} from '@/store/hooks'
 import CustomSwiper, {SwiperItem} from '@/components/Swiper'
 import calendarIcon from '@/assets/icons/calendar.png'
 import rouletteIcon from '@/assets/icons/star.png'
@@ -15,17 +12,19 @@ import calculatorIcon from '@/assets/icons/calculator.png'
 import bmiIcon from '@/assets/icons/BMI.png'
 import mortgageIcon from '@/assets/icons/mortgage.png'
 import unitConverterIcon from '@/assets/icons/unit-converter.png'
+import qrcodeIcon from '@/assets/icons/qr-code.png'
+import encryptionIcon from '@/assets/icons/encryption.png'
+import colorCardIcon from '@/assets/icons/color-card.png'
+import imageZipIcon from '@/assets/icons/image-zip.png'
+import imageFilterIcon from '@/assets/icons/image-filter.png'
 import './index.less'
 
 import releaseBanner from '@/assets/banner/release.jpg'
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 function Index() {
   const {t} = useTranslation();
-  const {language} = useAppSelector(state => state.app);
-  useEffect(() => {
-    updatePageTitle(language, 'tools');
-    updateTabBarText(language)
-  }, [language]);
+  usePageTitle("tools")
 
   useShareAppMessage(() => {
     return {
@@ -51,9 +50,18 @@ function Index() {
       id: 'time',
       title: t('timeTools'),
       tools: [
+        {id: 'calendar', text: t('calendar'), path: '/pages/calendar/index', icon: calendarIcon},
         {id: 'countdown', text: t('countdown'), path: '/pages/time/countdown/index', icon: countDownIcon},
         {id: 'timeDiff', text: t('timeDiff'), path: '/pages/time/diff/index', icon: timeDiffIcon},
         {id: 'worldClock', text: t('worldClock'), path: '/pages/time/world-clock/index', icon: worldTimeIcon}
+      ]
+    },
+    {
+      id: 'life',
+      title: t('lifeTools'),
+      tools: [
+        {id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index', icon: rouletteIcon},
+        {id: 'qrcode', text: t('qrcode'), path: '/pages/qrcode/index', icon: qrcodeIcon},
       ]
     },
     {
@@ -68,43 +76,21 @@ function Index() {
           path: '/pages/calculator/unit-converter/index',
           icon: unitConverterIcon
         },
-        {id: 'bmi', text: t('bmi'), path: '/pages/calculator/bmi/index', icon: bmiIcon}
+        {id: 'bmi', text: t('bmi'), path: '/pages/calculator/bmi/index', icon: bmiIcon},
+        {id: 'crypto', text: t('crypto'), path: '/pages/crypto/index', icon: encryptionIcon},
       ]
     },
-    // {
-    //   id: 'text',
-    //   title: t('textTools'),
-    //   tools: [
-    //     {id: 'qrcode', text: t('qrcode'), path: '/pages/text/qrcode/index', icon: textIcon},
-    //     {id: 'crypto', text: t('crypto'), path: '/pages/text/crypto/index', icon: textIcon},
-    //   ]
-    // },
     {
-      id: 'life',
-      title: t('lifeTools'),
+      id: 'art',
+      title: t('artTools'),
       tools: [
-        {id: 'calendar', text: t('calendar'), path: '/pages/calendar/index', icon: calendarIcon},
-        {id: 'roulette', text: t('roulette'), path: '/pages/roulette/index/index', icon: rouletteIcon},
+        {id: 'compress', text: t('imageCompress'), path: '/pages/image/compress/index', icon: imageZipIcon},
+        {id: 'filter', text: t('imageFilter'), path: '/pages/image/filter/index', icon: imageFilterIcon},
+        {id: 'colorCard', text: t('colorCard'), path: '/pages/color-card/index', icon: colorCardIcon},
+        {id: 'colorConverter', text: t('colorConverter'), path: '/pages/color-converter/index', icon: colorCardIcon},
       ]
     },
-    // {
-    //   id: 'dev',
-    //   title: t('devTools'),
-    //   tools: [
-    //     {id: 'regex', text: t('regex'), path: '/pages/dev/regex/index', icon: devIcon},
-    //     {id: 'json', text: t('json'), path: '/pages/dev/json/index', icon: devIcon},
-    //     {id: 'colorCard', text: t('colorCard'), path: '/pages/color-card/index', icon: colorCardIcon}
-    //   ]
-    // },
-    // {
-    //   id: 'image',
-    //   title: t('imageTools'),
-    //   tools: [
-    //     {id: 'compress', text: t('imageCompress'), path: '/pages/image/compress/index', icon: imageIcon},
-    //     {id: 'convert', text: t('imageConvert'), path: '/pages/image/convert/index', icon: imageIcon},
-    //     {id: 'filter', text: t('imageFilter'), path: '/pages/image/filter/index', icon: imageIcon}
-    //   ]
-    // }
+
   ]
 
   const handleToolClick = (path: string) => {

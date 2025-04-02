@@ -2,19 +2,15 @@ import {Text, View} from '@tarojs/components'
 import {Avatar, Cell} from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
 import {useTranslation} from '@/i18n'
-import {useEffect} from 'react'
-import {updatePageTitle, updateTabBarText} from '@/i18n/utils'
 import {useAppSelector} from '@/store/hooks'
 import './index.less'
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 function Profile() {
   const {t} = useTranslation();
-  const {language} = useAppSelector(state => state.app);
   const {userInfo} = useAppSelector(state => state.user);
-  useEffect(() => {
-    updatePageTitle(language, 'profile');
-    updateTabBarText(language)
-  }, [language]);
+
+  usePageTitle("profile")
 
   const handleAvatarClick = () => {
     Taro.navigateTo({url: '/pages/profile/info/index'});

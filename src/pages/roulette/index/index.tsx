@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View} from '@tarojs/components';
 import RouletteComponent from '@/components/Roulette';
 import {Button, Cell, Checkbox, Dialog, Popup, VirtualList} from "@nutui/nutui-react-taro";
@@ -7,10 +7,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/store';
 import {RouletteConfig, setCurrentConfig} from "@/store/slices/rouletteSlice";
 import './index.less';
-import {useAppSelector} from "@/store/hooks";
-import {updatePageTitle} from "@/i18n/utils";
 import {useTranslation} from "@/i18n";
 import {copyToClipboard} from "@/utils/clipboard";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 const RoulettePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -20,11 +19,7 @@ const RoulettePage: React.FC = () => {
   const [mode, setMode] = useState<'roulette' | 'slot'>('roulette');
   const [showPopup, setShowPopup] = useState(false);
   const [showChangePopup, setShowChangePopup] = useState(false);
-  const {language} = useAppSelector(state => state.app);
-
-  useEffect(() => {
-    updatePageTitle(language, 'roulette');
-  }, [language]);
+  usePageTitle("roulette")
 
   useShareAppMessage(() => {
     return {
