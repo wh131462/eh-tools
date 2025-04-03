@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View} from '@tarojs/components';
 import RouletteComponent from '@/components/Roulette';
 import {Button, Cell, Checkbox, Dialog, Popup, VirtualList} from "@nutui/nutui-react-taro";
-import Taro, {useDidShow, useShareAppMessage, useShareTimeline} from "@tarojs/taro";
+import Taro, {useDidShow} from "@tarojs/taro";
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/store';
 import {RouletteConfig, setCurrentConfig} from "@/store/slices/rouletteSlice";
@@ -20,21 +20,6 @@ const RoulettePage: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [showChangePopup, setShowChangePopup] = useState(false);
   usePageTitle("roulette")
-
-  useShareAppMessage(() => {
-    return {
-      title: '大转盘,不确定的时候来一下',
-      path: '/pages/roulette/index/index',
-      imageUrl: '/assets/shares/rouletteShare.png'
-    };
-  });
-
-  useShareTimeline(() => {
-    return {
-      title: '大转盘,不确定的时候来一下',
-      path: '/pages/roulette/index/index',
-    };
-  });
 
   const toggleMode = () => {
     setMode(mode == "roulette" ? "slot" : "roulette")

@@ -1,14 +1,17 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import Taro from '@tarojs/taro';
+import {shares} from "@/store/constants/shares";
 
 interface AppState {
   language: string;
   isDarkMode: boolean;
+  shares: Record<string, Record<'title' | 'path', string>>
 }
 
 const initialState: AppState = {
   language: Taro.getStorageSync('app_language') || 'zh',
   isDarkMode: Taro.getStorageSync('theme_mode') === 'dark',
+  shares: shares
 };
 
 const appSlice = createSlice({
@@ -26,5 +29,5 @@ const appSlice = createSlice({
   },
 });
 
-export const { setLanguage, setDarkMode } = appSlice.actions;
+export const {setLanguage, setDarkMode} = appSlice.actions;
 export default appSlice.reducer;

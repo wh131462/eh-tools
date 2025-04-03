@@ -10,7 +10,6 @@ import './index.less'
 function QRCode() {
   const {t} = useTranslation()
   const [text, setText] = useState('')
-  const [qrcode, setQrcode] = useState<boolean[][]>([[]])
   const [decodedResult, setDecodedResult] = useState('')
 
   usePageTitle("qrcode")
@@ -19,7 +18,6 @@ function QRCode() {
   const handleGenerate = () => {
     if (!text) return
     const matrix = generateQRCode(text)
-    setQrcode(matrix)
     drawQRCode(matrix)
   }
 
