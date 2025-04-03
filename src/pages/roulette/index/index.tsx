@@ -52,7 +52,7 @@ const RoulettePage: React.FC = () => {
       },
       onCancel: () => {
         console.log('onCancel');
-        copyToClipboard(item.name).then(() => {
+        copyToClipboard(item.name, t).then(() => {
           Taro.showToast({title: `${t('copy')}${t('success')}!`, icon: "success"})
         })
         Dialog.close('selected');

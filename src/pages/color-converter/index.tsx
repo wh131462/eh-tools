@@ -1,7 +1,10 @@
 import {View} from '@tarojs/components'
 import {useState} from 'react'
 import Taro from '@tarojs/taro'
-import {Input} from "@nutui/nutui-react-taro";
+import {Button, Input} from "@nutui/nutui-react-taro"
+import {useTranslation} from '@/i18n'
+import "./index.less"
+import {usePageTitle} from '@/hooks/usePageTitle'
 
 interface ColorState {
   hex: string
@@ -10,10 +13,12 @@ interface ColorState {
 }
 
 const ColorConverter = () => {
+  const {t} = useTranslation();
+  usePageTitle('colorConverter');
   const [color, setColor] = useState<ColorState>({
-    hex: '#000000',
-    rgb: {r: 0, g: 0, b: 0},
-    hsl: {h: 0, s: 0, l: 0}
+    hex: '#1890ff',  // 使用Ant Design主色
+    rgb: {r: 24, g: 144, b: 255},
+    hsl: {h: 209, s: 100, l: 55}
   })
 
   const hexToRgb = (hex: string) => {
@@ -66,7 +71,13 @@ const ColorConverter = () => {
   }
 
   const handleHexChange = (value: string) => {
+    value = value.toUpperCase()
     if (!/^#[0-9A-F]{6}$/i.test(value)) {
+      Taro.showToast({
+        title: t('invalidHexFormat'),
+        icon: 'none',
+        duration: 2000
+      })
       return
     }
 
@@ -79,7 +90,14 @@ const ColorConverter = () => {
 
   const handleRgbChange = (key: 'r' | 'g' | 'b', value: string | number) => {
     const num = parseInt(value.toString())
-    if (isNaN(num) || num < 0 || num > 255) return
+    if (isNaN(num) || num < 0 || num > 255) {
+      Taro.showToast({
+        title: t('invalidRgbValue'),
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    }
 
     const newRgb = {...color.rgb, [key]: num}
     const hex = rgbToHex(newRgb.r, newRgb.g, newRgb.b)
@@ -92,8 +110,9 @@ const ColorConverter = () => {
       data: value,
       success: () => {
         Taro.showToast({
-          title: '已复制到剪贴板',
-          icon: 'success'
+          title: t('success'),
+          icon: 'success',
+          duration: 1500
         })
       }
     })
@@ -101,59 +120,74 @@ const ColorConverter = () => {
 
   return (
     <View className='color-converter'>
-      <View className='color-preview' style={{backgroundColor: color.hex}}/>
+      <View className='color-card'>
+        <View
+          className='color-preview'
+          style={{backgroundColor: color.hex}}
+        >
+          <View className='color-values'>
+            <View>{color.hex}</View>
+            <View>RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}</View>
+            <View>HSL: {color.hsl.h}°, {color.hsl.s}%, {color.hsl.l}%</View>
+          </View>
+        </View>
+      </View>
 
       <View className='input-group'>
-        <View className='input-section'>
-          <Input
-            name='hex'
-            type='text'
-            placeholder='HEX:#000000'
-            value={color.hex}
-            onChange={handleHexChange}
-          />
-          <View className='copy-btn' onClick={() => handleCopy(color.hex)}>复制</View>
-        </View>
-
-        <View className='input-section'>
-          <Input
-            name='rgb-r'
-            type='number'
-            placeholder='R:0-255'
-            value={color.rgb.r.toString()}
-            onChange={(value) => handleRgbChange('r', value)}
-          />
-          <Input
-            name='rgb-g'
-            type='number'
-            placeholder='G:0-255'
-            value={color.rgb.g.toString()}
-            onChange={(value) => handleRgbChange('g', value)}
-          />
-          <Input
-            name='rgb-b'
-            type='number'
-            placeholder='B:0-255'
-            value={color.rgb.b.toString()}
-            onChange={(value) => handleRgbChange('b', value)}
-          />
-          <View
-            className='copy-btn'
-            onClick={() => handleCopy(`rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`)}
-          >
-            复制
+        <View className='input-item ant-input-item'>
+          <View className='input-label'>{t('hexValue')}</View>
+          <View className='input-content'>
+            <Input
+              className='ant-input'
+              placeholder='#1890FF'
+              value={color.hex}
+              onChange={handleHexChange}
+            />
+            <Button
+              className='ant-btn-text'
+              onClick={() => handleCopy(color.hex)}
+            >
+              {t('copy')}
+            </Button>
           </View>
         </View>
 
-        <View className='input-section'>
+        <View className='input-item ant-input-item'>
+          <View className='input-label'>{t('rgbValue')}</View>
+          <View className='rgb-inputs'>
+            {['r', 'g', 'b'].map((channel) => (
+              <View key={channel} className='input-content'>
+                <View className='channel-label'>{channel.toUpperCase()}</View>
+                <Input
+                  className='ant-input'
+                  type='number'
+                  placeholder='0-255'
+                  value={color.rgb[channel as keyof typeof color.rgb].toString()}
+                  onChange={(value) => handleRgbChange(channel as 'r' | 'g' | 'b', value)}
+                />
+              </View>
+            ))}
+          </View>
+          <Button
+            className='ant-btn-text'
+            onClick={() => handleCopy(`rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`)}
+          >
+            {t("copy")} RGB
+          </Button>
+        </View>
+
+        <View className='input-item ant-input-item'>
+          <View className='input-label'>{t('hslValue')}</View>
           <View className='hsl-value'>
-            HSL: {color.hsl.h}°, {color.hsl.s}%, {color.hsl.l}%
-            <View
-              className='copy-btn'
+            <View className='hsl-text'>
+              {color.hsl.h}°, {color.hsl.s}%, {color.hsl.l}%
+            </View>
+            <Button
+              className='ant-btn-text'
               onClick={() => handleCopy(`hsl(${color.hsl.h}, ${color.hsl.s}%, ${color.hsl.l}%)`)}
             >
-              复制
-            </View>
+              {t('copy')}
+            </Button>
           </View>
         </View>
       </View>

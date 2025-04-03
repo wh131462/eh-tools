@@ -15,6 +15,7 @@ export default defineAppConfig({
     "pages/time/diff/index",
     "pages/time/world-clock/index",
     "pages/calculator/calculator/index",
+    "pages/calculator/labor-salary-calculator/index",
     "pages/calculator/bmi/index",
     "pages/calculator/mortgage/index",
     "pages/calculator/unit-converter/index",

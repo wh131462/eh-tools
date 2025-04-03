@@ -1,7 +1,10 @@
-import {Image, Slider, View} from '@tarojs/components'
+import {Image, View} from '@tarojs/components'
 import {useState} from 'react'
 import Taro from '@tarojs/taro'
-import {Button, Tabs} from "@nutui/nutui-react-taro";
+import {Button, Range, Tabs} from "@nutui/nutui-react-taro"
+import {useTranslation} from '@/i18n'
+import './index.less'
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 interface ImageInfo {
   path: string
@@ -17,6 +20,8 @@ interface FilterValues {
 }
 
 const ImageFilter = () => {
+  const {t} = useTranslation()
+  usePageTitle("imageFilter")
   const [image, setImage] = useState<ImageInfo | null>(null)
   const [currentTab, setCurrentTab] = useState<string | number>(0)
   const [filterValues, setFilterValues] = useState<FilterValues>({
@@ -28,12 +33,12 @@ const ImageFilter = () => {
   })
 
   const presetFilters = [
-    {name: '原图', style: ''},
-    {name: '怀旧', style: 'sepia(100%)'},
-    {name: '黑白', style: 'grayscale(100%)'},
-    {name: '反色', style: 'invert(100%)'},
-    {name: '褪色', style: 'opacity(50%)'},
-    {name: '高饱和', style: 'saturate(200%)'}
+    {name: t('original'), style: ''},
+    {name: t('vintage'), style: 'sepia(100%)'},
+    {name: t('blackAndWhite'), style: 'grayscale(100%)'},
+    {name: t('invert'), style: 'invert(100%)'},
+    {name: t('softLight'), style: 'opacity(80%) contrast(120%)'},
+    {name: t('vivid'), style: 'saturate(200%)'}
   ]
 
   const [selectedPreset, setSelectedPreset] = useState(0)
@@ -48,6 +53,18 @@ const ImageFilter = () => {
           path: res.tempFilePaths[0],
           size: (fileInfo as any).size
         })
+        Taro.showToast({
+          title: t('imageLoaded'),
+          icon: 'success',
+          duration: 1500
+        })
+      },
+      fail: () => {
+        Taro.showToast({
+          title: t('imageLoadFailed'),
+          icon: 'error',
+          duration: 2000
+        })
       }
     })
   }
@@ -57,7 +74,6 @@ const ImageFilter = () => {
       ...prev,
       [key]: value
     }))
-    // 切换到自定义滤镜时重置预设选择
     setSelectedPreset(0)
   }
 
@@ -72,41 +88,47 @@ const ImageFilter = () => {
   const handleSave = async () => {
     if (!image) {
       Taro.showToast({
-        title: '请先选择图片',
-        icon: 'error'
+        title: t('pleaseChooseImage'),
+        icon: 'error',
+        duration: 2000
       })
       return
     }
 
     try {
-      // 由于小程序环境限制，我们只能保存原图
       await Taro.saveImageToPhotosAlbum({
         filePath: image.path
       })
       Taro.showToast({
-        title: '保存成功',
-        icon: 'success'
+        title: t('savedToAlbum'),
+        icon: 'success',
+        duration: 2000
       })
     } catch (error) {
       Taro.showToast({
-        title: '保存失败',
-        icon: 'error'
+        title: t('saveFailed'),
+        icon: 'error',
+        duration: 2000
       })
     }
   }
 
-
   return (
     <View className='image-filter'>
       <View className='upload-section'>
-        <Button type='primary' onClick={handleChooseImage}>
-          选择图片
+        <Button
+          type='primary'
+          onClick={handleChooseImage}
+          className='ant-upload-btn'
+        >
+          + {t('chooseImage')}
         </Button>
+        <View className='upload-tips'>{t('supportFormat')}, {t('maxSize')}</View>
       </View>
 
       {image && (
         <View className='image-section'>
-          <View className='image-preview'>
+          <View className='preview-card'>
             <Image
               src={image.path}
               mode='aspectFit'
@@ -115,86 +137,76 @@ const ImageFilter = () => {
                   ? presetFilters[selectedPreset].style
                   : getCustomFilterStyle()
               }}
+              className='preview-image'
+              onClick={() => {
+                Taro.previewImage({
+                  current: image.path,
+                  urls: [image.path]
+                })
+              }}
             />
           </View>
 
           <Tabs
             value={currentTab}
             onClick={setCurrentTab}
+            className='ant-tabs'
+            activeType='line'
           >
-            <Tabs.TabPane title="预设滤镜">
-              <View className='preset-filters'>
+            <Tabs.TabPane title={t('presetFilters')} className='tab-pane'>
+              <View className='preset-grid'>
                 {presetFilters.map((filter, index) => (
                   <View
                     key={filter.name}
-                    className={`filter-item ${selectedPreset === index ? 'active' : ''}`}
+                    className={`preset-item ${selectedPreset === index ? 'active' : ''}`}
                     onClick={() => setSelectedPreset(index)}
                   >
                     <Image
                       src={image.path}
                       mode='aspectFill'
                       style={{filter: filter.style}}
+                      className='preset-thumb'
                     />
-                    <View className='filter-name'>{filter.name}</View>
+                    <View className='preset-label'>{filter.name}</View>
                   </View>
                 ))}
               </View>
             </Tabs.TabPane>
 
-            <Tabs.TabPane title="自定义滤镜">
-              <View className='custom-filters'>
-                <View className='filter-item'>
-                  <View className='filter-label'>亮度 ({filterValues.brightness}%)</View>
-                  <Slider
-                    value={filterValues.brightness}
-                    min={0}
-                    max={200}
-                    onChange={value => handleFilterChange('brightness', value)}
-                  />
-                </View>
-                <View className='filter-item'>
-                  <View className='filter-label'>对比度 ({filterValues.contrast}%)</View>
-                  <Slider
-                    value={filterValues.contrast}
-                    min={0}
-                    max={200}
-                    onChange={value => handleFilterChange('contrast', value)}
-                  />
-                </View>
-                <View className='filter-item'>
-                  <View className='filter-label'>饱和度 ({filterValues.saturate}%)</View>
-                  <Slider
-                    value={filterValues.saturate}
-                    min={0}
-                    max={200}
-                    onChange={value => handleFilterChange('saturate', value)}
-                  />
-                </View>
-                <View className='filter-item'>
-                  <View className='filter-label'>色相旋转 ({filterValues.hueRotate}°)</View>
-                  <Slider
-                    value={filterValues.hueRotate}
-                    min={0}
-                    max={360}
-                    onChange={value => handleFilterChange('hueRotate', value)}
-                  />
-                </View>
-                <View className='filter-item'>
-                  <View className='filter-label'>模糊 ({filterValues.blur}px)</View>
-                  <Slider
-                    value={filterValues.blur}
-                    min={0}
-                    max={10}
-                    onChange={value => handleFilterChange('blur', value)}
-                  />
-                </View>
+            <Tabs.TabPane title={t('customAdjust')} className='tab-pane'>
+              <View className='filter-controls'>
+                {Object.entries(filterValues).map(([key, value]) => (
+                  <View key={key} className='control-item'>
+                    <View className='control-label'>
+                      {{
+                        brightness: t('brightness'),
+                        contrast: t('contrast'),
+                        saturate: t('saturation'),
+                        hueRotate: t('hue'),
+                        blur: t('blur')
+                      }[key]} ({value}{key === 'hueRotate' ? '°' : key === 'blur' ? 'px' : '%'})
+                    </View>
+                    <Range
+                      value={value}
+                      currentDescription={null}
+                      min={key === 'hueRotate' ? 0 : 0}
+                      max={key === 'hueRotate' ? 360 : key === 'blur' ? 10 : 200}
+                      onChange={(v: any) => handleFilterChange(key as keyof FilterValues, v)}
+                      className='ant-slider'
+                    />
+                  </View>
+                ))}
               </View>
             </Tabs.TabPane>
           </Tabs>
 
-          <View className='button-group'>
-            <Button type='primary' onClick={handleSave}>保存</Button>
-          </View>
+          <Button
+            type='primary'
+            onClick={handleSave}
+            className='ant-save-btn'
+          >
+            导出图片
+          </Button>
         </View>
       )}
     </View>

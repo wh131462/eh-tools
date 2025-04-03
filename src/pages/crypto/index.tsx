@@ -7,8 +7,9 @@ import CryptoJS from 'crypto-js'
 import {useState} from "react"
 import "./index.less"
 import {usePageTitle} from "@/hooks/usePageTitle";
-import base64 from 'base-64'
 import {useTranslation} from "@/i18n";
+import {copyToClipboard} from "@/utils/clipboard";
+import {decode, encode} from 'js-base64';
 
 const algorithms = [
   {id: 'base64', name: 'Base64'},
@@ -47,8 +48,8 @@ export default function Crypto() {
 
       if (algorithm === 'base64') {
         processedText = mode === 'encrypt'
-          ? base64.encode(text)  // 编码
-          : base64.decode(text)  // 解码
+          ? encode(text)  // 编码
+          : decode(text)  // 解码
       } else if (algorithm === 'aes') {
         const keyUtf8 = CryptoJS.enc.Utf8.parse(key)
         const textUtf8 = CryptoJS.enc.Utf8.parse(text)
@@ -171,8 +172,7 @@ export default function Crypto() {
             <Button
               className='copy-btn'
               onClick={() => {
-                Taro.setClipboardData({data: result})
-                Taro.showToast({title: t("cryptoCopyResultTips")})
+                copyToClipboard(result, t)
               }}
             >
               📋 {t("cryptoCopyResult")}

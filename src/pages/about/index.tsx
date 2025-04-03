@@ -18,7 +18,8 @@ const AboutPage: React.FC = () => {
     version: '1.0.0',
     description: t('appDescriptionContent'),
     author: 'EternalHeart',
-    github: 'https://github.com/wh131462/eh-tools'
+    github: 'https://github.com/wh131462/eh-tools',
+    issue: 'https://github.com/wh131462/eh-tools/issues/new'
   };
 
   return (
@@ -29,7 +30,10 @@ const AboutPage: React.FC = () => {
         <Cell title={t('appDescription')} extra={appInfo.description}/>
         <Cell title={t('appAuthor')} extra={appInfo.author}/>
         <Cell title={t('appGithub')} extra={appInfo.github} onClick={() => {
-          copyToClipboard(appInfo.github);
+          copyToClipboard(appInfo.github, t);
+        }}/>
+        <Cell title={t('appIssue')} extra={appInfo.issue} onClick={() => {
+          copyToClipboard(appInfo.issue, t);
         }}/>
         <Cell title={t('appDonate')} extra={<View>&gt;</View>} onClick={() => setShowDonate(true)}/>
       </Cell.Group>

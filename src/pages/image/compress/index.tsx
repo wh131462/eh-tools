@@ -1,89 +1,120 @@
-import {Image, Slider, View} from '@tarojs/components'
+import {Image, View} from '@tarojs/components'
 import {useState} from 'react'
 import Taro from '@tarojs/taro'
-import {Button} from "@nutui/nutui-react-taro";
+import {Button, Range} from "@nutui/nutui-react-taro"
+import "./index.less"
+import {useTranslation} from "@/i18n";
+import {usePageTitle} from "@/hooks/usePageTitle";
 
 interface ImageInfo {
   path: string
   size: number
   compressedPath?: string
   compressedSize?: number
+  id: string
 }
 
 const ImageCompressor = () => {
-  const [image, setImage] = useState<ImageInfo | null>(null)
+  const {t} = useTranslation()
+  usePageTitle("imageCompressor")
+  const [images, setImages] = useState<ImageInfo[]>([])
   const [quality, setQuality] = useState(80)
 
   const handleChooseImage = () => {
     Taro.chooseImage({
-      count: 1,
+      count: 9,
       sourceType: ['album'],
       success: async (res) => {
-        const fileInfo = await Taro.getFileInfo({filePath: res.tempFilePaths[0]})
-        setImage({
-          path: res.tempFilePaths[0],
-          size: (fileInfo as any).size
-        })
+        const newImages = await Promise.all(
+          res.tempFilePaths.map(async (path) => {
+            const fileInfo = await Taro.getFileInfo({filePath: path})
+            return {
+              path,
+              size: (fileInfo as any).size,
+              id: Math.random().toString(36).substring(2)
+            }
+          })
+        )
+        setImages(prev => [...prev, ...newImages])
       }
     })
   }
 
   const handleCompress = async () => {
-    if (!image) {
+    if (images.length === 0) {
       Taro.showToast({
-        title: '请先选择图片',
-        icon: 'error'
+        title: t('pleaseChooseImage'),
+        icon: 'error',
+        duration: 2000
       })
       return
     }
 
     try {
-      const res = await Taro.compressImage({
-        src: image.path,
-        quality
-      })
+      const compressedImages = await Promise.all(
+        images.map(async (image) => {
+          if (image.compressedPath) return image
 
-      const fileInfo = await Taro.getFileInfo({filePath: res.tempFilePath})
+          const res = await Taro.compressImage({
+            src: image.path,
+            quality
+          })
 
-      setImage({
-        ...image,
-        compressedPath: res.tempFilePath,
-        compressedSize: (fileInfo as any).size
-      })
+          const fileInfo = await Taro.getFileInfo({filePath: res.tempFilePath})
+
+          return {
+            ...image,
+            compressedPath: res.tempFilePath,
+            compressedSize: (fileInfo as any).size
+          }
+        })
+      )
+
+      setImages(compressedImages)
 
       Taro.showToast({
-        title: '压缩成功',
-        icon: 'success'
+        title: t('compressComplete'),
+        icon: 'success',
+        duration: 2000
       })
     } catch (error) {
       Taro.showToast({
-        title: '压缩失败',
-        icon: 'error'
+        title: t('compressFailed'),
+        icon: 'error',
+        duration: 2000
       })
     }
   }
 
   const handleSave = async () => {
-    if (!image?.compressedPath) {
+    const compressedImages = images.filter(img => img.compressedPath)
+    if (compressedImages.length === 0) {
       Taro.showToast({
-        title: '请先压缩图片',
-        icon: 'error'
+        title: t('pleaseCompressFirst'),
+        icon: 'error',
+        duration: 2000
       })
       return
     }
 
     try {
-      await Taro.saveImageToPhotosAlbum({
-        filePath: image.compressedPath
-      })
+      await Promise.all(
+        compressedImages.map(image =>
+          Taro.saveImageToPhotosAlbum({
+            filePath: image.compressedPath!
+          })
+        )
+      )
       Taro.showToast({
-        title: '保存成功',
-        icon: 'success'
+        title: t('savedToAlbum'),
+        icon: 'success',
+        duration: 2000
       })
     } catch (error) {
       Taro.showToast({
-        title: '保存失败',
-        icon: 'error'
+        title: t('saveFailed'),
+        icon: 'error',
+        duration: 2000
       })
     }
   }
@@ -94,50 +125,105 @@ const ImageCompressor = () => {
     return (size / (1024 * 1024)).toFixed(2) + 'MB'
   }
 
+  const handleRemoveImage = (id: string) => {
+    setImages(prev => prev.filter(img => img.id !== id))
+  }
+
   return (
     <View className='image-compressor'>
       <View className='upload-section'>
-        <Button type='primary' onClick={handleChooseImage}>
-          选择图片
-        </Button>
+        <View className='upload-area' onClick={handleChooseImage}>
+          <View className='upload-hint'>{t('addImage')}</View>
+          <View className='upload-sub-hint'>{t('supportFormat')}</View>
+        </View>
       </View>
 
-      {image && (
+      {images.length > 0 && (
         <View className='image-section'>
           <View className='image-preview'>
-            <View className='preview-item'>
-              <View className='preview-title'>原图</View>
-              <Image src={image.path} mode='aspectFit'/>
-              <View className='preview-size'>大小：{formatSize(image.size)}</View>
-            </View>
-            {image.compressedPath && (
-              <View className='preview-item'>
-                <View className='preview-title'>压缩后</View>
-                <Image src={image.compressedPath} mode='aspectFit'/>
-                <View className='preview-size'>
-                  大小：{formatSize(image.compressedSize!)}
-                  <View className='compression-ratio'>
-                    压缩率：{((1 - image.compressedSize! / image.size) * 100).toFixed(1)}%
+            {images.map(image => (
+              <View key={image.id} className='preview-item'>
+                <View className='preview-header'>
+                  <View className='preview-title'>{t('originalImage')}</View>
+                  <View
+                    className='preview-close'
+                    onClick={() => handleRemoveImage(image.id)}
+                  >
+                    ×
                   </View>
                 </View>
+                <Image src={image.path} mode='aspectFit' onClick={() => {
+                  Taro.previewImage({
+                    current: image.path,
+                    urls: [image.path]
+                  })
+                }}/>
+                <View className='preview-size'>{t('size')}: {formatSize(image.size)}</View>
+
+                {image.compressedPath && (
+                  <View className='compressed-preview'>
+                    <Image src={image.compressedPath} mode='aspectFit' onClick={() => {
+                      Taro.previewImage({
+                        current: image.compressedPath!,
+                        urls: [image.compressedPath!]
+                      })
+                    }}/>
+                    <View className='preview-info'>
+                      <View className='preview-size'>
+                        {t('compressedImage')}: {formatSize(image.compressedSize!)}
+                        <Button size='small' onClick={() => {
+                          Taro.saveImageToPhotosAlbum({
+                            filePath: image.compressedPath!,
+                            success: () => {
+                              Taro.showToast({
+                                title: t('success'),
+                                icon: 'success',
+                                duration: 2000
+                              })
+                            },
+                            fail: () => {
+                              Taro.showToast({
+                                title: t('saveFailed'),
+                                icon: 'error',
+                                duration: 2000
+                              })
+                            }
+                          })
+                        }}>{t('save')}</Button>
+                      </View>
+                      <View className='compression-ratio'>
+                        {image.compressedSize! < image.size ? (
+                          <>{t('compressionRatio')} {((1 - image.compressedSize! / image.size) * 100).toFixed(1)}%</>
+                        ) : (
+                          <>{t('bestQuality')}</>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                )}
               </View>
-            )}
+            ))}
           </View>
 
           <View className='compress-controls'>
             <View className='quality-slider'>
-              <View className='slider-title'>压缩质量：{quality}%</View>
-              <Slider
+              <View className='slider-title'>
+                <span>{t('quality')}: </span>
+                <span>{quality}%</span>
+              </View>
+              <Range
                 value={quality}
                 min={1}
                 max={100}
-                onChange={(event) => setQuality(event.detail.value)}
+                currentDescription={null}
+                onChange={(event: any) => setQuality(event)}
+                className='ant-slider'
               />
             </View>
             <View className='button-group'>
-              <Button onClick={handleCompress}>压缩</Button>
-              {image.compressedPath && (
-                <Button type='primary' onClick={handleSave}>保存</Button>
+              <Button onClick={handleCompress}>{t('startCompress')}</Button>
+              {images.some(img => img.compressedPath) && (
+                <Button type='primary' onClick={handleSave}>{t('saveAll')}</Button>
               )}
             </View>
           </View>

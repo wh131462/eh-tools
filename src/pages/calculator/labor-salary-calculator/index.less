@@ -1,0 +1,149 @@
+// labor-salary-calculator.less
+@primary-color: #3768FA;
+@success-color: #00b578;
+@warning-color: #ffc300;
+
+.container {
+  padding: 16px;
+  background: #f8f9fa;
+
+  .form-card, .result-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .worthy-input {
+    font-size: 14px;
+    margin-bottom: 16px;
+    width: 120px;
+
+    .nut-input-text {
+      font-size: 14px;
+    }
+
+    .nut-input__label {
+      color: #333;
+      font-weight: 500;
+    }
+  }
+
+  .worthy-button {
+    margin-top: 24px;
+    height: 44px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+  }
+
+  .section {
+    margin: 16px 0;
+
+    .label {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .nut-radio-group, .nut-checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 8px;
+
+      .nut-radio__button, .nut-checkbox__button {
+        border-radius: 20px;
+        padding: 6px 12px;
+        text-align: center;
+      }
+    }
+  }
+
+  .result-card {
+    text-align: center;
+
+    .score {
+      font-size: 48px;
+      font-weight: bold;
+      color: @primary-color;
+      margin: 12px 0;
+    }
+
+    .nut-progress {
+      margin: 16px 0;
+    }
+
+    .factor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+
+      .nut-tag {
+        font-size: 12px;
+        padding: 4px 8px;
+        white-space: normal;
+        height: auto;
+        line-height: 1.4;
+      }
+    }
+
+    .violations {
+      text-align: left;
+      margin: 16px 0;
+      padding: 12px;
+      background: #fff1f0;
+      border-radius: 8px;
+
+      .violation-title {
+        color: #cf1322;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .violation-item {
+        color: #cf1322;
+        display: block;
+        margin: 4px 0;
+        line-height: 1.5;
+        word-break: break-all;
+      }
+    }
+
+    .evaluation {
+      color: @success-color;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 12px;
+
+      &[data-score-warning] {
+        color: @warning-color;
+      }
+    }
+  }
+}
+
+// 添加Cell组件的文本溢出处理
+:global {
+  .nut-cell {
+    .nut-cell__title {
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .nut-cell__value {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nut-cell__description {
+      word-break: break-all;
+      white-space: normal;
+    }
+  }
+}

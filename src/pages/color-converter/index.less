@@ -1,46 +1,117 @@
+// index.less
 .color-converter {
-  padding: 20px;
+  padding: 16px;
+  background: #f5f5f5;
+  min-height: 100vh;
 
-  .color-preview {
-    width: 100%;
-    height: 200px;
+  .color-card {
+    background: #fff;
     border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+    margin-bottom: 16px;
+    overflow: hidden;
 
-  .input-group {
-    .input-section {
-      margin-bottom: 20px;
+    .color-preview {
+      height: 200px;
       position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
 
-      .at-input {
-        margin-bottom: 10px;
-      }
-
-      .copy-btn {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        padding: 5px 10px;
-        background-color: var(--color-brand);
+      .color-values {
+        background: rgba(0, 0, 0, 0.65);
         color: #fff;
+        padding: 12px;
         border-radius: 4px;
-        font-size: 24px;
-      }
+        width: 100%;
+        font-size: 12px;
 
-      .hsl-value {
-        padding: 20px;
-        background-color: var(--color-bg);
-        border-radius: 4px;
-        font-size: 28px;
-        position: relative;
-
-        .copy-btn {
-          top: 20px;
+        > view {
+          margin: 4px 0;
         }
       }
     }
+  }
+
+  .input-group {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+    padding: 16px;
+
+    .input-item {
+      margin-bottom: 24px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .input-label {
+        color: rgba(0, 0, 0, 0.85);
+        font-size: 14px;
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+
+      .input-content {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        .ant-input {
+          flex: 1;
+          height: 32px;
+          border: 1px solid #d9d9d9;
+          border-radius: 4px;
+          padding: 0 11px;
+          font-size: 14px;
+
+          &:focus {
+            border-color: #40a9ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+          }
+        }
+
+        .channel-label {
+          width: 24px;
+          color: rgba(0, 0, 0, 0.85);
+          font-size: 14px;
+        }
+      }
+
+      .rgb-inputs {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .hsl-value {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fafafa;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-size: 14px;
+
+        .hsl-text {
+          color: rgba(0, 0, 0, 0.85);
+        }
+      }
+    }
+  }
+}
+
+// NutUI组件样式覆盖
+.nut-button.ant-btn-text {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: #1890ff;
+  background: transparent;
+  border: none;
+
+  &:active {
+    background: rgba(24, 144, 255, 0.1);
   }
 }

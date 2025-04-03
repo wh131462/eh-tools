@@ -14,6 +14,7 @@ import mortgageIcon from '@/assets/icons/mortgage.png'
 import unitConverterIcon from '@/assets/icons/unit-converter.png'
 import qrcodeIcon from '@/assets/icons/qr-code.png'
 import encryptionIcon from '@/assets/icons/encryption.png'
+import salaryIcon from '@/assets/icons/salary.png'
 import colorCardIcon from '@/assets/icons/color-card.png'
 import imageZipIcon from '@/assets/icons/image-zip.png'
 import imageFilterIcon from '@/assets/icons/image-filter.png'
@@ -77,6 +78,12 @@ function Index() {
           icon: unitConverterIcon
         },
         {id: 'bmi', text: t('bmi'), path: '/pages/calculator/bmi/index', icon: bmiIcon},
+        {
+          id: 'laborSalaryCalculator',
+          text: t('laborSalaryCalculator'),
+          path: '/pages/calculator/labor-salary-calculator/index',
+          icon: salaryIcon
+        },
         {id: 'crypto', text: t('crypto'), path: '/pages/crypto/index', icon: encryptionIcon},
       ]
     },
@@ -84,7 +91,7 @@ function Index() {
       id: 'art',
       title: t('artTools'),
       tools: [
-        {id: 'compress', text: t('imageCompress'), path: '/pages/image/compress/index', icon: imageZipIcon},
+        {id: 'compress', text: t('imageCompressor'), path: '/pages/image/compress/index', icon: imageZipIcon},
         {id: 'filter', text: t('imageFilter'), path: '/pages/image/filter/index', icon: imageFilterIcon},
         {id: 'colorCard', text: t('colorCard'), path: '/pages/color-card/index', icon: colorCardIcon},
         {id: 'colorConverter', text: t('colorConverter'), path: '/pages/color-converter/index', icon: colorCardIcon},
