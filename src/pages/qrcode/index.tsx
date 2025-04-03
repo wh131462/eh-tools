@@ -71,10 +71,6 @@ function QRCode() {
           onChange={value => setText(value)}
           placeholder={t('enterText')}
           rows={3}
-          autoSize={{
-            minHeight: 50,
-            maxHeight: 100
-          }}
         />
         <Button type='primary' onClick={handleGenerate}>
           {t('generate')}

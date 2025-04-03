@@ -108,6 +108,9 @@
           margin-top: 12px;
           font-size: 12px;
           color: rgba(0, 0, 0, 0.45);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
 
         .compressed-preview {
@@ -150,7 +153,8 @@
       .button-group {
         display: flex;
         gap: 16px;
-        justify-content: flex-end;
+        flex-direction: column;
+        align-items: center;
 
         .nut-button {
           min-width: 96px;

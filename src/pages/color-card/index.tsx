@@ -63,7 +63,7 @@ const ColorCardPage: React.FC = () => {
   return (
     <View className={`color-card-page ${isFullscreen ? 'fullscreen' : ''}`}>
       <View className='color-display' style={{backgroundColor: color}} onClick={handleToggleFullscreen}>
-        <View className='color-value'>{color}</View>
+        {!isFullscreen && <View className='color-value'>{color}</View>}
       </View>
 
       <View className={`controls ${isFullscreen ? 'hidden' : ''}`}>

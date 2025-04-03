@@ -205,7 +205,7 @@ const ImageFilter = () => {
             onClick={handleSave}
             className='ant-save-btn'
           >
-            导出图片
+            {t("exportImage")}
           </Button>
         </View>
       )}

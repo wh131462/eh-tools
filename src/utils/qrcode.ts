@@ -1,39 +1,41 @@
 import jsQR from 'jsqr';
 import qrcode from 'qrcode-generator';
 
-// 生成逻辑修正版
+// 生成二维码（支持 UTF-8 中文）
 export function generateQRCode(data: string): boolean[][] {
-    const qr = qrcode(0, 'H'); // 使用自动版本选择(0)和最高纠错级别(H)
-    qr.setUtf8(true); // 启用UTF-8编码
-    qr.addData(data);
-    qr.make();
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs["UTF-8"];
+  const qr = qrcode(0, 'M'); // 选择版本，'M' 级错误修正
+  qr.addData(data); // 以字节方式存储
+  qr.make();
 
-    const moduleCount = qr.getModuleCount();
-    const quietZone = 4;
-    const totalSize = moduleCount + quietZone * 2;
+  const moduleCount = qr.getModuleCount();
+  const quietZone = 4;
+  const totalSize = moduleCount + quietZone * 2;
 
-    // 初始化静默区矩阵
-    const matrix: boolean[][] = Array.from({length: totalSize}, () =>
-        Array(totalSize).fill(false)
-    );
+  // 初始化矩阵，填充静默区
+  const matrix: boolean[][] = Array.from({length: totalSize}, () =>
+    Array(totalSize).fill(false)
+  );
 
-    // 填充数据（注意行列坐标系差异）
-    for (let y = 0; y < moduleCount; y++) {
-        for (let x = 0; x < moduleCount; x++) {
-            matrix[y + quietZone][x + quietZone] = qr.isDark(y, x);
-        }
+  // 填充二维码数据
+  for (let y = 0; y < moduleCount; y++) {
+    for (let x = 0; x < moduleCount; x++) {
+      matrix[y + quietZone][x + quietZone] = qr.isDark(y, x);
     }
-    return matrix;
+  }
+  return matrix;
 }
 
-
-// 解码QR码
-export function decodeQRCode(data, width, height): string {
-    try {
-        const code = jsQR(data, width, height);
-        return code ? code.data : '';
-    } catch (error) {
-        console.error('Decode error:', error);
-        return '';
+// 解码二维码
+export function decodeQRCode(data: Uint8ClampedArray, width: number, height: number): string {
+  try {
+    const code = jsQR(data, width, height);
+    if (code) {
+      return code.data
     }
+    return '';
+  } catch (error) {
+    console.error('Decode error:', error);
+    return '';
+  }
 }
