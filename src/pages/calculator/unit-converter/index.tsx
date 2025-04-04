@@ -4,6 +4,8 @@ import {useState} from 'react'
 import {useTranslation} from '@/i18n'
 import './index.less'
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
+import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 interface UnitCategory {
   value: string
@@ -75,7 +77,13 @@ function UnitConverter() {
   const [toVisible, setToVisible] = useState(false)
 
   usePageTitle("unitConverter")
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["unitConverter"]
+  });
+  useShareTimeline(() => {
+    return shares["unitConverter"]
+  });
   const unitCategories = getUnitCategories(t)
   const currentCategory = unitCategories[categoryIndex]
 

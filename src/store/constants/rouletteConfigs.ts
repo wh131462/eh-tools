@@ -28,11 +28,11 @@ export const twelveStars: RouletteConfig = {
     {id: "12", name: "双鱼座"},
   ],
   createTime: Date.now(),
-  description: "选择你的星座"
+  description: "十二星座是什么?"
 }
 export const gua8: RouletteConfig = {
   id: "bagua",
-  name: "八卦",
+  name: "传统八卦",
   items: [
     {id: "1", name: "乾"},
     {id: "2", name: "坤"},
@@ -44,11 +44,11 @@ export const gua8: RouletteConfig = {
     {id: "8", name: "坎"},
   ],
   createTime: Date.now(),
-  description: "八卦"
+  description: "原来你也喜欢八卦"
 }
 export const gua64: RouletteConfig = {
   id: "gua",
-  name: "六十四卦",
+  name: "周易六十四卦",
   items: [
     {id: "1", name: "乾", color: "#FFD700"},   // 天行健 - 金色象征天
     {id: "2", name: "坤", color: "#8B4513"},   // 地势坤 - 大地棕
@@ -116,7 +116,7 @@ export const gua64: RouletteConfig = {
     {id: "64", name: "未济", color: "#FF1493"}  // 火水未济 - 未成玫红
   ],
   createTime: Date.now(),
-  description: "周易六十四卦"
+  description: "传统文化周易六十四卦有什么?"
 }
 export const eatToday: RouletteConfig = {
   id: "1",

@@ -5,7 +5,7 @@ import {Button, Dialog} from '@nutui/nutui-react-taro';
 import './index.less';
 import ColorPicker, {ColorPickerRef} from "@/components/ColorPicker";
 import {addFavorite, removeFavorite, setColor, setFavorites, toggleFullscreen} from '@/store/slices/colorCardSlice';
-import Taro from "@tarojs/taro";
+import Taro, {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 import {useTranslation} from "@/i18n";
 import {usePageTitle} from "@/hooks/usePageTitle";
 
@@ -15,7 +15,13 @@ const ColorCardPage: React.FC = () => {
   const {color, favorites, isFullscreen} = useAppSelector(state => state.colorCard);
   const colorPickerRef = useRef<ColorPickerRef>(null);
   usePageTitle("colorCard")
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["colorCard"]
+  });
+  useShareTimeline(() => {
+    return shares["colorCard"]
+  });
   useEffect(() => {
     // 从本地存储加载收藏的颜色
     const savedFavorites = Taro.getStorageSync('colorCardFavorites');

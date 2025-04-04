@@ -4,6 +4,8 @@ import {useTranslation} from '@/i18n'
 import './index.less'
 import {DatePicker} from "@nutui/nutui-react-taro";
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
+import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 function TimeDiff() {
   const {t} = useTranslation()
@@ -11,7 +13,13 @@ function TimeDiff() {
   const [endTime, setEndTime] = useState(new Date())
   const [showStart, setShowStart] = useState(false)
   const [showEnd, setShowEnd] = useState(false)
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["timeDiff"]
+  });
+  useShareTimeline(() => {
+    return shares["timeDiff"]
+  });
   usePageTitle("timeDiff")
 
   const formatDate = (date: Date): string => {

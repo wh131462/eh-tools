@@ -4,13 +4,21 @@ import {useTranslation} from '@/i18n'
 import './index.less'
 import {DatePicker, Dialog, PickerOption} from "@nutui/nutui-react-taro";
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
+import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 function CountdownTimer() {
   const {t} = useTranslation()
   const [totalSeconds, setTotalSeconds] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [intervalId, setIntervalId] = useState<any>(null)
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["countdown"]
+  });
+  useShareTimeline(() => {
+    return shares["countdown"]
+  });
   usePageTitle("countdown")
 
   useEffect(() => {

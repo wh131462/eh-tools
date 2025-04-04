@@ -4,6 +4,8 @@ import {useTranslation} from '@/i18n'
 import './index.less'
 import {usePageTitle} from "@/hooks/usePageTitle";
 import {formatDate} from "@/utils/date";
+import {useAppSelector} from "@/store/hooks";
+import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 interface TimeZone {
   id: string
@@ -32,7 +34,13 @@ function WorldClock() {
     timeZones[0], // 默认显示上海时间
   ])
   const [showPicker, setShowPicker] = useState(false)
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["worldClock"]
+  });
+  useShareTimeline(() => {
+    return shares["worldClock"]
+  });
   usePageTitle("worldClock")
 
   useEffect(() => {

@@ -1,9 +1,9 @@
-import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import {defineConfig, type UserConfigExport} from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
-export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
+export default defineConfig<'webpack5'>(async (merge, {command, mode}) => {
   const baseConfig: UserConfigExport<'webpack5'> = {
     projectName: 'eh-tools',
     date: '2025-2-27',
@@ -17,8 +17,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
     sourceRoot: 'src',
     outputRoot: 'dist',
     plugins: ['@tarojs/plugin-html'],
-    defineConstants: {
-    },
+    defineConstants: {},
     copy: {
       patterns: [
         {
@@ -26,8 +25,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
           to: 'dist/assets'
         }
       ],
-      options: {
-      }
+      options: {}
     },
     framework: 'react',
     compiler: {
@@ -60,7 +58,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
-      }
+      },
     },
     h5: {
       publicPath: '/',

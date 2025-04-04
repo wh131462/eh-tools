@@ -1,10 +1,11 @@
 import {Image, View} from '@tarojs/components'
 import {useState} from 'react'
-import Taro from '@tarojs/taro'
+import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro'
 import {Button, Range, Tabs} from "@nutui/nutui-react-taro"
 import {useTranslation} from '@/i18n'
 import './index.less'
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
 
 interface ImageInfo {
   path: string
@@ -22,6 +23,13 @@ interface FilterValues {
 const ImageFilter = () => {
   const {t} = useTranslation()
   usePageTitle("imageFilter")
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["imageFilter"]
+  });
+  useShareTimeline(() => {
+    return shares["imageFilter"]
+  });
   const [image, setImage] = useState<ImageInfo | null>(null)
   const [currentTab, setCurrentTab] = useState<string | number>(0)
   const [filterValues, setFilterValues] = useState<FilterValues>({

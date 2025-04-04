@@ -1,10 +1,11 @@
 import {Image, View} from '@tarojs/components'
 import {useState} from 'react'
-import Taro from '@tarojs/taro'
+import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro'
 import {Button, Range} from "@nutui/nutui-react-taro"
 import "./index.less"
 import {useTranslation} from "@/i18n";
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
 
 interface ImageInfo {
   path: string
@@ -17,6 +18,13 @@ interface ImageInfo {
 const ImageCompressor = () => {
   const {t} = useTranslation()
   usePageTitle("imageCompressor")
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["imageCompressor"]
+  });
+  useShareTimeline(() => {
+    return shares["imageCompressor"]
+  });
   const [images, setImages] = useState<ImageInfo[]>([])
   const [quality, setQuality] = useState(80)
 

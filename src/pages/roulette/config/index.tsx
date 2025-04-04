@@ -18,12 +18,13 @@ interface ConfigProps {
 const RouletteConfigPage: React.FC<ConfigProps> = () => {
   const instance = getCurrentInstance();
   const dispatch = useDispatch();
-  const {t} = useTranslation()
-  const configs = useSelector((state: RootState) => state.roulette.configs);
   const newConfig: RouletteConfig = {createTime: Date.now(), items: [], id: Date.now().toString(), name: ""};
+  const configs = useSelector((state: RootState) => state.roulette.configs);
+  const {t} = useTranslation()
   const [config, setConfig] = useState<RouletteConfig>(newConfig);
   const [setForm] = Form.useForm()
   const [itemForm] = Form.useForm()
+  usePageTitle("rouletteConfig")
   useEffect(() => {
     const {id} = instance.router?.params ?? {};
     if (id) {
@@ -31,7 +32,6 @@ const RouletteConfigPage: React.FC<ConfigProps> = () => {
       cur && setConfig(cur)
     }
   }, []);
-  usePageTitle("rouletteConfig")
 
   const handleName = () => {
     const newName = setForm.getFieldValue("name")

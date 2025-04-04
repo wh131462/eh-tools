@@ -1,6 +1,6 @@
 import {Image, View} from '@tarojs/components'
 import {Grid} from '@nutui/nutui-react-taro'
-import Taro from '@tarojs/taro'
+import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro'
 import {useTranslation} from '@/i18n'
 import CustomSwiper, {SwiperItem} from '@/components/Swiper'
 import calendarIcon from '@/assets/icons/calendar.png'
@@ -22,10 +22,19 @@ import './index.less'
 
 import releaseBanner from '@/assets/banner/release.jpg'
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
 
 function Index() {
   const {t} = useTranslation();
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["tools"]
+  });
+  useShareTimeline(() => {
+    return shares["tools"]
+  });
   usePageTitle("tools")
+
   const banners: SwiperItem[] = [
     {id: '1', type: 'content', image: releaseBanner, title: 'EH工具发布'},
     // {id: '2', type: 'ad', adUnitId: 'adunit-8f71700fb343c1c4'}

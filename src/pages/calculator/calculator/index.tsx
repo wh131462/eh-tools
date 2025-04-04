@@ -5,6 +5,8 @@ import {useTranslation} from '@/i18n'
 import {usePageTitle} from "@/hooks/usePageTitle";
 import './index.less'
 import {Parser} from 'expr-eval';
+import {useAppSelector} from "@/store/hooks";
+import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 type CalculatorMode = 'basic' | 'scientific' | 'programmer'
 
@@ -17,7 +19,13 @@ function Calculator() {
   const [isRadians, setIsRadians] = useState(false)
   const [bitLength, setBitLength] = useState(32)
   usePageTitle('calculator');
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["calculator"]
+  });
+  useShareTimeline(() => {
+    return shares["calculator"]
+  });
   const formatDisplay = (value: string) => {
     if (mode === 'programmer') {
       let num = parseInt(value.split('.')[0], 10) || 0

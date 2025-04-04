@@ -2,7 +2,7 @@ import {Button, Input, Textarea, View} from '@tarojs/components'
 import {useDispatch, useSelector} from 'react-redux'
 import Layout from '@/components/Layout'
 import {setAlgorithm, setKey, setMode, setResult, setText} from '@/store/slices/cryptoSlice'
-import Taro from '@tarojs/taro'
+import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro'
 import CryptoJS from 'crypto-js'
 import {useState} from "react"
 import "./index.less"
@@ -10,6 +10,7 @@ import {usePageTitle} from "@/hooks/usePageTitle";
 import {useTranslation} from "@/i18n";
 import {copyToClipboard} from "@/utils/clipboard";
 import {decode, encode} from 'js-base64';
+import {useAppSelector} from "@/store/hooks";
 
 const algorithms = [
   {id: 'base64', name: 'Base64'},
@@ -22,6 +23,13 @@ export default function Crypto() {
   const [processing, setProcessing] = useState(false)
 
   usePageTitle("crypto")
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["crypto"]
+  });
+  useShareTimeline(() => {
+    return shares["crypto"]
+  });
 
   const dispatch = useDispatch()
   const {text, result, algorithm, key, mode} = useSelector((state: any) => state.crypto)
@@ -108,19 +116,19 @@ export default function Crypto() {
             className={`switch-btn ${mode === 'encrypt' ? 'active' : ''}`}
             onClick={() => dispatch(setMode('encrypt'))}
           >
-            🛡️ {t("cryptoEncode")}
+            {t("cryptoEncode")}
           </Button>
           <Button
             className={`switch-btn ${mode === 'decrypt' ? 'active' : ''}`}
             onClick={() => dispatch(setMode('decrypt'))}
           >
-            🔓 {t("cryptoDecode")}
+            {t("cryptoDecode")}
           </Button>
         </View>
 
         {/* 算法选择 */}
         <View className='algorithm-selector'>
-          <View className='section-title'>🔐 {t('cryptoAlgorithm')}</View>
+          <View className='section-title'>{t('cryptoAlgorithm')}</View>
           <View className='algorithm-buttons'>
             {algorithms.map(algo => (
               <Button
@@ -140,7 +148,7 @@ export default function Crypto() {
             <Input
               className='input-field'
               password
-              placeholder={'🔑 ' + t("cryptoInputKeyTips")}
+              placeholder={t("cryptoInputKeyTips")}
               value={key}
               onInput={e => dispatch(setKey(e.detail.value))}
             />

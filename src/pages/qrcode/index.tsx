@@ -4,14 +4,21 @@ import {useState} from 'react'
 import {useTranslation} from '@/i18n'
 import {decodeQRCode, generateQRCode} from "@/utils/qrcode";
 import {usePageTitle} from "@/hooks/usePageTitle";
-import Taro from '@tarojs/taro'
+import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro'
 import './index.less'
+import {useAppSelector} from "@/store/hooks";
 
 function QRCode() {
   const {t} = useTranslation()
   const [text, setText] = useState('')
   const [decodedResult, setDecodedResult] = useState('')
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["qrcode"]
+  });
+  useShareTimeline(() => {
+    return shares["qrcode"]
+  });
   usePageTitle("qrcode")
 
   // 生成二维码

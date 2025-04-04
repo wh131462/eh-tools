@@ -4,6 +4,8 @@ import './index.less'
 import {useTranslation} from "@/i18n";
 import {VirtualList} from "@nutui/nutui-react-taro";
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
+import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 interface LoanResult {
   monthlyPayment: number
@@ -26,7 +28,13 @@ function MortgageCalculator() {
   const [calculationType, setCalculationType] = useState<'equal-payment' | 'equal-principal'>('equal-payment')
   const [result, setResult] = useState<LoanResult | null>(null)
   usePageTitle("mortgage")
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["mortgage"]
+  });
+  useShareTimeline(() => {
+    return shares["mortgage"]
+  });
   const calculateEqualPayment = () => {
     const principal = parseFloat(loanAmount)
     const years = parseFloat(loanTerm)

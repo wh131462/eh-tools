@@ -4,6 +4,8 @@ import './index.less'
 import {View} from "@tarojs/components";
 import {Input} from "@nutui/nutui-react-taro";
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
+import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 interface BMIResult {
   bmi: number
@@ -17,7 +19,13 @@ function BMICalculator() {
   const [weight, setWeight] = useState('')
   const [result, setResult] = useState<BMIResult | null>(null)
   usePageTitle('bmi');
-
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["bmi"]
+  });
+  useShareTimeline(() => {
+    return shares["bmi"]
+  });
   const calculateBMI = () => {
     const heightInM = parseFloat(height) / 100
     const weightInKg = parseFloat(weight)

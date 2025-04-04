@@ -1,10 +1,11 @@
 import {View} from '@tarojs/components'
 import {useState} from 'react'
-import Taro from '@tarojs/taro'
+import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro'
 import {Button, Input} from "@nutui/nutui-react-taro"
 import {useTranslation} from '@/i18n'
 import "./index.less"
 import {usePageTitle} from '@/hooks/usePageTitle'
+import {useAppSelector} from "@/store/hooks";
 
 interface ColorState {
   hex: string
@@ -15,6 +16,13 @@ interface ColorState {
 const ColorConverter = () => {
   const {t} = useTranslation();
   usePageTitle('colorConverter');
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["colorConverter"]
+  });
+  useShareTimeline(() => {
+    return shares["colorConverter"]
+  });
   const [color, setColor] = useState<ColorState>({
     hex: '#1890ff',  // 使用Ant Design主色
     rgb: {r: 24, g: 144, b: 255},

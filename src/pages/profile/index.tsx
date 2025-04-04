@@ -1,6 +1,6 @@
 import {Text, View} from '@tarojs/components'
 import {Avatar, Cell} from '@nutui/nutui-react-taro'
-import Taro from '@tarojs/taro'
+import Taro, {useShareAppMessage, useShareTimeline} from '@tarojs/taro'
 import {useTranslation} from '@/i18n'
 import {useAppSelector} from '@/store/hooks'
 import './index.less'
@@ -11,6 +11,13 @@ function Profile() {
   const {userInfo} = useAppSelector(state => state.user);
 
   usePageTitle("profile")
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["profile"]
+  });
+  useShareTimeline(() => {
+    return shares["profile"]
+  });
 
   const handleAvatarClick = () => {
     Taro.navigateTo({url: '/pages/profile/info/index'});

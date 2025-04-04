@@ -4,6 +4,8 @@ import {Button, Cell, ConfigProvider, Input, Progress, Tag} from '@nutui/nutui-r
 import {useTranslation} from '@/i18n'
 import './index.less'
 import {usePageTitle} from "@/hooks/usePageTitle";
+import {useAppSelector} from "@/store/hooks";
+import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 // 工作时间相关常量
 const STANDARD_WORK_HOURS = 8 // 标准工作时长
@@ -17,6 +19,13 @@ const OVERTIME_RATES = {
 const LaborSalaryCalculator = () => {
   const {t} = useTranslation()
   usePageTitle('laborSalaryCalculator')
+  const {shares} = useAppSelector(state => state.app);
+  useShareAppMessage(() => {
+    return shares["laborSalaryCalculator"]
+  });
+  useShareTimeline(() => {
+    return shares["laborSalaryCalculator"]
+  });
   // 基础输入
   const [baseSalary, setBaseSalary] = useState('5000') // 基本工资
   const [workHours, setWorkHours] = useState('9') // 日工作时长
