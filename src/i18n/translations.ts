@@ -189,6 +189,7 @@ export const translations: Translations = {
     // Image Tools
     imageCompressor: "图片压缩",
     imageFilter: "图片滤镜",
+    startCompress: "开始压缩",
     addImage: "添加图片",
     chooseImage: "选择图片",
     supportFormat: "支持JPG/PNG格式",
@@ -600,6 +601,7 @@ export const translations: Translations = {
     // Image Tools
     imageCompressor: "Image Compress",
     imageFilter: "Image Filter",
+    startCompress: "Start Compress",
     addImage: "Add Image",
     chooseImage: "Choose Image",
     supportFormat: "Support JPG/PNG format",
