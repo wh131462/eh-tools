@@ -8,7 +8,7 @@ import {Parser} from 'expr-eval';
 import {useAppSelector} from "@/store/hooks";
 import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
-type CalculatorMode = 'basic' | 'scientific' | 'programmer'
+type CalculatorMode = 'basic' | 'scientific'
 
 function Calculator() {
   const {t} = useTranslation()
@@ -16,8 +16,6 @@ function Calculator() {
   const [expression, setExpression] = useState('')
   const [lastResult, setLastResult] = useState('')
   const [mode, setMode] = useState<CalculatorMode>('basic')
-  const [isRadians, setIsRadians] = useState(false)
-  const [bitLength, setBitLength] = useState(32)
   usePageTitle('calculator');
   const {shares} = useAppSelector(state => state.app);
   useShareAppMessage(() => {
@@ -27,17 +25,10 @@ function Calculator() {
     return shares["calculator"]
   });
   const formatDisplay = (value: string) => {
-    if (mode === 'programmer') {
-      let num = parseInt(value.split('.')[0], 10) || 0
-      const mask = (1 << bitLength) - 1
-      num = (num & mask) >>> 0
-      return num.toString(2).padStart(bitLength, '0')
-    }
     return value
   }
 
   const handleNumber = (num: string) => {
-    if (mode === 'programmer' && !['0', '1'].includes(num)) return
     if (display === '0' || lastResult) {
       setDisplay(num)
       setLastResult('')
@@ -48,30 +39,31 @@ function Calculator() {
   }
 
   const handleOperator = (op: string) => {
-    if (mode === 'programmer' && !['&', '|', '^', '~', '<<', '>>'].includes(op)) return
-
     if (lastResult) {
-      setExpression(lastResult + op)
+      if (op === '√(') {
+        setExpression('√(' + lastResult + ')')
+      } else {
+        setExpression(lastResult + op)
+      }
       setLastResult('')
     } else if (expression.length > 0) {
       const lastChar = expression[expression.length - 1]
-      if ((op === '(' || op === '√(') && lastChar.match(/[0-9\)]/)) {
+      if (op === '√(' && lastChar.match(/[0-9\)]/)) {
+        setExpression('√(' + expression + ')')
+      } else if ((op === '(' || op.startsWith('sin') || op.startsWith('cos') || op.startsWith('tan')) && lastChar.match(/[0-9\)]/)) {
         setExpression(expression + '×' + op)
-      } else if (['+-×÷&|^'].includes(lastChar)) {
+      } else if (['+', '-', '×', '÷'].includes(lastChar)) {
         setExpression(expression.slice(0, -1) + op)
       } else {
         setExpression(expression + op)
       }
-    } else if (op === '√(' || op === '~') {
+    } else {
       setExpression(op)
-    } else if (!['(', '-', '~'].includes(op)) {
-      return
     }
     setDisplay('0')
   }
 
   const handleDecimal = () => {
-    if (mode === 'programmer') return
     if (!display.includes('.')) {
       setDisplay(display + '.')
       setExpression(expression + '.')
@@ -109,9 +101,9 @@ function Calculator() {
   const calculateScientific = (expr: string): number => {
     try {
       const parser = new Parser()
-      parser.functions.sin = (n: number) => Math.sin(isRadians ? n : n * Math.PI / 180)
-      parser.functions.cos = (n: number) => Math.cos(isRadians ? n : n * Math.PI / 180)
-      parser.functions.tan = (n: number) => Math.tan(isRadians ? n : n * Math.PI / 180)
+      parser.functions.sin = (n: number) => Math.sin(n)
+      parser.functions.cos = (n: number) => Math.cos(n)
+      parser.functions.tan = (n: number) => Math.tan(n)
       parser.functions.sqrt = (n: number) => Math.sqrt(n)
 
       expr = expr.replace(/×/g, '*')
@@ -126,106 +118,44 @@ function Calculator() {
     }
   }
 
-  const calculateProgrammer = (expr: string, bitLength: number): number => {
-    expr = expr.replace(/&/g, ' & ')
-      .replace(/\|/g, ' | ')
-      .replace(/\^/g, ' ^ ')
-      .replace(/<</g, ' << ')
-      .replace(/>>/g, ' >> ')
-      .replace(/~/g, '~')
-      .replace(/(\d+)/g, (m) => parseInt(m, 2).toString())
-
-    const parts = expr.split(/(<<|>>|[&|^])|(~)/).filter(p => p)
-    let result = 0
-    let currentOp = ''
-    const mask = (1 << bitLength) - 1
-
-    for (const part of parts) {
-      if (['&', '|', '^', '<<', '>>', '~'].includes(part)) {
-        currentOp = part
-      } else {
-        const num = part === '~' ? result : (parseInt(part, 10) & mask);
-        switch (currentOp) {
-          case '&':
-            result &= num
-            break
-          case '|':
-            result |= num
-            break
-          case '^':
-            result ^= num
-            break
-          case '<<':
-            result <<= num
-            break
-          case '>>':
-            result >>= num
-            break
-          case '~':
-            result = ~num
-            break
-          default:
-            result = num
-        }
-        result = (result & mask) >>> 0
-      }
-    }
-    return result
-  }
-
   const calculateResult = () => {
     try {
-      let result = 0
+      let result: number = 0;
       switch (mode) {
         case 'basic':
-          result = calculateBasic(expression)
-          break
+          result = calculateBasic(expression);
+          break;
         case 'scientific':
-          result = calculateScientific(expression)
-          break
-        case 'programmer':
-          result = calculateProgrammer(expression, bitLength)
-          break
+          result = calculateScientific(expression);
+          break;
       }
+      console.log("result:", result);
 
-      const formattedResult = mode === 'programmer'
-        ? result.toString(2).padStart(bitLength, '0')
-        : Number.isInteger(result)
-          ? result.toString()
-          : result.toFixed(8).replace(/\.?0+$/, '')
+      const formattedResult = Number.isInteger(result)
+        ? result.toString()
+        : (Number(result)).toFixed(8).replace(/\.?0+$/, '');
+      console.log("formattedResult:", result);
 
-      setDisplay(formattedResult)
-      setLastResult(formattedResult)
-      setExpression('')
+      setDisplay(formattedResult);
+      setLastResult(formattedResult);
+      setExpression('');
     } catch (error) {
-      setDisplay(t('invalidExpression'))
-      setTimeout(() => setDisplay('0'), 2000)
-      setExpression('')
+      setDisplay(t('invalidExpression'));
+      setTimeout(() => setDisplay('0'), 2000);
+      setExpression('');
     }
   }
+
 
   return (
     <View className='calculator'>
       <View className='mode-switch'>
         <Button size='small' onClick={() => setMode('basic')} type={mode === 'basic' ? 'primary' : 'default'}>
-          {t('basic')}
+          {t('basicMode')}
         </Button>
         <Button size='small' onClick={() => setMode('scientific')} type={mode === 'scientific' ? 'primary' : 'default'}>
-          {t('scientific')}
+          {t('scientificMode')}
         </Button>
-        <Button size='small' onClick={() => setMode('programmer')} type={mode === 'programmer' ? 'primary' : 'default'}>
-          {t('programmer')}
-        </Button>
-        {mode === 'scientific' && (
-          <Button size='small' onClick={() => setIsRadians(!isRadians)}>
-            {isRadians ? 'RAD' : 'DEG'}
-          </Button>
-        )}
-        {mode === 'programmer' && (
-          <Button size='small' onClick={() => setBitLength(bitLength === 32 ? 64 : 32)}>
-            {bitLength}-bit
-          </Button>
-        )}
       </View>
 
       <View className='display'>
@@ -251,55 +181,36 @@ function Calculator() {
           </View>
         )}
 
-        {mode === 'programmer' && (
-          <View className='scientific-rows'>
-            <View className='row'>
-              <Button onClick={() => handleOperator('&')}>AND</Button>
-              <Button onClick={() => handleOperator('|')}>OR</Button>
-              <Button onClick={() => handleOperator('^')}>XOR</Button>
-              <Button onClick={() => handleOperator('~')}>NOT</Button>
-            </View>
-            <View className='row'>
-              <Button onClick={() => handleOperator('<<')}>SHL</Button>
-              <Button onClick={() => handleOperator('>>')}>SHR</Button>
-              <Button onClick={() => setBitLength(8)}>8-bit</Button>
-              <Button onClick={() => setBitLength(16)}>16-bit</Button>
-            </View>
-          </View>
-        )}
-
         <View className='row'>
           <Button onClick={handleClear}>{t('clear')}</Button>
           <Button onClick={handleDelete}>{t('delete')}</Button>
-          {mode !== 'programmer' && <Button onClick={() => handleOperator('÷')}>÷</Button>}
-          {mode === 'programmer' && <Button onClick={() => handleOperator('>>')}>&gt;&gt;</Button>}
+          <Button onClick={() => handleOperator('÷')}>÷</Button>
         </View>
 
         <View className='row'>
-          <Button onClick={() => handleNumber('7')} disabled={mode === 'programmer'}>7</Button>
-          <Button onClick={() => handleNumber('8')} disabled={mode === 'programmer'}>8</Button>
-          <Button onClick={() => handleNumber('9')} disabled={mode === 'programmer'}>9</Button>
-          {mode !== 'programmer' && <Button onClick={() => handleOperator('×')}>×</Button>}
-          {mode === 'programmer' && <Button onClick={() => handleOperator('<<')}> &lt;&lt; </Button>}
+          <Button onClick={() => handleNumber('7')}>7</Button>
+          <Button onClick={() => handleNumber('8')}>8</Button>
+          <Button onClick={() => handleNumber('9')}>9</Button>
+          <Button onClick={() => handleOperator('×')}>×</Button>
         </View>
 
         <View className='row'>
-          <Button onClick={() => handleNumber('4')} disabled={mode === 'programmer'}>4</Button>
-          <Button onClick={() => handleNumber('5')} disabled={mode === 'programmer'}>5</Button>
-          <Button onClick={() => handleNumber('6')} disabled={mode === 'programmer'}>6</Button>
+          <Button onClick={() => handleNumber('4')}>4</Button>
+          <Button onClick={() => handleNumber('5')}>5</Button>
+          <Button onClick={() => handleNumber('6')}>6</Button>
           <Button onClick={() => handleOperator('-')}>-</Button>
         </View>
 
         <View className='row'>
-          <Button onClick={() => handleNumber('1')} disabled={mode === 'programmer' && display !== '0'}>1</Button>
-          <Button onClick={() => handleNumber('2')} disabled={mode === 'programmer'}>2</Button>
-          <Button onClick={() => handleNumber('3')} disabled={mode === 'programmer'}>3</Button>
+          <Button onClick={() => handleNumber('1')}>1</Button>
+          <Button onClick={() => handleNumber('2')}>2</Button>
+          <Button onClick={() => handleNumber('3')}>3</Button>
           <Button onClick={() => handleOperator('+')}>+</Button>
         </View>
 
         <View className='row'>
           <Button onClick={() => handleNumber('0')}>0</Button>
-          <Button onClick={handleDecimal} disabled={mode === 'programmer'}>.</Button>
+          <Button onClick={handleDecimal}>.</Button>
           <Button onClick={calculateResult}>=</Button>
         </View>
       </View>

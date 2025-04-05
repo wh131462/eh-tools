@@ -6,6 +6,7 @@ import {useTranslation} from '@/i18n'
 import './index.less'
 import {usePageTitle} from "@/hooks/usePageTitle";
 import {useAppSelector} from "@/store/hooks";
+import {checkSaveImagePermission} from "@/utils/permission";
 
 interface ImageInfo {
   path: string
@@ -94,6 +95,15 @@ const ImageFilter = () => {
   }
 
   const handleSave = async () => {
+    const hasPermission = await checkSaveImagePermission();
+    if (!hasPermission) {
+      Taro.showToast({
+        title: t('saveFailed'),
+        icon: 'error',
+        duration: 2000
+      });
+      return;
+    }
     if (!image) {
       Taro.showToast({
         title: t('pleaseChooseImage'),

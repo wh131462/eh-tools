@@ -6,6 +6,7 @@ import "./index.less"
 import {useTranslation} from "@/i18n";
 import {usePageTitle} from "@/hooks/usePageTitle";
 import {useAppSelector} from "@/store/hooks";
+import {checkSaveImagePermission} from '@/utils/permission';
 
 interface ImageInfo {
   path: string
@@ -105,6 +106,16 @@ const ImageCompressor = () => {
       return
     }
 
+    const hasPermission = await checkSaveImagePermission();
+    if (!hasPermission) {
+      Taro.showToast({
+        title: t('saveFailed'),
+        icon: 'error',
+        duration: 2000
+      });
+      return;
+    }
+
     try {
       await Promise.all(
         compressedImages.map(image =>
@@ -179,7 +190,16 @@ const ImageCompressor = () => {
                     <View className='preview-info'>
                       <View className='preview-size'>
                         {t('compressedImage')}: {formatSize(image.compressedSize!)}
-                        <Button size='small' onClick={() => {
+                        <Button size='small' onClick={async () => {
+                          const hasPermission = await checkSaveImagePermission();
+                          if (!hasPermission) {
+                            Taro.showToast({
+                              title: t('saveFailed'),
+                              icon: 'error',
+                              duration: 2000
+                            });
+                            return;
+                          }
                           Taro.saveImageToPhotosAlbum({
                             filePath: image.compressedPath!,
                             success: () => {

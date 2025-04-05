@@ -5,7 +5,7 @@ import './index.less'
 import {usePageTitle} from "@/hooks/usePageTitle";
 import {formatDate} from "@/utils/date";
 import {useAppSelector} from "@/store/hooks";
-import {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
+import Taro, {useShareAppMessage, useShareTimeline} from "@tarojs/taro";
 
 interface TimeZone {
   id: string
@@ -30,9 +30,7 @@ function WorldClock() {
     {id: 'europe-moscow', city: t('moscow'), name: 'Europe/Moscow', offset: 3}
   ]
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [selectedTimeZones, setSelectedTimeZones] = useState<TimeZone[]>([
-    timeZones[0], // 默认显示上海时间
-  ])
+  const [selectedTimeZones, setSelectedTimeZones] = useState<TimeZone[]>([])
   const [showPicker, setShowPicker] = useState(false)
   const {shares} = useAppSelector(state => state.app);
   useShareAppMessage(() => {
@@ -44,6 +42,21 @@ function WorldClock() {
   usePageTitle("worldClock")
 
   useEffect(() => {
+    // 从本地存储加载已选择的时区
+    const loadSelectedTimeZones = async () => {
+      try {
+        const savedTimeZones = await Taro.getStorage({ key: 'selectedTimeZones' })
+        if (savedTimeZones.data && savedTimeZones.data.length > 0) {
+          setSelectedTimeZones(savedTimeZones.data)
+        } else {
+          setSelectedTimeZones([timeZones[0]]) // 默认显示上海时间
+        }
+      } catch (error) {
+        setSelectedTimeZones([timeZones[0]]) // 如果没有保存的数据，显示默认时区
+      }
+    }
+    loadSelectedTimeZones()
+
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 1000)
@@ -63,15 +76,33 @@ function WorldClock() {
     return formatDate(localTime.valueOf(), "yyyy-MM-dd");
   }
 
-  const addTimeZone = (timezone: TimeZone) => {
+  const addTimeZone = async (timezone: TimeZone) => {
     if (!selectedTimeZones.find(tz => tz.id === timezone.id)) {
-      setSelectedTimeZones([...selectedTimeZones, timezone])
+      const newSelectedTimeZones = [...selectedTimeZones, timezone]
+      setSelectedTimeZones(newSelectedTimeZones)
+      try {
+        await Taro.setStorage({
+          key: 'selectedTimeZones',
+          data: newSelectedTimeZones
+        })
+      } catch (error) {
+        console.error('Failed to save timezone:', error)
+      }
     }
     setShowPicker(false)
   }
 
-  const removeTimeZone = (timezoneId: string) => {
-    setSelectedTimeZones(selectedTimeZones.filter(tz => tz.id !== timezoneId))
+  const removeTimeZone = async (timezoneId: string) => {
+    const newSelectedTimeZones = selectedTimeZones.filter(tz => tz.id !== timezoneId)
+    setSelectedTimeZones(newSelectedTimeZones)
+    try {
+      await Taro.setStorage({
+        key: 'selectedTimeZones',
+        data: newSelectedTimeZones
+      })
+    } catch (error) {
+      console.error('Failed to save timezone:', error)
+    }
   }
 
   return (
