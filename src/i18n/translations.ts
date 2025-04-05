@@ -185,7 +185,9 @@ export const translations: Translations = {
     scanFailed: "扫描失败",
     decodeFailed: "解码失败",
     chooseImageFailed: "选择图片失败",
-
+    copySuccess: "复制成功",
+    userCanceled: "用户取消操作",
+    cameraPermissionDenied: "没有相机权限",
     // Image Tools
     imageCompressor: "图片压缩",
     imageFilter: "图片滤镜",
@@ -516,6 +518,9 @@ export const translations: Translations = {
     scanFailed: "Scan Failed",
     decodeFailed: "Decode Failed",
     chooseImageFailed: "Choose Image Failed",
+    copySuccess: "Copy Success",
+    userCanceled: "User Canceled",
+    cameraPermissionDenied: "Camera Permission Denied",
     // Mortgage Calculator
     loanAmount: "Loan Amount",
     loanAmountUnit: "Yuan",
