@@ -8,6 +8,7 @@ import {RootState} from '@/store';
 import {addHistory} from "@/store/slices/rouletteSlice";
 import {useTranslation} from "@/i18n";
 import './index.less';
+import {getRandomHexColor} from "@/utils/color";
 
 interface RouletteProps {
   maxItems?: number;
@@ -48,7 +49,7 @@ const RouletteComponent: React.FC<RouletteProps> = ({
             id: item.id,
             name: item.name,
             fonts: [{text: item.name, fontColor: "#FFFFFF", top: "10px"}],
-            background: item.color || `hsl(${(360 / currentConfig.items.length) * index}, 70%, 50%)`
+            background: item.color || getRandomHexColor()
           })),
           buttons: [
             {radius: '20%', background: '#FFEE58'},

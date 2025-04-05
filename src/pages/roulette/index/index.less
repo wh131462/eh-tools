@@ -66,6 +66,8 @@
     height: 320px;
 
     .title {
+      height: 20px;
+      flex-shrink: 0;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -77,6 +79,16 @@
       font-size: 18px;
       font-weight: 500;
       color: #333;
+    }
+
+    .virtual-list {
+      height: 300px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .no-dataset {
@@ -131,4 +143,8 @@
     position: relative;
     overflow: hidden;
   }
+}
+
+:global .nut-virtuallist {
+  height: 300px !important; //hack修复样式问题
 }

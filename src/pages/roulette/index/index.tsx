@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
-import {View} from '@tarojs/components';
+import {ScrollView, View} from '@tarojs/components';
 import RouletteComponent from '@/components/Roulette';
-import {Button, Cell, Checkbox, Dialog, Popup, VirtualList} from "@nutui/nutui-react-taro";
+import {Button, Cell, Checkbox, Dialog, Popup} from "@nutui/nutui-react-taro";
 import Taro, {useDidShow} from "@tarojs/taro";
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@/store';
-import {RouletteConfig, setCurrentConfig} from "@/store/slices/rouletteSlice";
-import './index.less';
+import {setCurrentConfig} from "@/store/slices/rouletteSlice";
 import {useTranslation} from "@/i18n";
 import {copyToClipboard} from "@/utils/clipboard";
 import {usePageTitle} from "@/hooks/usePageTitle";
+import './index.less';
+
 
 const RoulettePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -158,30 +159,26 @@ const RoulettePage: React.FC = () => {
       >
         <View className='dataset-list'>
           <View className='title'>{t('change') + t('Roulette')}</View>
-          {!configs?.length ?
+          <ScrollView className='virtual-list' scrollY={true} enableFlex={true}>
+            {configs.map(config => {
+              return <Cell
+                key={config.id}
+                title={config.name + ` (${config.items.length}${t('ge') + t('item')})`}
+                description={config.description}
+                extra={<View><Checkbox
+                  checked={config.id === currentConfig?.id}></Checkbox><View></View></View>}
+                onClick={() => {
+                  dispatch(setCurrentConfig(config));
+                  setShowPopup(false);
+                  setShowChangePopup(false);
+                }}
+              />
+            })}
+          </ScrollView>
+          {!configs?.length &&
             <View className='no-dataset'>
               <Button type='primary' onClick={handleNavigateToConfig}>+ {t('rouletteCreate')}</Button>
-            </View> :
-            <VirtualList
-              itemHeight={80}
-              containerHeight={300}
-              list={configs}
-              itemRender={(config: RouletteConfig, dataIndex: number, index: number) => (
-                <Cell
-                  key={config.id}
-                  title={config.name + ` (${config.items.length}${t('ge') + t('item')})`}
-                  description={config.description}
-                  extra={<View><Checkbox
-                    checked={config.id === currentConfig?.id}></Checkbox><View></View></View>}
-                  onClick={() => {
-                    dispatch(setCurrentConfig(config));
-                    setShowPopup(false);
-                    setShowChangePopup(false);
-                  }}
-                />
-              )}
-            />}
-
+            </View>}
         </View>
       </Popup>
     </View>

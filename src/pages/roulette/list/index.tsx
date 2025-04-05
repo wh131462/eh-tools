@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View} from '@tarojs/components';
+import {ScrollView, View} from '@tarojs/components';
 import {Button, Cell, Dialog} from '@nutui/nutui-react-taro';
 import './index.less';
 import {useDispatch, useSelector} from "react-redux";
@@ -23,39 +23,41 @@ const RouletteListPage: React.FC = () => {
 
   return (
     <View className='roulette-list'>
-      {configs.map(config => (
-        <View><Cell
-          key={config.id}
-          title={
-            <View>{config.name} ({config.items.length}{t('ge') + t('item')}) </View>
-          }
-          description={<View>
-            <span>{config.description}</span>
-            <span>{formatDate(config.createTime, 'yyyy-MM-dd HH:mm:ss')}</span>
-          </View>}
-          extra={<View><Button block type="primary"
-                               onClick={(e) => {
-                                 e.stopPropagation()
-                                 setVisible(true)
-                               }}>删除</Button>
-          </View>}
-          onClick={() => handleNavigation(config)}
-        />
-          <Dialog
-            visible={visible}
-            onClose={() => setVisible(false)}
-            title={t("info")}
-            content={t("rouletteListDeleteTip") + `[${config.name}]`}
-            confirmText={t('confirm')}
-            cancelText={t('cancel')}
-            onCancel={() => setVisible(false)}
-            onConfirm={() => {
-              dispatch(deleteConfig(config.id))
-            }}></Dialog></View>
-      ))}
-
       {!configs.length && <View className='no-items'>{t('rouletteListNoItems')}</View>}
-      <Button block type="primary" onClick={() => handleNavigation()}>{t('rouletteCreate')}</Button>
+      <Button className='add-button' block type="primary"
+              onClick={() => handleNavigation()}>{t('rouletteCreate')}</Button>
+      <ScrollView className='list' scrollY={true} enableFlex={true}>
+        {configs.map(config => (
+          <View><Cell
+            key={config.id}
+            title={
+              <View>{config.name} ({config.items.length}{t('ge') + t('item')}) </View>
+            }
+            description={<View>
+              <span>{config.description}</span>
+              <span>{formatDate(config.createTime, 'yyyy-MM-dd HH:mm:ss')}</span>
+            </View>}
+            extra={<View><Button block type="primary"
+                                 onClick={(e) => {
+                                   e.stopPropagation()
+                                   setVisible(true)
+                                 }}>删除</Button>
+            </View>}
+            onClick={() => handleNavigation(config)}
+          />
+            <Dialog
+              visible={visible}
+              onClose={() => setVisible(false)}
+              title={t("info")}
+              content={t("rouletteListDeleteTip") + `[${config.name}]`}
+              confirmText={t('confirm')}
+              cancelText={t('cancel')}
+              onCancel={() => setVisible(false)}
+              onConfirm={() => {
+                dispatch(deleteConfig(config.id))
+              }}></Dialog></View>
+        ))}
+      </ScrollView>
     </View>
   );
 };

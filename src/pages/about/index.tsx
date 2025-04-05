@@ -15,7 +15,7 @@ const AboutPage: React.FC = () => {
 
   const appInfo = {
     name: 'EH Tools',
-    version: '1.0.0',
+    version: '1.0.7',
     description: t('appDescriptionContent'),
     author: 'EternalHeart',
     github: 'https://github.com/wh131462/eh-tools',

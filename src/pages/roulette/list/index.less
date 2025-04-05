@@ -1,4 +1,24 @@
 .roulette-list {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 32px);
+  box-sizing: border-box;
+
+  .add-button {
+    box-sizing: border-box;
+    width: calc(100% - 32px);
+    margin: 16px;
+    height: 32px;
+  }
+
+  .list {
+    flex: 1;
+    height: calc(100% - 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .no-items {
     padding: 16px;
     display: flex;
