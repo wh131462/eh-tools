@@ -30,6 +30,7 @@ const TOOL_ICONS: Record<string, string> = {
   'world-clock': '/static/icons/globe.svg',
   'timestamp-converter': '/static/icons/timestamp.svg',
   'age-calculator': '/static/icons/age.svg',
+  'pomodoro-timer': '/static/icons/pomodoro.svg',
   // 计算工具
   'calculator': '/static/icons/calculator.svg',
   'salary': '/static/icons/money.svg',
@@ -41,9 +42,12 @@ const TOOL_ICONS: Record<string, string> = {
   'encrypt': '/static/icons/lock.svg',
   'qrcode': '/static/icons/qrcode.svg',
   'json-formatter': '/static/icons/json-format.svg',
+  'word-counter': '/static/icons/word-counter.svg',
+  'regex-tester': '/static/icons/regex.svg',
   // 图片工具
   'compress': '/static/icons/compress.svg',
   'color-tool': '/static/icons/color-card.svg',
+  'color-picker': '/static/icons/color-picker.svg',
   // 生活工具
   'lucky-wheel': '/static/icons/wheel.svg',
 }
@@ -56,6 +60,7 @@ const TOOL_GRADIENTS: Record<string, string> = {
   'world-clock': 'var(--gradient-globe)',
   'timestamp-converter': 'var(--gradient-timestamp)',
   'age-calculator': 'var(--gradient-age)',
+  'pomodoro-timer': 'var(--gradient-pomodoro)',
   'calculator': 'var(--gradient-calculator)',
   'salary': 'var(--gradient-money)',
   'bmi': 'var(--gradient-scale)',
@@ -65,8 +70,11 @@ const TOOL_GRADIENTS: Record<string, string> = {
   'encrypt': 'var(--gradient-lock)',
   'qrcode': 'var(--gradient-qrcode)',
   'json-formatter': 'var(--gradient-json-format)',
+  'word-counter': 'var(--gradient-word-counter)',
+  'regex-tester': 'var(--gradient-regex)',
   'compress': 'var(--gradient-compress)',
   'color-tool': 'var(--gradient-color-tool)',
+  'color-picker': 'var(--gradient-color-picker)',
   'lucky-wheel': 'var(--gradient-wheel)',
 }
 

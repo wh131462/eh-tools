@@ -30,6 +30,7 @@ export const TOOLS: Tool[] = [
   { id: 'world-clock', name: '世界时钟', nameKey: 'tool.worldClock', icon: 'globe', path: '/pages/time/world-clock/index', category: 'time' },
   { id: 'timestamp-converter', name: '时间戳转换', nameKey: 'tool.timestampConverter', icon: 'timestamp', path: '/pages/time/timestamp-converter/index', category: 'time' },
   { id: 'age-calculator', name: '年龄计算器', nameKey: 'tool.ageCalculator', icon: 'age', path: '/pages/time/age-calculator/index', category: 'time' },
+  { id: 'pomodoro-timer', name: '番茄钟', nameKey: 'tool.pomodoroTimer', icon: 'pomodoro', path: '/pages/time/pomodoro-timer/index', category: 'time' },
 
   // 计算工具
   { id: 'calculator', name: '计算器', nameKey: 'tool.calculator', icon: 'calculator', path: '/pages/calc/calculator/index', category: 'calc' },
@@ -43,10 +44,13 @@ export const TOOLS: Tool[] = [
   { id: 'encrypt', name: '加密解密', nameKey: 'tool.encrypt', icon: 'lock', path: '/pages/text/encrypt/index', category: 'text' },
   { id: 'qrcode', name: '二维码', nameKey: 'tool.qrcode', icon: 'qrcode', path: '/pages/text/qrcode/index', category: 'text' },
   { id: 'json-formatter', name: 'JSON格式化', nameKey: 'tool.jsonFormatter', icon: 'json-format', path: '/pages/text/json-formatter/index', category: 'text' },
+  { id: 'word-counter', name: '字数统计', nameKey: 'tool.wordCounter', icon: 'word-counter', path: '/pages/text/word-counter/index', category: 'text' },
+  { id: 'regex-tester', name: '正则测试器', nameKey: 'tool.regexTester', icon: 'regex', path: '/pages/text/regex-tester/index', category: 'text' },
 
   // 图片工具
   { id: 'compress', name: '图片压缩', nameKey: 'tool.compress', icon: 'compress', path: '/pages/image/compress/index', category: 'image' },
   { id: 'color-tool', name: '颜色工具', nameKey: 'tool.colorTool', icon: 'color-card', path: '/pages/image/color-tool/index', category: 'image' },
+  { id: 'color-picker', name: '图片取色器', nameKey: 'tool.colorPicker', icon: 'color-picker', path: '/pages/image/color-picker/index', category: 'image' },
 
   // 生活工具
   { id: 'lucky-wheel', name: '大转盘', nameKey: 'tool.luckyWheel', icon: 'wheel', path: '/pages/life/lucky-wheel/index/index', category: 'life' }

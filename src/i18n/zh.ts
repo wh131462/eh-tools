@@ -62,11 +62,15 @@ export default {
     encrypt: '编码转换',
     qrcode: '二维码',
     jsonFormatter: 'JSON格式化',
+    wordCounter: '字数统计',
+    regexTester: '正则测试器',
     compress: '图片压缩',
     colorTool: '颜色工具',
+    colorPicker: '图片取色器',
     luckyWheel: '大转盘',
     timestampConverter: '时间戳转换',
-    ageCalculator: '年龄计算器'
+    ageCalculator: '年龄计算器',
+    pomodoroTimer: '番茄钟'
   },
 
   // 首页
@@ -535,6 +539,61 @@ export default {
     emptyInput: '请输入JSON文本'
   },
 
+  // 字数统计
+  wordCounter: {
+    title: '字数统计',
+    inputPlaceholder: '请输入或粘贴要统计的文本...',
+    totalChars: '总字符数',
+    chineseChars: '中文字符',
+    englishWords: '英文单词',
+    numbers: '数字',
+    punctuation: '标点符号',
+    spaces: '空格',
+    lines: '行数',
+    paragraphs: '段落数',
+    clear: '清空',
+    paste: '粘贴',
+    noContent: '暂无内容',
+    detail: '详细统计',
+    charsNoSpace: '字符(不含空格)',
+    fullWidth: '全角字符',
+    halfWidth: '半角字符'
+  },
+
+  // 正则测试器
+  regexTester: {
+    title: '正则测试器',
+    pattern: '正则表达式',
+    patternPlaceholder: '请输入正则表达式',
+    testText: '测试文本',
+    testTextPlaceholder: '请输入要匹配的文本',
+    flags: '匹配标志',
+    flagGlobal: '全局匹配 (g)',
+    flagIgnoreCase: '忽略大小写 (i)',
+    flagMultiline: '多行模式 (m)',
+    flagDotAll: '点号匹配换行 (s)',
+    flagUnicode: 'Unicode (u)',
+    matchResult: '匹配结果',
+    noMatch: '无匹配结果',
+    matchCount: '匹配数量',
+    matchGroups: '捕获分组',
+    groupIndex: '分组',
+    fullMatch: '完整匹配',
+    invalidRegex: '无效的正则表达式',
+    clear: '清空',
+    paste: '粘贴',
+    commonPatterns: '常用正则',
+    patterns: {
+      email: '邮箱地址',
+      phone: '手机号码',
+      url: '网址链接',
+      ipv4: 'IPv4地址',
+      date: '日期格式',
+      chinese: '中文字符',
+      idCard: '身份证号'
+    }
+  },
+
   // 个税计算
   taxCalculator: {
     title: '个税计算器',
@@ -598,5 +657,47 @@ export default {
     hourUnit: '小时',
     lifeProgress: '人生进度',
     lifeExpectancy: '预期寿命'
+  },
+
+  // 番茄钟
+  pomodoroTimer: {
+    title: '番茄钟',
+    focusTime: '专注时间',
+    shortBreak: '短休息',
+    longBreak: '长休息',
+    round: '轮次',
+    currentRound: '当前轮次',
+    totalRounds: '总轮次',
+    focusMinutes: '专注时长',
+    shortBreakMinutes: '短休息时长',
+    longBreakMinutes: '长休息时长',
+    longBreakInterval: '长休息间隔',
+    settings: '设置',
+    focusCompleted: '专注完成！',
+    breakCompleted: '休息结束！',
+    focusMsg: '专注时间到，休息一下吧',
+    breakMsg: '休息结束，继续加油',
+    todayFocus: '今日专注',
+    todayRounds: '今日轮次',
+    minuteUnit: '分钟',
+    roundUnit: '轮'
+  },
+
+  // 图片取色器
+  colorPicker: {
+    title: '图片取色器',
+    selectImage: '选择图片',
+    selectImageTip: '点击选择或拍摄图片',
+    pickColor: '点击图片取色',
+    pickedColor: '已选颜色',
+    colorHistory: '取色历史',
+    noHistory: '暂无取色历史',
+    clearHistory: '清空历史',
+    clearHistoryConfirm: '确定清空所有取色历史吗？',
+    tapToPick: '点击图片任意位置获取颜色',
+    colorInfo: '颜色信息',
+    colorValue: '颜色值',
+    copySuccess: '颜色值已复制',
+    reselect: '重新选择'
   }
 }

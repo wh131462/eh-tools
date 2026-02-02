@@ -87,6 +87,12 @@
       }
     },
     {
+      "path": "pages/time/pomodoro-timer/index",
+      "style": {
+        "navigationBarTitleText": "番茄钟"
+      }
+    },
+    {
       "path": "pages/calc/calculator/index",
       "style": {
         "navigationBarTitleText": "计算器"
@@ -141,6 +147,18 @@
       }
     },
     {
+      "path": "pages/text/word-counter/index",
+      "style": {
+        "navigationBarTitleText": "字数统计"
+      }
+    },
+    {
+      "path": "pages/text/regex-tester/index",
+      "style": {
+        "navigationBarTitleText": "正则测试器"
+      }
+    },
+    {
       "path": "pages/image/compress/index",
       "style": {
         "navigationBarTitleText": "图片压缩"
@@ -150,6 +168,12 @@
       "path": "pages/image/color-tool/index",
       "style": {
         "navigationBarTitleText": "颜色工具"
+      }
+    },
+    {
+      "path": "pages/image/color-picker/index",
+      "style": {
+        "navigationBarTitleText": "图片取色器"
       }
     },
     {

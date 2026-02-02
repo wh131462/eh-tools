@@ -136,6 +136,7 @@ const TOOL_ICONS: Record<string, string> = {
   'world-clock': '/static/icons/globe.svg',
   'timestamp-converter': '/static/icons/timestamp.svg',
   'age-calculator': '/static/icons/age.svg',
+  'pomodoro-timer': '/static/icons/pomodoro.svg',
   'calculator': '/static/icons/calculator.svg',
   'salary': '/static/icons/money.svg',
   'bmi': '/static/icons/scale.svg',
@@ -145,8 +146,11 @@ const TOOL_ICONS: Record<string, string> = {
   'encrypt': '/static/icons/lock.svg',
   'qrcode': '/static/icons/qrcode.svg',
   'json-formatter': '/static/icons/json-format.svg',
+  'word-counter': '/static/icons/word-counter.svg',
+  'regex-tester': '/static/icons/regex.svg',
   'compress': '/static/icons/compress.svg',
   'color-tool': '/static/icons/color-card.svg',
+  'color-picker': '/static/icons/color-picker.svg',
   'lucky-wheel': '/static/icons/wheel.svg',
 }
 

@@ -62,11 +62,15 @@ export default {
     encrypt: 'Encoding',
     qrcode: 'QR Code',
     jsonFormatter: 'JSON',
+    wordCounter: 'Word Count',
+    regexTester: 'Regex',
     compress: 'Compress',
     colorTool: 'Color Tool',
+    colorPicker: 'Picker',
     luckyWheel: 'Lucky Wheel',
     timestampConverter: 'Timestamp',
-    ageCalculator: 'Age Calc'
+    ageCalculator: 'Age Calc',
+    pomodoroTimer: 'Pomodoro'
   },
 
   // Home
@@ -535,6 +539,61 @@ export default {
     emptyInput: 'Please enter JSON text'
   },
 
+  // Word Counter
+  wordCounter: {
+    title: 'Word Counter',
+    inputPlaceholder: 'Enter or paste text to count...',
+    totalChars: 'Total Characters',
+    chineseChars: 'Chinese Characters',
+    englishWords: 'English Words',
+    numbers: 'Numbers',
+    punctuation: 'Punctuation',
+    spaces: 'Spaces',
+    lines: 'Lines',
+    paragraphs: 'Paragraphs',
+    clear: 'Clear',
+    paste: 'Paste',
+    noContent: 'No content',
+    detail: 'Details',
+    charsNoSpace: 'Characters (no spaces)',
+    fullWidth: 'Full-width',
+    halfWidth: 'Half-width'
+  },
+
+  // Regex Tester
+  regexTester: {
+    title: 'Regex Tester',
+    pattern: 'Pattern',
+    patternPlaceholder: 'Enter regex pattern',
+    testText: 'Test Text',
+    testTextPlaceholder: 'Enter text to match',
+    flags: 'Flags',
+    flagGlobal: 'Global (g)',
+    flagIgnoreCase: 'Ignore Case (i)',
+    flagMultiline: 'Multiline (m)',
+    flagDotAll: 'Dot All (s)',
+    flagUnicode: 'Unicode (u)',
+    matchResult: 'Match Result',
+    noMatch: 'No matches found',
+    matchCount: 'Match Count',
+    matchGroups: 'Capture Groups',
+    groupIndex: 'Group',
+    fullMatch: 'Full Match',
+    invalidRegex: 'Invalid regex',
+    clear: 'Clear',
+    paste: 'Paste',
+    commonPatterns: 'Common Patterns',
+    patterns: {
+      email: 'Email',
+      phone: 'Phone Number',
+      url: 'URL',
+      ipv4: 'IPv4 Address',
+      date: 'Date Format',
+      chinese: 'Chinese Characters',
+      idCard: 'ID Card Number'
+    }
+  },
+
   // Tax Calculator
   taxCalculator: {
     title: 'Tax Calculator',
@@ -598,5 +657,47 @@ export default {
     hourUnit: 'hours',
     lifeProgress: 'Life Progress',
     lifeExpectancy: 'Life Expectancy'
+  },
+
+  // Pomodoro Timer
+  pomodoroTimer: {
+    title: 'Pomodoro',
+    focusTime: 'Focus',
+    shortBreak: 'Short Break',
+    longBreak: 'Long Break',
+    round: 'Round',
+    currentRound: 'Current Round',
+    totalRounds: 'Total Rounds',
+    focusMinutes: 'Focus Duration',
+    shortBreakMinutes: 'Short Break',
+    longBreakMinutes: 'Long Break',
+    longBreakInterval: 'Long Break After',
+    settings: 'Settings',
+    focusCompleted: 'Focus Complete!',
+    breakCompleted: 'Break Over!',
+    focusMsg: 'Time for a break',
+    breakMsg: 'Back to focus',
+    todayFocus: 'Today Focus',
+    todayRounds: 'Today Rounds',
+    minuteUnit: 'min',
+    roundUnit: 'rounds'
+  },
+
+  // Color Picker
+  colorPicker: {
+    title: 'Color Picker',
+    selectImage: 'Select Image',
+    selectImageTip: 'Tap to select or take a photo',
+    pickColor: 'Pick color from image',
+    pickedColor: 'Picked Color',
+    colorHistory: 'Color History',
+    noHistory: 'No color history',
+    clearHistory: 'Clear History',
+    clearHistoryConfirm: 'Clear all color history?',
+    tapToPick: 'Tap anywhere on image to pick color',
+    colorInfo: 'Color Info',
+    colorValue: 'Color Value',
+    copySuccess: 'Color copied',
+    reselect: 'Reselect'
   }
 }
