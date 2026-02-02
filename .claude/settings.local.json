@@ -34,7 +34,9 @@
       "Bash(brew list:*)",
       "Bash(identify:*)",
       "Bash(git fetch:*)",
-      "Bash(git fsck:*)"
+      "Bash(git fsck:*)",
+      "Bash(git push:*)",
+      "Bash(git branch:*)"
     ]
   }
 }
