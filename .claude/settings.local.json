@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:mp-weixin:*)",
+      "Bash(find:*)",
+      "Bash(npm run dev:mp-weixin:*)",
+      "Bash(wc:*)",
+      "mcp__chrome-devtools__list_pages",
+      "Bash(lsof:*)",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "mcp__chrome-devtools__get_console_message",
+      "mcp__chrome-devtools__list_network_requests",
+      "Bash(pnpm remove:*)",
+      "Bash(pkill:*)",
+      "mcp__dependency-doctor__trace_dependency",
+      "Bash(ls:*)",
+      "Bash(for:*)",
+      "Bash(do sed -i '' 's/currentColor/#FFFFFF/g' \"$f\")",
+      "Bash(done)",
+      "mcp__chrome-devtools__new_page",
+      "Bash(gh api:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "mcp__chrome-devtools__click",
+      "Bash(do sed -i '' 's/#FFFFFF/#667eea/g; s/#ffffff/#667eea/g' \"$file\")",
+      "Bash(echo:*)",
+      "Bash(convert:*)",
+      "Bash(magick:*)",
+      "Bash(sips:*)",
+      "Bash(brew install:*)",
+      "Bash(rsvg-convert:*)",
+      "Bash(git remote add:*)",
+      "Bash(brew list:*)",
+      "Bash(identify:*)",
+      "Bash(git fetch:*)"
+    ]
+  }
+}
