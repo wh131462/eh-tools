@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools v2 - 计算工具</title>
+  <link rel="stylesheet" href="base.css">
+  <style>
+    /* ==================== 计算器专用样式 ==================== */
+    .calc-display {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic-inset);
+      padding: var(--space-lg);
+      margin: var(--space-md);
+      text-align: right;
+    }
+
+    .calc-expression {
+      font-size: 14px;
+      color: var(--text-hint);
+      min-height: 20px;
+      margin-bottom: var(--space-sm);
+    }
+
+    .calc-result {
+      font-size: 42px;
+      font-weight: 300;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .calc-keypad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-sm);
+      padding: var(--space-md);
+    }
+
+    .calc-key {
+      height: 64px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-neumorphic-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+
+    .calc-key:active {
+      box-shadow: var(--shadow-neumorphic-inset);
+      transform: scale(0.96);
+    }
+
+    .calc-key.operator {
+      background: var(--gradient-calc);
+      color: white;
+      box-shadow: 4px 4px 12px rgba(161, 140, 209, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.1);
+    }
+
+    .calc-key.equal {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 4px 4px 12px rgba(102, 126, 234, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.1);
+    }
+
+    .calc-key.clear {
+      color: #f5576c;
+    }
+
+    .calc-key.zero {
+      grid-column: span 2;
+    }
+
+    /* ==================== 工资计算器样式 ==================== */
+    .salary-summary {
+      background: var(--gradient-calc);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin: var(--space-md);
+      color: white;
+      text-align: center;
+    }
+
+    .salary-label {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: var(--space-sm);
+    }
+
+    .salary-amount {
+      font-size: 40px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .salary-amount .currency {
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    .salary-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+      padding: var(--space-md);
+    }
+
+    .salary-detail-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-neumorphic-sm);
+      padding: var(--space-md);
+      text-align: center;
+    }
+
+    .salary-detail-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+    }
+
+    .salary-detail-label {
+      font-size: 12px;
+      color: var(--text-hint);
+      margin-top: var(--space-xs);
+    }
+
+    .salary-breakdown {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      overflow: hidden;
+    }
+
+    .salary-breakdown-title {
+      padding: var(--space-md);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-sunken);
+    }
+
+    .salary-breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--bg-sunken);
+    }
+
+    .salary-breakdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .salary-breakdown-name {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .salary-breakdown-value {
+      font-size: 14px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+    }
+
+    .salary-breakdown-value.negative {
+      color: #f5576c;
+    }
+
+    .salary-breakdown-value.positive {
+      color: #11998e;
+    }
+
+    /* ==================== BMI 计算器样式 ==================== */
+    .bmi-result-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      padding: var(--space-xl);
+      text-align: center;
+    }
+
+    .bmi-gauge {
+      position: relative;
+      width: 200px;
+      height: 100px;
+      margin: 0 auto var(--space-lg);
+    }
+
+    .bmi-gauge-bg {
+      position: absolute;
+      width: 200px;
+      height: 100px;
+      border-radius: 100px 100px 0 0;
+      background: conic-gradient(
+        from 180deg,
+        #4facfe 0deg,
+        #38ef7d 45deg,
+        #ffd200 90deg,
+        #ff416c 135deg,
+        #ff416c 180deg
+      );
+      overflow: hidden;
+    }
+
+    .bmi-gauge-bg::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 0;
+      background: var(--bg-card);
+      border-radius: 80px 80px 0 0;
+    }
+
+    .bmi-gauge-needle {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      height: 70px;
+      background: var(--text-primary);
+      transform-origin: bottom center;
+      transform: translateX(-50%) rotate(-45deg);
+      border-radius: 2px;
+      z-index: 10;
+    }
+
+    .bmi-gauge-center {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: var(--bg-card);
+      border-radius: 50%;
+      box-shadow: var(--shadow-neumorphic-sm);
+      z-index: 11;
+    }
+
+    .bmi-value {
+      font-size: 56px;
+      font-weight: 700;
+      background: var(--gradient-success);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .bmi-status {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: var(--space-sm);
+    }
+
+    .bmi-status.normal {
+      background: rgba(56, 239, 125, 0.15);
+      color: #11998e;
+    }
+
+    .bmi-status.overweight {
+      background: rgba(255, 210, 0, 0.15);
+      color: #f7971e;
+    }
+
+    .bmi-status.obese {
+      background: rgba(255, 65, 108, 0.15);
+      color: #ff416c;
+    }
+
+    .bmi-status.underweight {
+      background: rgba(79, 172, 254, 0.15);
+      color: #4facfe;
+    }
+
+    .bmi-range-bar {
+      display: flex;
+      height: 8px;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin: var(--space-lg) var(--space-md);
+    }
+
+    .bmi-range-segment {
+      flex: 1;
+    }
+
+    .bmi-range-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 var(--space-md);
+      font-size: 11px;
+      color: var(--text-hint);
+    }
+
+    .bmi-input-row {
+      display: flex;
+      gap: var(--space-md);
+      padding: 0 var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .bmi-input-group {
+      flex: 1;
+    }
+
+    .bmi-input-label {
+      font-size: 12px;
+      color: var(--text-hint);
+      margin-bottom: var(--space-sm);
+      text-align: center;
+    }
+
+    .bmi-input {
+      width: 100%;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-neumorphic-inset);
+      padding: var(--space-md);
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      border: none;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .bmi-input-unit {
+      font-size: 14px;
+      color: var(--text-hint);
+      font-weight: 400;
+    }
+
+    /* ==================== 房贷计算器样式 ==================== */
+    .mortgage-summary {
+      background: var(--gradient-gold);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin: var(--space-md);
+      color: white;
+    }
+
+    .mortgage-monthly {
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .mortgage-monthly-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .mortgage-monthly-amount {
+      font-size: 42px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .mortgage-stats {
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .mortgage-stat {
+      text-align: center;
+    }
+
+    .mortgage-stat-value {
+      font-size: 18px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .mortgage-stat-label {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .mortgage-chart {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      padding: var(--space-lg);
+    }
+
+    .mortgage-chart-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-md);
+    }
+
+    .mortgage-pie {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #667eea 0deg 216deg,
+        #f7971e 216deg 360deg
+      );
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .mortgage-pie::after {
+      content: '';
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      right: 30px;
+      bottom: 30px;
+      background: var(--bg-card);
+      border-radius: 50%;
+    }
+
+    .mortgage-legend {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-xl);
+      margin-top: var(--space-lg);
+    }
+
+    .mortgage-legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .mortgage-legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .mortgage-type-switch {
+      display: flex;
+      background: var(--bg-card);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-neumorphic-inset);
+      padding: 4px;
+      margin: var(--space-md);
+    }
+
+    .mortgage-type-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: var(--radius-full);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-hint);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .mortgage-type-btn.active {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    /* ==================== 单位换算样式 ==================== */
+    .unit-converter {
+      margin: var(--space-md);
+    }
+
+    .unit-input-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-md);
+    }
+
+    .unit-input-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .unit-value-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      font-size: 32px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .unit-selector {
+      background: var(--bg-sunken);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      cursor: pointer;
+    }
+
+    .unit-swap-btn {
+      width: 48px;
+      height: 48px;
+      background: var(--bg-card);
+      border-radius: 50%;
+      box-shadow: var(--shadow-neumorphic-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin: -12px auto;
+      position: relative;
+      z-index: 10;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .unit-swap-btn:active {
+      box-shadow: var(--shadow-neumorphic-inset);
+    }
+
+    .unit-result-card {
+      background: var(--gradient-info);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      color: white;
+    }
+
+    .unit-result-value {
+      font-size: 32px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .unit-result-unit {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-top: var(--space-xs);
+    }
+
+    .unit-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+    }
+
+    .unit-category {
+      padding: 10px 16px;
+      background: var(--bg-card);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-neumorphic-sm);
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .unit-category.active {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .unit-category:not(.active):active {
+      box-shadow: var(--shadow-neumorphic-inset);
+    }
+
+    .unit-quick-list {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      overflow: hidden;
+    }
+
+    .unit-quick-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--bg-sunken);
+    }
+
+    .unit-quick-item:last-child {
+      border-bottom: none;
+    }
+
+    .unit-quick-from {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .unit-quick-to {
+      font-size: 14px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="design-container">
+    <h1 class="design-title">EH-Tools v2 - 计算工具</h1>
+    <p class="design-subtitle">新拟态风格 + 多彩渐变 | 计算器、工资计算、BMI、房贷、单位换算</p>
+
+    <!-- ==================== 计算器 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <!-- 导航栏 -->
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">计算器</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <!-- 显示屏 -->
+        <div class="calc-display">
+          <div class="calc-expression">123 + 456 × 7</div>
+          <div class="calc-result">3,315</div>
+        </div>
+
+        <!-- 键盘 -->
+        <div class="calc-keypad">
+          <button class="calc-key clear">C</button>
+          <button class="calc-key">±</button>
+          <button class="calc-key">%</button>
+          <button class="calc-key operator">÷</button>
+
+          <button class="calc-key">7</button>
+          <button class="calc-key">8</button>
+          <button class="calc-key">9</button>
+          <button class="calc-key operator">×</button>
+
+          <button class="calc-key">4</button>
+          <button class="calc-key">5</button>
+          <button class="calc-key">6</button>
+          <button class="calc-key operator">−</button>
+
+          <button class="calc-key">1</button>
+          <button class="calc-key">2</button>
+          <button class="calc-key">3</button>
+          <button class="calc-key operator">+</button>
+
+          <button class="calc-key zero">0</button>
+          <button class="calc-key">.</button>
+          <button class="calc-key equal">=</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 科学计算器 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">科学计算器</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <div class="calc-display">
+          <div class="calc-expression">sin(45°) × √2</div>
+          <div class="calc-result">1</div>
+        </div>
+
+        <!-- 科学计算键盘 -->
+        <div class="calc-keypad" style="grid-template-columns: repeat(5, 1fr);">
+          <button class="calc-key" style="font-size: 14px;">sin</button>
+          <button class="calc-key" style="font-size: 14px;">cos</button>
+          <button class="calc-key" style="font-size: 14px;">tan</button>
+          <button class="calc-key" style="font-size: 14px;">√</button>
+          <button class="calc-key" style="font-size: 14px;">xⁿ</button>
+
+          <button class="calc-key" style="font-size: 14px;">log</button>
+          <button class="calc-key" style="font-size: 14px;">ln</button>
+          <button class="calc-key" style="font-size: 14px;">π</button>
+          <button class="calc-key" style="font-size: 14px;">e</button>
+          <button class="calc-key" style="font-size: 14px;">( )</button>
+
+          <button class="calc-key clear">C</button>
+          <button class="calc-key">±</button>
+          <button class="calc-key">%</button>
+          <button class="calc-key">⌫</button>
+          <button class="calc-key operator">÷</button>
+
+          <button class="calc-key">7</button>
+          <button class="calc-key">8</button>
+          <button class="calc-key">9</button>
+          <button class="calc-key operator">×</button>
+          <button class="calc-key operator">−</button>
+
+          <button class="calc-key">4</button>
+          <button class="calc-key">5</button>
+          <button class="calc-key">6</button>
+          <button class="calc-key">1</button>
+          <button class="calc-key">2</button>
+
+          <button class="calc-key">3</button>
+          <button class="calc-key">0</button>
+          <button class="calc-key">.</button>
+          <button class="calc-key operator">+</button>
+          <button class="calc-key equal">=</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 工资计算器 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">工资计算</div>
+          <div class="navbar-action">⚙️</div>
+        </div>
+
+        <!-- 实发工资卡片 -->
+        <div class="salary-summary">
+          <div class="salary-label">税后实发工资</div>
+          <div class="salary-amount">
+            <span class="currency">¥</span>12,847.50
+          </div>
+        </div>
+
+        <!-- 快速数据 -->
+        <div class="salary-detail-grid">
+          <div class="salary-detail-card">
+            <div class="salary-detail-value">¥15,000</div>
+            <div class="salary-detail-label">税前工资</div>
+          </div>
+          <div class="salary-detail-card">
+            <div class="salary-detail-value">¥652.50</div>
+            <div class="salary-detail-label">个人所得税</div>
+          </div>
+          <div class="salary-detail-card">
+            <div class="salary-detail-value">¥1,500</div>
+            <div class="salary-detail-label">五险一金</div>
+          </div>
+          <div class="salary-detail-card">
+            <div class="salary-detail-value">85.6%</div>
+            <div class="salary-detail-label">到手比例</div>
+          </div>
+        </div>
+
+        <!-- 明细 -->
+        <div class="salary-breakdown">
+          <div class="salary-breakdown-title">扣款明细</div>
+          <div class="salary-breakdown-item">
+            <span class="salary-breakdown-name">养老保险 (8%)</span>
+            <span class="salary-breakdown-value negative">-¥1,200.00</span>
+          </div>
+          <div class="salary-breakdown-item">
+            <span class="salary-breakdown-name">医疗保险 (2%)</span>
+            <span class="salary-breakdown-value negative">-¥300.00</span>
+          </div>
+          <div class="salary-breakdown-item">
+            <span class="salary-breakdown-name">失业保险 (0.5%)</span>
+            <span class="salary-breakdown-value negative">-¥75.00</span>
+          </div>
+          <div class="salary-breakdown-item">
+            <span class="salary-breakdown-name">公积金 (12%)</span>
+            <span class="salary-breakdown-value negative">-¥1,800.00</span>
+          </div>
+          <div class="salary-breakdown-item">
+            <span class="salary-breakdown-name">个人所得税</span>
+            <span class="salary-breakdown-value negative">-¥652.50</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 工资计算器 - 输入界面 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">工资计算</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <div class="neu-card">
+          <div class="neu-input-group">
+            <label class="neu-input-label">税前月薪</label>
+            <input type="number" class="neu-input" placeholder="请输入税前工资" value="15000">
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label">工作城市</label>
+            <div class="unit-selector" style="width: 100%; justify-content: space-between;">
+              <span>上海</span>
+              <span>▼</span>
+            </div>
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label">社保基数</label>
+            <input type="number" class="neu-input" placeholder="默认使用税前工资" value="15000">
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label">公积金基数</label>
+            <input type="number" class="neu-input" placeholder="默认使用税前工资" value="15000">
+          </div>
+
+          <div class="neu-input-group" style="margin-bottom: 0;">
+            <label class="neu-input-label">公积金比例</label>
+            <div class="neu-slider">
+              <div class="neu-slider-track" style="width: 60%;">
+                <div class="neu-slider-thumb"></div>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--text-hint);">
+              <span>5%</span>
+              <span style="color: var(--text-primary); font-weight: 600;">12%</span>
+              <span>12%</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 0 var(--space-md);">
+          <button class="neu-btn neu-btn-primary neu-btn-block">开始计算</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== BMI 计算器 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">BMI 计算</div>
+          <div class="navbar-action">📊</div>
+        </div>
+
+        <!-- 结果卡片 -->
+        <div class="bmi-result-card">
+          <div class="bmi-gauge">
+            <div class="bmi-gauge-bg"></div>
+            <div class="bmi-gauge-needle" style="transform: translateX(-50%) rotate(-15deg);"></div>
+            <div class="bmi-gauge-center"></div>
+          </div>
+          <div class="bmi-value">22.5</div>
+          <div class="bmi-status normal">正常</div>
+        </div>
+
+        <!-- BMI 范围条 -->
+        <div class="bmi-range-bar">
+          <div class="bmi-range-segment" style="background: #4facfe;"></div>
+          <div class="bmi-range-segment" style="background: #38ef7d;"></div>
+          <div class="bmi-range-segment" style="background: #ffd200;"></div>
+          <div class="bmi-range-segment" style="background: #ff416c;"></div>
+        </div>
+        <div class="bmi-range-labels">
+          <span>偏瘦</span>
+          <span>正常</span>
+          <span>偏胖</span>
+          <span>肥胖</span>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="bmi-input-row" style="margin-top: var(--space-lg);">
+          <div class="bmi-input-group">
+            <div class="bmi-input-label">身高</div>
+            <div style="position: relative;">
+              <input type="number" class="bmi-input" value="175">
+              <span class="bmi-input-unit" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%);">cm</span>
+            </div>
+          </div>
+          <div class="bmi-input-group">
+            <div class="bmi-input-label">体重</div>
+            <div style="position: relative;">
+              <input type="number" class="bmi-input" value="68.5">
+              <span class="bmi-input-unit" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%);">kg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 健康建议 -->
+        <div class="neu-card">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <span style="font-size: 24px;">💡</span>
+            <span style="font-weight: 600; color: var(--text-primary);">健康建议</span>
+          </div>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+            您的 BMI 值处于正常范围，请继续保持健康的生活方式。建议每周进行 3-5 次中等强度运动，每次 30 分钟以上。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== BMI 计算器 - 超重状态 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">BMI 计算</div>
+          <div class="navbar-action">📊</div>
+        </div>
+
+        <div class="bmi-result-card">
+          <div class="bmi-gauge">
+            <div class="bmi-gauge-bg"></div>
+            <div class="bmi-gauge-needle" style="transform: translateX(-50%) rotate(30deg);"></div>
+            <div class="bmi-gauge-center"></div>
+          </div>
+          <div class="bmi-value" style="background: var(--gradient-warning); -webkit-background-clip: text; background-clip: text;">26.8</div>
+          <div class="bmi-status overweight">偏胖</div>
+        </div>
+
+        <div class="bmi-range-bar">
+          <div class="bmi-range-segment" style="background: #4facfe;"></div>
+          <div class="bmi-range-segment" style="background: #38ef7d;"></div>
+          <div class="bmi-range-segment" style="background: #ffd200;"></div>
+          <div class="bmi-range-segment" style="background: #ff416c;"></div>
+        </div>
+        <div class="bmi-range-labels">
+          <span>偏瘦</span>
+          <span>正常</span>
+          <span>偏胖</span>
+          <span>肥胖</span>
+        </div>
+
+        <div class="bmi-input-row" style="margin-top: var(--space-lg);">
+          <div class="bmi-input-group">
+            <div class="bmi-input-label">身高</div>
+            <div style="position: relative;">
+              <input type="number" class="bmi-input" value="172">
+              <span class="bmi-input-unit" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%);">cm</span>
+            </div>
+          </div>
+          <div class="bmi-input-group">
+            <div class="bmi-input-label">体重</div>
+            <div style="position: relative;">
+              <input type="number" class="bmi-input" value="79.3">
+              <span class="bmi-input-unit" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%);">kg</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="neu-card" style="border-left: 4px solid #f7971e;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <span style="font-size: 24px;">⚠️</span>
+            <span style="font-weight: 600; color: var(--text-primary);">减重建议</span>
+          </div>
+          <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+            您的 BMI 值偏高，建议适当控制饮食，减少高热量食物摄入。目标体重：<strong>63-74 kg</strong>，需减重约 <strong>5-16 kg</strong>。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 房贷计算器 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">房贷计算</div>
+          <div class="navbar-action">📊</div>
+        </div>
+
+        <!-- 还款方式切换 -->
+        <div class="mortgage-type-switch">
+          <div class="mortgage-type-btn active">等额本息</div>
+          <div class="mortgage-type-btn">等额本金</div>
+        </div>
+
+        <!-- 月供摘要 -->
+        <div class="mortgage-summary">
+          <div class="mortgage-monthly">
+            <div class="mortgage-monthly-label">每月还款</div>
+            <div class="mortgage-monthly-amount">¥8,245.23</div>
+          </div>
+          <div class="mortgage-stats">
+            <div class="mortgage-stat">
+              <div class="mortgage-stat-value">¥200万</div>
+              <div class="mortgage-stat-label">贷款总额</div>
+            </div>
+            <div class="mortgage-stat">
+              <div class="mortgage-stat-value">¥96.83万</div>
+              <div class="mortgage-stat-label">利息总额</div>
+            </div>
+            <div class="mortgage-stat">
+              <div class="mortgage-stat-value">¥296.83万</div>
+              <div class="mortgage-stat-label">还款总额</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 饼图 -->
+        <div class="mortgage-chart">
+          <div class="mortgage-chart-title">本金利息占比</div>
+          <div class="mortgage-pie"></div>
+          <div class="mortgage-legend">
+            <div class="mortgage-legend-item">
+              <div class="mortgage-legend-dot" style="background: #667eea;"></div>
+              <span>本金 67.4%</span>
+            </div>
+            <div class="mortgage-legend-item">
+              <div class="mortgage-legend-dot" style="background: #f7971e;"></div>
+              <span>利息 32.6%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 房贷计算器 - 输入界面 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">房贷计算</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <div class="mortgage-type-switch">
+          <div class="mortgage-type-btn active">等额本息</div>
+          <div class="mortgage-type-btn">等额本金</div>
+        </div>
+
+        <div class="neu-card">
+          <div class="neu-input-group">
+            <label class="neu-input-label">贷款总额（万元）</label>
+            <input type="number" class="neu-input" placeholder="请输入贷款金额" value="200">
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label">贷款年限</label>
+            <div class="unit-selector" style="width: 100%; justify-content: space-between;">
+              <span>30年（360期）</span>
+              <span>▼</span>
+            </div>
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label">年利率（%）</label>
+            <input type="number" class="neu-input" placeholder="请输入年利率" value="4.2">
+          </div>
+
+          <div class="neu-input-group" style="margin-bottom: 0;">
+            <label class="neu-input-label">贷款类型</label>
+            <div style="display: flex; gap: 12px;">
+              <div class="unit-category active" style="flex: 1; text-align: center;">商业贷款</div>
+              <div class="unit-category" style="flex: 1; text-align: center;">公积金贷款</div>
+              <div class="unit-category" style="flex: 1; text-align: center;">组合贷款</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 0 var(--space-md);">
+          <button class="neu-btn neu-btn-primary neu-btn-block">开始计算</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 单位换算 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">单位换算</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <!-- 分类选择 -->
+        <div class="unit-categories">
+          <div class="unit-category active">长度</div>
+          <div class="unit-category">面积</div>
+          <div class="unit-category">体积</div>
+          <div class="unit-category">重量</div>
+          <div class="unit-category">温度</div>
+          <div class="unit-category">时间</div>
+          <div class="unit-category">速度</div>
+          <div class="unit-category">数据</div>
+        </div>
+
+        <!-- 换算器 -->
+        <div class="unit-converter">
+          <div class="unit-input-card">
+            <div class="unit-input-row">
+              <input type="number" class="unit-value-input" value="100" placeholder="0">
+              <div class="unit-selector">
+                <span>厘米 (cm)</span>
+                <span>▼</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="unit-swap-btn">⇅</div>
+
+          <div class="unit-result-card">
+            <div class="unit-result-value">1</div>
+            <div class="unit-result-unit">米 (m)</div>
+          </div>
+        </div>
+
+        <!-- 快速换算 -->
+        <div class="unit-quick-list">
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">100 cm</span>
+            <span class="unit-quick-to">= 0.001 km</span>
+          </div>
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">100 cm</span>
+            <span class="unit-quick-to">= 1,000 mm</span>
+          </div>
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">100 cm</span>
+            <span class="unit-quick-to">= 39.37 in</span>
+          </div>
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">100 cm</span>
+            <span class="unit-quick-to">= 3.28 ft</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 单位换算 - 温度 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">单位换算</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <div class="unit-categories">
+          <div class="unit-category">长度</div>
+          <div class="unit-category">面积</div>
+          <div class="unit-category">体积</div>
+          <div class="unit-category">重量</div>
+          <div class="unit-category active">温度</div>
+          <div class="unit-category">时间</div>
+          <div class="unit-category">速度</div>
+          <div class="unit-category">数据</div>
+        </div>
+
+        <div class="unit-converter">
+          <div class="unit-input-card">
+            <div class="unit-input-row">
+              <input type="number" class="unit-value-input" value="36.5" placeholder="0">
+              <div class="unit-selector">
+                <span>摄氏度 (°C)</span>
+                <span>▼</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="unit-swap-btn">⇅</div>
+
+          <div class="unit-result-card" style="background: var(--gradient-warning);">
+            <div class="unit-result-value">97.7</div>
+            <div class="unit-result-unit">华氏度 (°F)</div>
+          </div>
+        </div>
+
+        <div class="unit-quick-list">
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">36.5 °C</span>
+            <span class="unit-quick-to">= 309.65 K</span>
+          </div>
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">36.5 °C</span>
+            <span class="unit-quick-to">= 97.7 °F</span>
+          </div>
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">36.5 °C</span>
+            <span class="unit-quick-to">= 557.37 °R</span>
+          </div>
+        </div>
+
+        <!-- 常用温度参考 -->
+        <div class="neu-card">
+          <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px;">常用参考</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <span class="tag tag-primary">水结冰 0°C</span>
+            <span class="tag tag-success">室温 25°C</span>
+            <span class="tag tag-warning">体温 37°C</span>
+            <span class="tag" style="background: rgba(255, 65, 108, 0.15); color: #ff416c;">水沸腾 100°C</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 单位换算 - 数据存储 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">单位换算</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <div class="unit-categories">
+          <div class="unit-category">长度</div>
+          <div class="unit-category">面积</div>
+          <div class="unit-category">体积</div>
+          <div class="unit-category">重量</div>
+          <div class="unit-category">温度</div>
+          <div class="unit-category">时间</div>
+          <div class="unit-category">速度</div>
+          <div class="unit-category active">数据</div>
+        </div>
+
+        <div class="unit-converter">
+          <div class="unit-input-card">
+            <div class="unit-input-row">
+              <input type="number" class="unit-value-input" value="1" placeholder="0">
+              <div class="unit-selector">
+                <span>GB</span>
+                <span>▼</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="unit-swap-btn">⇅</div>
+
+          <div class="unit-result-card" style="background: var(--gradient-primary);">
+            <div class="unit-result-value">1,024</div>
+            <div class="unit-result-unit">MB</div>
+          </div>
+        </div>
+
+        <div class="unit-quick-list">
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">1 GB</span>
+            <span class="unit-quick-to">= 0.000977 TB</span>
+          </div>
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">1 GB</span>
+            <span class="unit-quick-to">= 1,024 MB</span>
+          </div>
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">1 GB</span>
+            <span class="unit-quick-to">= 1,048,576 KB</span>
+          </div>
+          <div class="unit-quick-item">
+            <span class="unit-quick-from">1 GB</span>
+            <span class="unit-quick-to">= 8,589,934,592 bit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

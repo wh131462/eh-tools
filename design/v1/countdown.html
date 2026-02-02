@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 倒计时</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .countdown-display {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      margin: 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .countdown-time {
+      font-size: 64px;
+      font-weight: 200;
+      color: #fff;
+      font-family: 'SF Mono', Monaco, monospace;
+      letter-spacing: 4px;
+    }
+    .countdown-hint {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 12px;
+    }
+    .preset-section {
+      padding: 0 16px;
+    }
+    .preset-title {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .preset-btn {
+      padding: 14px;
+      background: #fff;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid #e8e8e8;
+      transition: all 0.2s;
+    }
+    .preset-btn:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+    .preset-btn.active {
+      background: #1890ff;
+      color: #fff;
+      border-color: #1890ff;
+    }
+    .control-section {
+      padding: 24px 16px;
+      display: flex;
+      gap: 12px;
+    }
+    .control-btn {
+      flex: 1;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.1s;
+    }
+    .control-btn:active { transform: scale(0.98); }
+    .control-btn.start {
+      background: #52c41a;
+      color: #fff;
+    }
+    .control-btn.pause {
+      background: #faad14;
+      color: #fff;
+    }
+    .control-btn.reset {
+      background: #f5f5f5;
+      color: #666;
+    }
+    .time-picker-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: flex-end;
+    }
+    .time-picker-panel {
+      background: #fff;
+      width: 100%;
+      border-radius: 16px 16px 0 0;
+      padding-bottom: 20px;
+    }
+    .time-picker-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .time-picker-body {
+      display: flex;
+      padding: 20px;
+      justify-content: center;
+      gap: 20px;
+    }
+    .time-picker-column {
+      text-align: center;
+    }
+    .time-picker-label {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .time-picker-value {
+      font-size: 36px;
+      font-weight: 300;
+      color: #1890ff;
+      width: 60px;
+    }
+    .time-picker-arrows {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .time-picker-arrow {
+      width: 40px;
+      height: 30px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">倒计时器</h2>
+
+    <!-- 初始状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">倒计时</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="countdown-display">
+          <div class="countdown-time">00:00:00</div>
+          <div class="countdown-hint">点击设置时间</div>
+        </div>
+
+        <div class="preset-section">
+          <div class="preset-title">快速选择</div>
+          <div class="preset-grid">
+            <div class="preset-btn">1 分钟</div>
+            <div class="preset-btn">3 分钟</div>
+            <div class="preset-btn active">5 分钟</div>
+            <div class="preset-btn">10 分钟</div>
+            <div class="preset-btn">15 分钟</div>
+            <div class="preset-btn">30 分钟</div>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <button class="control-btn start">开始</button>
+          <button class="control-btn reset">重置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 运行中状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">倒计时</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="countdown-display" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
+          <div class="countdown-time">04:32:15</div>
+          <div class="countdown-hint">倒计时进行中...</div>
+        </div>
+
+        <div class="preset-section">
+          <div class="preset-title">快速选择</div>
+          <div class="preset-grid">
+            <div class="preset-btn">1 分钟</div>
+            <div class="preset-btn">3 分钟</div>
+            <div class="preset-btn active">5 分钟</div>
+            <div class="preset-btn">10 分钟</div>
+            <div class="preset-btn">15 分钟</div>
+            <div class="preset-btn">30 分钟</div>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <button class="control-btn pause">暂停</button>
+          <button class="control-btn reset">重置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 时间选择器 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">倒计时</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="countdown-display">
+          <div class="countdown-time">00:05:00</div>
+          <div class="countdown-hint">点击设置时间</div>
+        </div>
+
+        <div class="preset-section">
+          <div class="preset-title">快速选择</div>
+          <div class="preset-grid">
+            <div class="preset-btn">1 分钟</div>
+            <div class="preset-btn">3 分钟</div>
+            <div class="preset-btn">5 分钟</div>
+            <div class="preset-btn">10 分钟</div>
+            <div class="preset-btn">15 分钟</div>
+            <div class="preset-btn">30 分钟</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 时间选择器弹窗 -->
+      <div class="time-picker-overlay">
+        <div class="time-picker-panel">
+          <div class="time-picker-header">
+            <span style="color: #999;">取消</span>
+            <span style="font-weight: 600;">设置时间</span>
+            <span style="color: #1890ff;">确定</span>
+          </div>
+          <div class="time-picker-body">
+            <div class="time-picker-column">
+              <div class="time-picker-label">时</div>
+              <div class="time-picker-arrows">
+                <div class="time-picker-arrow">▲</div>
+              </div>
+              <div class="time-picker-value">00</div>
+              <div class="time-picker-arrows">
+                <div class="time-picker-arrow">▼</div>
+              </div>
+            </div>
+            <div class="time-picker-column">
+              <div class="time-picker-label">分</div>
+              <div class="time-picker-arrows">
+                <div class="time-picker-arrow">▲</div>
+              </div>
+              <div class="time-picker-value">05</div>
+              <div class="time-picker-arrows">
+                <div class="time-picker-arrow">▼</div>
+              </div>
+            </div>
+            <div class="time-picker-column">
+              <div class="time-picker-label">秒</div>
+              <div class="time-picker-arrows">
+                <div class="time-picker-arrow">▲</div>
+              </div>
+              <div class="time-picker-value">00</div>
+              <div class="time-picker-arrows">
+                <div class="time-picker-arrow">▼</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 完成弹窗 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">倒计时</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="countdown-display" style="background: linear-gradient(135deg, #ff4d4f, #cf1322);">
+          <div class="countdown-time">00:00:00</div>
+          <div class="countdown-hint">时间到！</div>
+        </div>
+
+        <div class="preset-section">
+          <div class="preset-title">快速选择</div>
+          <div class="preset-grid">
+            <div class="preset-btn">1 分钟</div>
+            <div class="preset-btn">3 分钟</div>
+            <div class="preset-btn">5 分钟</div>
+            <div class="preset-btn">10 分钟</div>
+            <div class="preset-btn">15 分钟</div>
+            <div class="preset-btn">30 分钟</div>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <button class="control-btn start">开始</button>
+          <button class="control-btn reset">重置</button>
+        </div>
+      </div>
+
+      <!-- 完成弹窗 -->
+      <div class="modal-overlay">
+        <div class="modal">
+          <div style="font-size: 48px; margin-bottom: 16px;">⏰</div>
+          <div class="modal-title">倒计时结束</div>
+          <div class="modal-content">时间到！</div>
+          <div class="modal-actions">
+            <button class="btn btn-primary" style="flex: 1;">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

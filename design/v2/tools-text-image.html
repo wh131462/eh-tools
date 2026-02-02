@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools v2 - 文本与图片工具</title>
+  <link rel="stylesheet" href="base.css">
+  <style>
+    /* ==================== 加密解密样式 ==================== */
+    .encrypt-mode-switch {
+      display: flex;
+      background: var(--bg-card);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-neumorphic-inset);
+      padding: 4px;
+      margin: var(--space-md);
+    }
+
+    .encrypt-mode-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: var(--radius-full);
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-hint);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .encrypt-mode-btn.active {
+      background: var(--gradient-text);
+      color: white;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .encrypt-textarea {
+      width: 100%;
+      min-height: 120px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-neumorphic-inset);
+      padding: var(--space-md);
+      font-size: 14px;
+      color: var(--text-primary);
+      border: none;
+      outline: none;
+      resize: none;
+      font-family: var(--font-mono);
+      line-height: 1.6;
+    }
+
+    .encrypt-textarea::placeholder {
+      color: var(--text-hint);
+    }
+
+    .encrypt-algo-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin: var(--space-md) 0;
+    }
+
+    .encrypt-algo {
+      padding: 8px 16px;
+      background: var(--bg-card);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-neumorphic-sm);
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .encrypt-algo.active {
+      background: var(--gradient-text);
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .encrypt-result {
+      background: var(--bg-sunken);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    /* ==================== 二维码样式 ==================== */
+    .qrcode-preview {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      padding: var(--space-xl);
+      text-align: center;
+    }
+
+    .qrcode-image {
+      width: 200px;
+      height: 200px;
+      background: white;
+      border-radius: var(--radius-md);
+      margin: 0 auto var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-neumorphic-sm);
+    }
+
+    .qrcode-grid {
+      width: 160px;
+      height: 160px;
+      background:
+        linear-gradient(90deg, #000 30%, transparent 30%),
+        linear-gradient(#000 30%, transparent 30%);
+      background-size: 10px 10px;
+    }
+
+    .qrcode-content {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-md);
+      word-break: break-all;
+    }
+
+    .qrcode-actions {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+    }
+
+    .qrcode-tabs {
+      display: flex;
+      background: var(--bg-card);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-neumorphic-inset);
+      padding: 4px;
+      margin: var(--space-md);
+    }
+
+    .qrcode-tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: var(--radius-full);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-hint);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .qrcode-tab.active {
+      background: var(--gradient-primary);
+      color: white;
+    }
+
+    .qrcode-scan-area {
+      margin: var(--space-md);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      height: 300px;
+      background: #000;
+    }
+
+    .qrcode-scan-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      border: 2px solid rgba(102, 126, 234, 0.8);
+      border-radius: var(--radius-md);
+    }
+
+    .qrcode-scan-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      animation: scan 2s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      50% { top: calc(100% - 2px); }
+      100% { top: 0; }
+    }
+
+    .qrcode-scan-hint {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 14px;
+    }
+
+    /* ==================== 图片压缩样式 ==================== */
+    .compress-upload {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      padding: var(--space-2xl);
+      text-align: center;
+      border: 2px dashed var(--bg-sunken);
+    }
+
+    .compress-upload-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-md);
+    }
+
+    .compress-upload-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .compress-upload-hint {
+      font-size: 13px;
+      color: var(--text-hint);
+    }
+
+    .compress-preview {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      overflow: hidden;
+    }
+
+    .compress-image {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 48px;
+    }
+
+    .compress-info {
+      padding: var(--space-md);
+    }
+
+    .compress-filename {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .compress-meta {
+      display: flex;
+      gap: var(--space-lg);
+      font-size: 13px;
+      color: var(--text-hint);
+    }
+
+    .compress-result {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--gradient-success);
+      border-radius: var(--radius-lg);
+      margin: var(--space-md);
+      padding: var(--space-lg);
+      color: white;
+    }
+
+    .compress-result-item {
+      text-align: center;
+    }
+
+    .compress-result-value {
+      font-size: 24px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .compress-result-label {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+
+    .compress-arrow {
+      font-size: 24px;
+    }
+
+    .compress-quality-slider {
+      margin: var(--space-md);
+    }
+
+    .compress-quality-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-sm);
+    }
+
+    /* ==================== 图片滤镜样式 ==================== */
+    .filter-preview {
+      margin: var(--space-md);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .filter-preview-image {
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+    }
+
+    .filter-compare-slider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      background: white;
+      cursor: ew-resize;
+    }
+
+    .filter-compare-slider::before {
+      content: '◀ ▶';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 8px;
+      border-radius: 50%;
+      font-size: 10px;
+      color: #667eea;
+      white-space: nowrap;
+    }
+
+    .filter-list {
+      display: flex;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+      overflow-x: auto;
+    }
+
+    .filter-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-item {
+      flex-shrink: 0;
+      width: 72px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .filter-item-preview {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-neumorphic-sm);
+      margin-bottom: var(--space-xs);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .filter-item.active .filter-item-preview {
+      box-shadow: 0 0 0 3px #667eea, var(--shadow-neumorphic-sm);
+    }
+
+    .filter-item-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .filter-item-name {
+      font-size: 11px;
+      color: var(--text-hint);
+    }
+
+    .filter-item.active .filter-item-name {
+      color: #667eea;
+      font-weight: 500;
+    }
+
+    .filter-adjustments {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      padding: var(--space-lg);
+    }
+
+    .filter-adjustment-item {
+      margin-bottom: var(--space-lg);
+    }
+
+    .filter-adjustment-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .filter-adjustment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-sm);
+    }
+
+    .filter-adjustment-name {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .filter-adjustment-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+    }
+
+    /* ==================== 色卡样式 ==================== */
+    .color-card-header {
+      background: var(--gradient-image);
+      padding: var(--space-xl);
+      margin: var(--space-md);
+      border-radius: var(--radius-lg);
+      color: white;
+    }
+
+    .color-card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+    }
+
+    .color-card-subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .color-palette-section {
+      margin: var(--space-md);
+    }
+
+    .color-palette-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .color-palette-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-sm);
+    }
+
+    .color-swatch {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-neumorphic-sm);
+    }
+
+    .color-swatch:active {
+      transform: scale(0.95);
+    }
+
+    .color-detail-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      overflow: hidden;
+    }
+
+    .color-detail-preview {
+      height: 120px;
+    }
+
+    .color-detail-info {
+      padding: var(--space-md);
+    }
+
+    .color-detail-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .color-detail-values {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .color-detail-value {
+      padding: 6px 12px;
+      background: var(--bg-sunken);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+    }
+
+    /* ==================== 颜色转换样式 ==================== */
+    .color-converter-preview {
+      margin: var(--space-md);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-neumorphic);
+    }
+
+    .color-converter-display {
+      height: 120px;
+    }
+
+    .color-converter-summary {
+      background: var(--bg-card);
+      padding: var(--space-md);
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .color-converter-item {
+      text-align: center;
+    }
+
+    .color-converter-label {
+      font-size: 11px;
+      color: var(--text-hint);
+      margin-bottom: 4px;
+    }
+
+    .color-converter-value {
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+
+    .color-input-section {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic);
+      margin: var(--space-md);
+      padding: var(--space-lg);
+    }
+
+    .color-input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .color-input-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .color-input-copy {
+      padding: 4px 12px;
+      background: var(--bg-sunken);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: #667eea;
+      cursor: pointer;
+    }
+
+    .hex-input-container {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .hex-prefix {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-hint);
+    }
+
+    .hex-input {
+      flex: 1;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-neumorphic-inset);
+      padding: var(--space-md);
+      font-size: 20px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+    }
+
+    .rgb-inputs {
+      display: flex;
+      gap: var(--space-md);
+    }
+
+    .rgb-input-group {
+      flex: 1;
+      text-align: center;
+    }
+
+    .rgb-label {
+      font-size: 12px;
+      color: var(--text-hint);
+      margin-bottom: var(--space-sm);
+    }
+
+    .rgb-input {
+      width: 100%;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-neumorphic-inset);
+      padding: var(--space-md);
+      font-size: 18px;
+      text-align: center;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+    }
+
+    .hsl-display {
+      display: flex;
+      gap: var(--space-md);
+    }
+
+    .hsl-item {
+      flex: 1;
+      background: var(--bg-sunken);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      text-align: center;
+    }
+
+    .hsl-value {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .hsl-label {
+      font-size: 11px;
+      color: var(--text-hint);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="design-container">
+    <h1 class="design-title">EH-Tools v2 - 文本与图片工具</h1>
+    <p class="design-subtitle">新拟态风格 + 多彩渐变 | 加密解密、二维码、图片处理、色卡、颜色转换</p>
+
+    <!-- ==================== 加密解密 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">加密解密</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <!-- 加密/解密切换 -->
+        <div class="encrypt-mode-switch">
+          <div class="encrypt-mode-btn active">🔒 加密</div>
+          <div class="encrypt-mode-btn">🔓 解密</div>
+        </div>
+
+        <div class="neu-card">
+          <div class="neu-input-label">输入文本</div>
+          <textarea class="encrypt-textarea" placeholder="请输入要加密的文本...">Hello, EH-Tools!</textarea>
+
+          <div class="neu-input-label" style="margin-top: var(--space-md);">加密算法</div>
+          <div class="encrypt-algo-list">
+            <div class="encrypt-algo active">Base64</div>
+            <div class="encrypt-algo">MD5</div>
+            <div class="encrypt-algo">SHA-1</div>
+            <div class="encrypt-algo">SHA-256</div>
+            <div class="encrypt-algo">AES</div>
+          </div>
+
+          <div class="neu-input-label">加密结果</div>
+          <div class="encrypt-result">SGVsbG8sIEVILVRvb2xzIQ==</div>
+
+          <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
+            <button class="neu-btn" style="flex: 1;">复制结果</button>
+            <button class="neu-btn neu-btn-primary" style="flex: 1;">重新加密</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 加密解密 - 解密模式 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">加密解密</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <div class="encrypt-mode-switch">
+          <div class="encrypt-mode-btn">🔒 加密</div>
+          <div class="encrypt-mode-btn active">🔓 解密</div>
+        </div>
+
+        <div class="neu-card">
+          <div class="neu-input-label">密文</div>
+          <textarea class="encrypt-textarea" placeholder="请输入要解密的密文...">SGVsbG8sIEVILVRvb2xzIQ==</textarea>
+
+          <div class="neu-input-label" style="margin-top: var(--space-md);">解密算法</div>
+          <div class="encrypt-algo-list">
+            <div class="encrypt-algo active">Base64</div>
+            <div class="encrypt-algo">AES</div>
+            <div class="encrypt-algo">DES</div>
+          </div>
+
+          <div class="neu-input-label">解密结果</div>
+          <div class="encrypt-result" style="background: rgba(56, 239, 125, 0.1); border-left: 4px solid #38ef7d;">
+            Hello, EH-Tools!
+          </div>
+
+          <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
+            <button class="neu-btn" style="flex: 1;">复制结果</button>
+            <button class="neu-btn neu-btn-success" style="flex: 1;">重新解密</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 二维码生成 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">二维码</div>
+          <div class="navbar-action">⚙️</div>
+        </div>
+
+        <!-- 生成/扫描切换 -->
+        <div class="qrcode-tabs">
+          <div class="qrcode-tab active">生成</div>
+          <div class="qrcode-tab">扫描</div>
+        </div>
+
+        <!-- 二维码预览 -->
+        <div class="qrcode-preview">
+          <div class="qrcode-image">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <!-- 简化的二维码图案 -->
+              <rect fill="#000" x="0" y="0" width="40" height="40"/>
+              <rect fill="#fff" x="8" y="8" width="24" height="24"/>
+              <rect fill="#000" x="12" y="12" width="16" height="16"/>
+
+              <rect fill="#000" x="120" y="0" width="40" height="40"/>
+              <rect fill="#fff" x="128" y="8" width="24" height="24"/>
+              <rect fill="#000" x="132" y="12" width="16" height="16"/>
+
+              <rect fill="#000" x="0" y="120" width="40" height="40"/>
+              <rect fill="#fff" x="8" y="128" width="24" height="24"/>
+              <rect fill="#000" x="12" y="132" width="16" height="16"/>
+
+              <!-- 数据区域 -->
+              <rect fill="#000" x="48" y="0" width="8" height="8"/>
+              <rect fill="#000" x="64" y="0" width="8" height="8"/>
+              <rect fill="#000" x="80" y="0" width="8" height="8"/>
+              <rect fill="#000" x="48" y="16" width="8" height="8"/>
+              <rect fill="#000" x="72" y="16" width="8" height="8"/>
+              <rect fill="#000" x="96" y="16" width="8" height="8"/>
+              <rect fill="#000" x="56" y="32" width="8" height="8"/>
+              <rect fill="#000" x="80" y="32" width="8" height="8"/>
+
+              <rect fill="#000" x="48" y="48" width="8" height="8"/>
+              <rect fill="#000" x="64" y="56" width="8" height="8"/>
+              <rect fill="#000" x="80" y="48" width="8" height="8"/>
+              <rect fill="#000" x="96" y="64" width="8" height="8"/>
+              <rect fill="#000" x="48" y="72" width="8" height="8"/>
+              <rect fill="#000" x="72" y="80" width="8" height="8"/>
+              <rect fill="#000" x="88" y="72" width="8" height="8"/>
+
+              <rect fill="#000" x="48" y="120" width="8" height="8"/>
+              <rect fill="#000" x="64" y="128" width="8" height="8"/>
+              <rect fill="#000" x="80" y="136" width="8" height="8"/>
+              <rect fill="#000" x="96" y="120" width="8" height="8"/>
+              <rect fill="#000" x="112" y="128" width="8" height="8"/>
+              <rect fill="#000" x="128" y="136" width="8" height="8"/>
+              <rect fill="#000" x="144" y="144" width="8" height="8"/>
+            </svg>
+          </div>
+          <div class="qrcode-content">https://eh-tools.com</div>
+          <div class="qrcode-actions">
+            <button class="neu-btn">💾 保存</button>
+            <button class="neu-btn neu-btn-primary">📤 分享</button>
+          </div>
+        </div>
+
+        <!-- 输入内容 -->
+        <div class="neu-card">
+          <div class="neu-input-label">二维码内容</div>
+          <textarea class="encrypt-textarea" style="min-height: 80px;" placeholder="请输入网址、文本或其他内容...">https://eh-tools.com</textarea>
+          <button class="neu-btn neu-btn-primary neu-btn-block" style="margin-top: var(--space-md);">生成二维码</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 二维码扫描 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">二维码</div>
+          <div class="navbar-action">🔦</div>
+        </div>
+
+        <div class="qrcode-tabs">
+          <div class="qrcode-tab">生成</div>
+          <div class="qrcode-tab active">扫描</div>
+        </div>
+
+        <!-- 扫描区域 -->
+        <div class="qrcode-scan-area">
+          <div class="qrcode-scan-frame"></div>
+          <div class="qrcode-scan-hint">将二维码放入框内，即可自动扫描</div>
+        </div>
+
+        <!-- 功能按钮 -->
+        <div style="display: flex; justify-content: center; gap: var(--space-xl); padding: var(--space-lg);">
+          <div style="text-align: center; cursor: pointer;">
+            <div class="neu-btn neu-btn-circle" style="margin: 0 auto var(--space-sm);">📷</div>
+            <div style="font-size: 12px; color: var(--text-hint);">相册</div>
+          </div>
+          <div style="text-align: center; cursor: pointer;">
+            <div class="neu-btn neu-btn-circle" style="margin: 0 auto var(--space-sm);">🔦</div>
+            <div style="font-size: 12px; color: var(--text-hint);">手电筒</div>
+          </div>
+          <div style="text-align: center; cursor: pointer;">
+            <div class="neu-btn neu-btn-circle" style="margin: 0 auto var(--space-sm);">📜</div>
+            <div style="font-size: 12px; color: var(--text-hint);">历史</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 图片压缩 - 上传状态 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">图片压缩</div>
+          <div class="navbar-action">📋</div>
+        </div>
+
+        <!-- 上传区域 -->
+        <div class="compress-upload">
+          <div class="compress-upload-icon">📤</div>
+          <div class="compress-upload-text">点击或拖拽上传图片</div>
+          <div class="compress-upload-hint">支持 JPG、PNG、WebP 格式</div>
+        </div>
+
+        <!-- 压缩质量 -->
+        <div class="neu-card">
+          <div class="compress-quality-label">
+            <span>压缩质量</span>
+            <span style="font-weight: 600; color: var(--text-primary);">80%</span>
+          </div>
+          <div class="neu-slider">
+            <div class="neu-slider-track" style="width: 80%;">
+              <div class="neu-slider-thumb"></div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--text-hint);">
+            <span>最小体积</span>
+            <span>最佳质量</span>
+          </div>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="section-header">
+          <div class="section-title">
+            <span class="icon">📜</span>
+            最近压缩
+          </div>
+          <div class="section-more">查看全部 →</div>
+        </div>
+
+        <div class="empty-state" style="padding: var(--space-xl);">
+          <div class="empty-state-icon">🖼️</div>
+          <div class="empty-state-title">暂无压缩记录</div>
+          <div class="empty-state-desc">上传图片开始压缩吧</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 图片压缩 - 结果状态 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">图片压缩</div>
+          <div class="navbar-action">➕</div>
+        </div>
+
+        <!-- 图片预览 -->
+        <div class="compress-preview">
+          <div class="compress-image">🏞️</div>
+          <div class="compress-info">
+            <div class="compress-filename">IMG_20260130_142536.jpg</div>
+            <div class="compress-meta">
+              <span>3024 × 4032</span>
+              <span>JPEG</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 压缩结果 -->
+        <div class="compress-result">
+          <div class="compress-result-item">
+            <div class="compress-result-value">4.8 MB</div>
+            <div class="compress-result-label">压缩前</div>
+          </div>
+          <div class="compress-arrow">→</div>
+          <div class="compress-result-item">
+            <div class="compress-result-value">856 KB</div>
+            <div class="compress-result-label">压缩后</div>
+          </div>
+          <div class="compress-result-item">
+            <div class="compress-result-value">-82%</div>
+            <div class="compress-result-label">压缩率</div>
+          </div>
+        </div>
+
+        <!-- 压缩质量 -->
+        <div class="compress-quality-slider">
+          <div class="compress-quality-label">
+            <span>压缩质量</span>
+            <span style="font-weight: 600; color: var(--text-primary);">80%</span>
+          </div>
+          <div class="neu-slider">
+            <div class="neu-slider-track" style="width: 80%;">
+              <div class="neu-slider-thumb"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div style="display: flex; gap: var(--space-md); padding: var(--space-md);">
+          <button class="neu-btn" style="flex: 1;">重新压缩</button>
+          <button class="neu-btn neu-btn-success" style="flex: 1;">💾 保存图片</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 图片滤镜 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">图片滤镜</div>
+          <div class="navbar-action">💾</div>
+        </div>
+
+        <!-- 图片预览 -->
+        <div class="filter-preview">
+          <div class="filter-preview-image" style="filter: contrast(1.2) saturate(1.3);">🏞️</div>
+          <div class="filter-compare-slider"></div>
+        </div>
+
+        <!-- 滤镜列表 -->
+        <div class="filter-list">
+          <div class="filter-item">
+            <div class="filter-item-preview" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center;">📷</div>
+            <div class="filter-item-name">原图</div>
+          </div>
+          <div class="filter-item active">
+            <div class="filter-item-preview" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); display: flex; align-items: center; justify-content: center;">🌅</div>
+            <div class="filter-item-name">暖阳</div>
+          </div>
+          <div class="filter-item">
+            <div class="filter-item-preview" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); display: flex; align-items: center; justify-content: center;">🌸</div>
+            <div class="filter-item-name">樱花</div>
+          </div>
+          <div class="filter-item">
+            <div class="filter-item-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">🌃</div>
+            <div class="filter-item-name">霓虹</div>
+          </div>
+          <div class="filter-item">
+            <div class="filter-item-preview" style="background: linear-gradient(135deg, #c9d6ff 0%, #e2e2e2 100%); display: flex; align-items: center; justify-content: center;">🌫️</div>
+            <div class="filter-item-name">复古</div>
+          </div>
+          <div class="filter-item">
+            <div class="filter-item-preview" style="background: #333; display: flex; align-items: center; justify-content: center; color: white;">⬛</div>
+            <div class="filter-item-name">黑白</div>
+          </div>
+        </div>
+
+        <!-- 参数调节 -->
+        <div class="filter-adjustments">
+          <div class="filter-adjustment-item">
+            <div class="filter-adjustment-header">
+              <span class="filter-adjustment-name">亮度</span>
+              <span class="filter-adjustment-value">+10</span>
+            </div>
+            <div class="neu-slider">
+              <div class="neu-slider-track" style="width: 55%;">
+                <div class="neu-slider-thumb"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-adjustment-item">
+            <div class="filter-adjustment-header">
+              <span class="filter-adjustment-name">对比度</span>
+              <span class="filter-adjustment-value">+20</span>
+            </div>
+            <div class="neu-slider">
+              <div class="neu-slider-track" style="width: 60%;">
+                <div class="neu-slider-thumb"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-adjustment-item">
+            <div class="filter-adjustment-header">
+              <span class="filter-adjustment-name">饱和度</span>
+              <span class="filter-adjustment-value">+30</span>
+            </div>
+            <div class="neu-slider">
+              <div class="neu-slider-track" style="width: 65%;">
+                <div class="neu-slider-thumb"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 色卡 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">色卡</div>
+          <div class="navbar-action">🔍</div>
+        </div>
+
+        <!-- 头部 -->
+        <div class="color-card-header">
+          <div class="color-card-title">设计师色卡</div>
+          <div class="color-card-subtitle">精选 200+ 配色方案</div>
+        </div>
+
+        <!-- 流行色 -->
+        <div class="color-palette-section">
+          <div class="color-palette-title">
+            <span>🔥</span>
+            2026 流行色
+          </div>
+          <div class="color-palette-grid">
+            <div class="color-swatch" style="background: #667eea;"></div>
+            <div class="color-swatch" style="background: #764ba2;"></div>
+            <div class="color-swatch" style="background: #f093fb;"></div>
+            <div class="color-swatch" style="background: #f5576c;"></div>
+            <div class="color-swatch" style="background: #4facfe;"></div>
+            <div class="color-swatch" style="background: #00f2fe;"></div>
+            <div class="color-swatch" style="background: #38ef7d;"></div>
+            <div class="color-swatch" style="background: #11998e;"></div>
+            <div class="color-swatch" style="background: #f7971e;"></div>
+            <div class="color-swatch" style="background: #ffd200;"></div>
+          </div>
+        </div>
+
+        <!-- 中国传统色 -->
+        <div class="color-palette-section">
+          <div class="color-palette-title">
+            <span>🏮</span>
+            中国传统色
+          </div>
+          <div class="color-palette-grid">
+            <div class="color-swatch" style="background: #c41a16;"></div>
+            <div class="color-swatch" style="background: #f28e16;"></div>
+            <div class="color-swatch" style="background: #ffd111;"></div>
+            <div class="color-swatch" style="background: #00ae9d;"></div>
+            <div class="color-swatch" style="background: #003472;"></div>
+            <div class="color-swatch" style="background: #2e317c;"></div>
+            <div class="color-swatch" style="background: #815c94;"></div>
+            <div class="color-swatch" style="background: #789262;"></div>
+            <div class="color-swatch" style="background: #5d3d2e;"></div>
+            <div class="color-swatch" style="background: #281f1d;"></div>
+          </div>
+        </div>
+
+        <!-- 柔和马卡龙 -->
+        <div class="color-palette-section">
+          <div class="color-palette-title">
+            <span>🍬</span>
+            马卡龙色
+          </div>
+          <div class="color-palette-grid">
+            <div class="color-swatch" style="background: #ffb5b5;"></div>
+            <div class="color-swatch" style="background: #ffd4a4;"></div>
+            <div class="color-swatch" style="background: #ffffa4;"></div>
+            <div class="color-swatch" style="background: #b5ffb5;"></div>
+            <div class="color-swatch" style="background: #b5ffff;"></div>
+            <div class="color-swatch" style="background: #b5b5ff;"></div>
+            <div class="color-swatch" style="background: #ffb5ff;"></div>
+            <div class="color-swatch" style="background: #e8d5b5;"></div>
+            <div class="color-swatch" style="background: #d5e8e8;"></div>
+            <div class="color-swatch" style="background: #f5f5dc;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 色卡 - 颜色详情 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">颜色详情</div>
+          <div class="navbar-action">❤️</div>
+        </div>
+
+        <!-- 颜色详情卡片 -->
+        <div class="color-detail-card">
+          <div class="color-detail-preview" style="background: #667eea;"></div>
+          <div class="color-detail-info">
+            <div class="color-detail-name">长春花蓝</div>
+            <div class="color-detail-values">
+              <span class="color-detail-value">#667EEA</span>
+              <span class="color-detail-value">RGB(102, 126, 234)</span>
+              <span class="color-detail-value">HSL(229, 76%, 66%)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 相关色 -->
+        <div class="section-header">
+          <div class="section-title">相近色</div>
+        </div>
+        <div class="color-palette-grid" style="padding: 0 var(--space-md);">
+          <div class="color-swatch" style="background: #5c6bc0;"></div>
+          <div class="color-swatch" style="background: #7986cb;"></div>
+          <div class="color-swatch" style="background: #9fa8da;"></div>
+          <div class="color-swatch" style="background: #c5cae9;"></div>
+          <div class="color-swatch" style="background: #e8eaf6;"></div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">互补色</div>
+        </div>
+        <div class="color-palette-grid" style="padding: 0 var(--space-md);">
+          <div class="color-swatch" style="background: #eaea66;"></div>
+          <div class="color-swatch" style="background: #667eea;"></div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">三角色</div>
+        </div>
+        <div class="color-palette-grid" style="padding: 0 var(--space-md);">
+          <div class="color-swatch" style="background: #667eea;"></div>
+          <div class="color-swatch" style="background: #ea6689;"></div>
+          <div class="color-swatch" style="background: #89ea66;"></div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div style="display: flex; gap: var(--space-md); padding: var(--space-md);">
+          <button class="neu-btn" style="flex: 1;">📋 复制</button>
+          <button class="neu-btn neu-btn-primary" style="flex: 1;">🎨 转换器</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 颜色转换器 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">颜色转换</div>
+          <div class="navbar-action">🎨</div>
+        </div>
+
+        <!-- 颜色预览 -->
+        <div class="color-converter-preview">
+          <div class="color-converter-display" style="background: #1890ff;"></div>
+          <div class="color-converter-summary">
+            <div class="color-converter-item">
+              <div class="color-converter-label">HEX</div>
+              <div class="color-converter-value">#1890FF</div>
+            </div>
+            <div class="color-converter-item">
+              <div class="color-converter-label">RGB</div>
+              <div class="color-converter-value">24, 144, 255</div>
+            </div>
+            <div class="color-converter-item">
+              <div class="color-converter-label">HSL</div>
+              <div class="color-converter-value">209°, 100%, 55%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HEX 输入 -->
+        <div class="color-input-section">
+          <div class="color-input-header">
+            <div class="color-input-title">HEX</div>
+            <div class="color-input-copy">复制</div>
+          </div>
+          <div class="hex-input-container">
+            <span class="hex-prefix">#</span>
+            <input type="text" class="hex-input" value="1890FF" maxlength="6">
+          </div>
+        </div>
+
+        <!-- RGB 输入 -->
+        <div class="color-input-section">
+          <div class="color-input-header">
+            <div class="color-input-title">RGB</div>
+            <div class="color-input-copy">复制</div>
+          </div>
+          <div class="rgb-inputs">
+            <div class="rgb-input-group">
+              <div class="rgb-label">R</div>
+              <input type="number" class="rgb-input" value="24" min="0" max="255">
+            </div>
+            <div class="rgb-input-group">
+              <div class="rgb-label">G</div>
+              <input type="number" class="rgb-input" value="144" min="0" max="255">
+            </div>
+            <div class="rgb-input-group">
+              <div class="rgb-label">B</div>
+              <input type="number" class="rgb-input" value="255" min="0" max="255">
+            </div>
+          </div>
+        </div>
+
+        <!-- HSL 显示 -->
+        <div class="color-input-section">
+          <div class="color-input-header">
+            <div class="color-input-title">HSL</div>
+            <div class="color-input-copy">复制</div>
+          </div>
+          <div class="hsl-display">
+            <div class="hsl-item">
+              <div class="hsl-value">209°</div>
+              <div class="hsl-label">色调 H</div>
+            </div>
+            <div class="hsl-item">
+              <div class="hsl-value">100%</div>
+              <div class="hsl-label">饱和度 S</div>
+            </div>
+            <div class="hsl-item">
+              <div class="hsl-value">55%</div>
+              <div class="hsl-label">亮度 L</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 颜色转换器 - 另一种颜色 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <span class="status-bar-icons">
+          <span>5G</span>
+          <span>100%</span>
+        </span>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <div class="navbar">
+          <div class="navbar-back">←</div>
+          <div class="navbar-title">颜色转换</div>
+          <div class="navbar-action">🎨</div>
+        </div>
+
+        <div class="color-converter-preview">
+          <div class="color-converter-display" style="background: #52c41a;"></div>
+          <div class="color-converter-summary">
+            <div class="color-converter-item">
+              <div class="color-converter-label">HEX</div>
+              <div class="color-converter-value">#52C41A</div>
+            </div>
+            <div class="color-converter-item">
+              <div class="color-converter-label">RGB</div>
+              <div class="color-converter-value">82, 196, 26</div>
+            </div>
+            <div class="color-converter-item">
+              <div class="color-converter-label">HSL</div>
+              <div class="color-converter-value">100°, 77%, 44%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="color-input-section">
+          <div class="color-input-header">
+            <div class="color-input-title">HEX</div>
+            <div class="color-input-copy">复制</div>
+          </div>
+          <div class="hex-input-container">
+            <span class="hex-prefix">#</span>
+            <input type="text" class="hex-input" value="52C41A" maxlength="6">
+          </div>
+        </div>
+
+        <div class="color-input-section">
+          <div class="color-input-header">
+            <div class="color-input-title">RGB</div>
+            <div class="color-input-copy">复制</div>
+          </div>
+          <div class="rgb-inputs">
+            <div class="rgb-input-group">
+              <div class="rgb-label">R</div>
+              <input type="number" class="rgb-input" value="82" min="0" max="255">
+            </div>
+            <div class="rgb-input-group">
+              <div class="rgb-label">G</div>
+              <input type="number" class="rgb-input" value="196" min="0" max="255">
+            </div>
+            <div class="rgb-input-group">
+              <div class="rgb-label">B</div>
+              <input type="number" class="rgb-input" value="26" min="0" max="255">
+            </div>
+          </div>
+        </div>
+
+        <div class="color-input-section">
+          <div class="color-input-header">
+            <div class="color-input-title">HSL</div>
+            <div class="color-input-copy">复制</div>
+          </div>
+          <div class="hsl-display">
+            <div class="hsl-item">
+              <div class="hsl-value">100°</div>
+              <div class="hsl-label">色调 H</div>
+            </div>
+            <div class="hsl-item">
+              <div class="hsl-value">77%</div>
+              <div class="hsl-label">饱和度 S</div>
+            </div>
+            <div class="hsl-item">
+              <div class="hsl-value">44%</div>
+              <div class="hsl-label">亮度 L</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

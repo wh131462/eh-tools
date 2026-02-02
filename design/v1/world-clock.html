@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 世界时钟</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .main-clock {
+      background: linear-gradient(135deg, #1890ff, #096dd9);
+      margin: 12px;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      color: #fff;
+    }
+    .main-clock-city {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+    .main-clock-time {
+      font-size: 48px;
+      font-weight: 200;
+      font-family: 'SF Mono', Monaco, monospace;
+      letter-spacing: 2px;
+    }
+    .main-clock-date {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-top: 8px;
+    }
+    .timezone-list {
+      padding: 0 12px 80px;
+    }
+    .timezone-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .timezone-item:hover {
+      transform: scale(1.02);
+    }
+    .timezone-item:active {
+      transform: scale(0.98);
+    }
+    .timezone-left {
+      display: flex;
+      align-items: center;
+    }
+    .timezone-flag {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-right: 12px;
+    }
+    .timezone-city {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+    .timezone-name {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .timezone-right {
+      text-align: right;
+    }
+    .timezone-time {
+      font-size: 24px;
+      font-weight: 300;
+      font-family: 'SF Mono', Monaco, monospace;
+      color: #333;
+    }
+    .timezone-date {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .timezone-offset {
+      font-size: 11px;
+      color: #1890ff;
+      margin-top: 2px;
+    }
+    .fab {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #1890ff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 4px 12px rgba(24,144,255,0.4);
+      cursor: pointer;
+    }
+    .timezone-picker {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      max-height: 60%;
+      overflow: hidden;
+      z-index: 200;
+    }
+    .timezone-picker-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      position: sticky;
+      top: 0;
+      background: #fff;
+    }
+    .timezone-picker-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .timezone-picker-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+    }
+    .timezone-picker-item:hover {
+      background: #f5f5f5;
+    }
+    .timezone-picker-item.selected {
+      background: rgba(24,144,255,0.1);
+    }
+    .timezone-picker-item.selected .timezone-picker-city {
+      color: #1890ff;
+    }
+    .timezone-picker-city {
+      font-size: 15px;
+      color: #333;
+    }
+    .timezone-picker-offset {
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">世界时钟</h2>
+
+    <!-- 世界时钟主页 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">世界时钟</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="main-clock">
+          <div class="main-clock-city">🇨🇳 上海 (UTC+8)</div>
+          <div class="main-clock-time">14:25:36</div>
+          <div class="main-clock-date">2026年1月30日 星期五</div>
+        </div>
+
+        <div class="timezone-list">
+          <div class="timezone-item">
+            <div class="timezone-left">
+              <div class="timezone-flag">🇺🇸</div>
+              <div>
+                <div class="timezone-city">纽约</div>
+                <div class="timezone-name">America/New_York</div>
+              </div>
+            </div>
+            <div class="timezone-right">
+              <div class="timezone-time">01:25</div>
+              <div class="timezone-date">1月30日</div>
+              <div class="timezone-offset">UTC-5</div>
+            </div>
+          </div>
+
+          <div class="timezone-item">
+            <div class="timezone-left">
+              <div class="timezone-flag">🇬🇧</div>
+              <div>
+                <div class="timezone-city">伦敦</div>
+                <div class="timezone-name">Europe/London</div>
+              </div>
+            </div>
+            <div class="timezone-right">
+              <div class="timezone-time">06:25</div>
+              <div class="timezone-date">1月30日</div>
+              <div class="timezone-offset">UTC+0</div>
+            </div>
+          </div>
+
+          <div class="timezone-item">
+            <div class="timezone-left">
+              <div class="timezone-flag">🇯🇵</div>
+              <div>
+                <div class="timezone-city">东京</div>
+                <div class="timezone-name">Asia/Tokyo</div>
+              </div>
+            </div>
+            <div class="timezone-right">
+              <div class="timezone-time">15:25</div>
+              <div class="timezone-date">1月30日</div>
+              <div class="timezone-offset">UTC+9</div>
+            </div>
+          </div>
+
+          <div class="timezone-item">
+            <div class="timezone-left">
+              <div class="timezone-flag">🇦🇺</div>
+              <div>
+                <div class="timezone-city">悉尼</div>
+                <div class="timezone-name">Australia/Sydney</div>
+              </div>
+            </div>
+            <div class="timezone-right">
+              <div class="timezone-time">17:25</div>
+              <div class="timezone-date">1月30日</div>
+              <div class="timezone-offset">UTC+11</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fab">+</div>
+    </div>
+
+    <!-- 添加时区弹窗 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">世界时钟</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="main-clock">
+          <div class="main-clock-city">🇨🇳 上海 (UTC+8)</div>
+          <div class="main-clock-time">14:25:36</div>
+          <div class="main-clock-date">2026年1月30日 星期五</div>
+        </div>
+
+        <div class="timezone-list">
+          <div class="timezone-item">
+            <div class="timezone-left">
+              <div class="timezone-flag">🇺🇸</div>
+              <div>
+                <div class="timezone-city">纽约</div>
+                <div class="timezone-name">America/New_York</div>
+              </div>
+            </div>
+            <div class="timezone-right">
+              <div class="timezone-time">01:25</div>
+              <div class="timezone-date">1月30日</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 遮罩 -->
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 150;"></div>
+
+      <!-- 时区选择器 -->
+      <div class="timezone-picker">
+        <div class="timezone-picker-header">
+          <span style="color: #999;">取消</span>
+          <span style="font-weight: 600;">选择时区</span>
+          <span style="color: #1890ff;">确定</span>
+        </div>
+        <div class="timezone-picker-list">
+          <div class="timezone-picker-item selected">
+            <span class="timezone-picker-city">🇨🇳 上海</span>
+            <span class="timezone-picker-offset">UTC+8</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇺🇸 纽约</span>
+            <span class="timezone-picker-offset">UTC-5</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇬🇧 伦敦</span>
+            <span class="timezone-picker-offset">UTC+0</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇯🇵 东京</span>
+            <span class="timezone-picker-offset">UTC+9</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇦🇺 悉尼</span>
+            <span class="timezone-picker-offset">UTC+11</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇫🇷 巴黎</span>
+            <span class="timezone-picker-offset">UTC+1</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇺🇸 洛杉矶</span>
+            <span class="timezone-picker-offset">UTC-8</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇦🇪 迪拜</span>
+            <span class="timezone-picker-offset">UTC+4</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇸🇬 新加坡</span>
+            <span class="timezone-picker-offset">UTC+8</span>
+          </div>
+          <div class="timezone-picker-item">
+            <span class="timezone-picker-city">🇷🇺 莫斯科</span>
+            <span class="timezone-picker-offset">UTC+3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

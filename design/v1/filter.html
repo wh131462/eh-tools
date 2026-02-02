@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 图片滤镜</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .preview-section {
+      background: #000;
+      padding: 20px;
+    }
+    .image-preview {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+    }
+    .image-preview.sepia {
+      filter: sepia(100%);
+    }
+    .image-preview.grayscale {
+      filter: grayscale(100%);
+    }
+    .image-preview.invert {
+      filter: invert(100%);
+    }
+    .image-preview.soft {
+      filter: opacity(80%) contrast(120%);
+    }
+    .image-preview.vivid {
+      filter: saturate(200%);
+    }
+    .filter-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .section-title {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .preset-item {
+      text-align: center;
+      cursor: pointer;
+    }
+    .preset-preview {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      border: 3px solid transparent;
+    }
+    .preset-item.active .preset-preview {
+      border-color: #1890ff;
+    }
+    .preset-preview.sepia { filter: sepia(100%); }
+    .preset-preview.grayscale { filter: grayscale(100%); }
+    .preset-preview.invert { filter: invert(100%); }
+    .preset-preview.soft { filter: opacity(80%) contrast(120%); }
+    .preset-preview.vivid { filter: saturate(200%); }
+    .preset-name {
+      font-size: 12px;
+      color: #666;
+    }
+    .preset-item.active .preset-name {
+      color: #1890ff;
+      font-weight: 500;
+    }
+    .adjust-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .adjust-item {
+      margin-bottom: 16px;
+    }
+    .adjust-item:last-child { margin-bottom: 0; }
+    .adjust-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .adjust-label {
+      font-size: 13px;
+      color: #333;
+    }
+    .adjust-value {
+      font-size: 13px;
+      color: #1890ff;
+      font-weight: 500;
+    }
+    .adjust-slider {
+      width: 100%;
+      height: 4px;
+      background: #e8e8e8;
+      border-radius: 2px;
+      position: relative;
+    }
+    .adjust-track {
+      height: 100%;
+      background: #1890ff;
+      border-radius: 2px;
+    }
+    .adjust-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border: 2px solid #1890ff;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .export-btn {
+      margin: 12px;
+      padding: 14px;
+      background: #52c41a;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      width: calc(100% - 24px);
+    }
+    .upload-placeholder {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #1a1a1a;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      cursor: pointer;
+    }
+    .upload-placeholder .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">图片滤镜</h2>
+
+    <!-- 初始状态 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #000; border: none;">
+        <span class="navbar-back" style="color: #1890ff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">图片滤镜</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5; padding-top: 44px;">
+        <div class="preview-section">
+          <div class="upload-placeholder">
+            <span class="icon">🖼️</span>
+            <span>点击选择图片</span>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="section-title">预设滤镜</div>
+          <div class="preset-grid">
+            <div class="preset-item active">
+              <div class="preset-preview"></div>
+              <div class="preset-name">原始</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview sepia"></div>
+              <div class="preset-name">复古</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview grayscale"></div>
+              <div class="preset-name">黑白</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview invert"></div>
+              <div class="preset-name">反色</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview soft"></div>
+              <div class="preset-name">柔光</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview vivid"></div>
+              <div class="preset-name">艳丽</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 预设滤镜 - 复古 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #000; border: none;">
+        <span class="navbar-back" style="color: #1890ff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">图片滤镜</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5; padding-top: 44px;">
+        <div class="preview-section">
+          <div class="image-preview sepia">🏔️</div>
+        </div>
+
+        <div class="filter-section">
+          <div class="section-title">预设滤镜</div>
+          <div class="preset-grid">
+            <div class="preset-item">
+              <div class="preset-preview"></div>
+              <div class="preset-name">原始</div>
+            </div>
+            <div class="preset-item active">
+              <div class="preset-preview sepia"></div>
+              <div class="preset-name">复古</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview grayscale"></div>
+              <div class="preset-name">黑白</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview invert"></div>
+              <div class="preset-name">反色</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview soft"></div>
+              <div class="preset-name">柔光</div>
+            </div>
+            <div class="preset-item">
+              <div class="preset-preview vivid"></div>
+              <div class="preset-name">艳丽</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="export-btn">导出图片</button>
+      </div>
+    </div>
+
+    <!-- 自定义调整 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #000; border: none;">
+        <span class="navbar-back" style="color: #1890ff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">图片滤镜</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5; padding-top: 44px;">
+        <div class="preview-section">
+          <div class="image-preview" style="filter: brightness(120%) contrast(110%) saturate(130%) hue-rotate(15deg);">🏔️</div>
+        </div>
+
+        <div class="adjust-section">
+          <div class="section-title">自定义调整</div>
+
+          <div class="adjust-item">
+            <div class="adjust-header">
+              <span class="adjust-label">亮度</span>
+              <span class="adjust-value">120%</span>
+            </div>
+            <div class="adjust-slider">
+              <div class="adjust-track" style="width: 60%;"></div>
+              <div class="adjust-thumb" style="left: 60%;"></div>
+            </div>
+          </div>
+
+          <div class="adjust-item">
+            <div class="adjust-header">
+              <span class="adjust-label">对比度</span>
+              <span class="adjust-value">110%</span>
+            </div>
+            <div class="adjust-slider">
+              <div class="adjust-track" style="width: 55%;"></div>
+              <div class="adjust-thumb" style="left: 55%;"></div>
+            </div>
+          </div>
+
+          <div class="adjust-item">
+            <div class="adjust-header">
+              <span class="adjust-label">饱和度</span>
+              <span class="adjust-value">130%</span>
+            </div>
+            <div class="adjust-slider">
+              <div class="adjust-track" style="width: 65%;"></div>
+              <div class="adjust-thumb" style="left: 65%;"></div>
+            </div>
+          </div>
+
+          <div class="adjust-item">
+            <div class="adjust-header">
+              <span class="adjust-label">色调</span>
+              <span class="adjust-value">15°</span>
+            </div>
+            <div class="adjust-slider">
+              <div class="adjust-track" style="width: 4%;"></div>
+              <div class="adjust-thumb" style="left: 4%;"></div>
+            </div>
+          </div>
+
+          <div class="adjust-item">
+            <div class="adjust-header">
+              <span class="adjust-label">模糊</span>
+              <span class="adjust-value">0px</span>
+            </div>
+            <div class="adjust-slider">
+              <div class="adjust-track" style="width: 0%;"></div>
+              <div class="adjust-thumb" style="left: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="export-btn">导出图片</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

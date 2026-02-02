@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools v2.0 - 首页设计</title>
+  <link rel="stylesheet" href="base.css">
+  <style>
+    /* 页面导航 */
+    .page-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 20px 40px;
+      background: rgba(255,255,255,0.1);
+    }
+    .page-nav a {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      text-decoration: none;
+      color: white;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .page-nav a:hover {
+      background: white;
+      color: #667eea;
+    }
+
+    /* 欢迎横幅 */
+    .welcome-banner {
+      margin: var(--space-md);
+      padding: var(--space-xl);
+      border-radius: var(--radius-xl);
+      background: var(--gradient-primary);
+      position: relative;
+      overflow: hidden;
+    }
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+    }
+    .welcome-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -20%;
+      width: 150px;
+      height: 150px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    .welcome-emoji {
+      font-size: 40px;
+      margin-bottom: var(--space-sm);
+    }
+    .welcome-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: var(--space-xs);
+    }
+    .welcome-subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+    }
+    .welcome-version {
+      display: inline-block;
+      margin-top: var(--space-md);
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.2);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      color: white;
+      backdrop-filter: blur(4px);
+    }
+
+    /* 搜索框 */
+    .search-box {
+      margin: 0 var(--space-md) var(--space-md);
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic-sm);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .search-box-icon {
+      font-size: 20px;
+      color: var(--text-hint);
+    }
+    .search-box-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      color: var(--text-primary);
+      outline: none;
+    }
+    .search-box-input::placeholder {
+      color: var(--text-hint);
+    }
+
+    /* 快捷功能 */
+    .quick-actions {
+      display: flex;
+      gap: var(--space-md);
+      padding: 0 var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+    .quick-action {
+      flex: 1;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-neumorphic-sm);
+      padding: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quick-action:active {
+      box-shadow: var(--shadow-neumorphic-inset);
+      transform: scale(0.98);
+    }
+    .quick-action-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: white;
+    }
+    .quick-action-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* 大型工具卡片 */
+    .featured-tool {
+      margin: var(--space-md);
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-neumorphic);
+      padding: var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .featured-tool:active {
+      box-shadow: var(--shadow-neumorphic-inset);
+    }
+    .featured-tool-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: white;
+      flex-shrink: 0;
+    }
+    .featured-tool-info {
+      flex: 1;
+    }
+    .featured-tool-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+    .featured-tool-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .featured-tool-arrow {
+      font-size: 24px;
+      color: var(--text-hint);
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面导航 -->
+  <nav class="page-nav">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="settings.html">设置</a>
+    <a href="tools-time.html">时间工具</a>
+    <a href="tools-calc.html">计算工具</a>
+    <a href="tools-text.html">文本工具</a>
+    <a href="tools-image.html">图片工具</a>
+    <a href="tools-life.html">生活工具</a>
+  </nav>
+
+  <div class="design-container">
+    <h1 class="design-title">EH-Tools v2.0</h1>
+    <p class="design-subtitle">新拟态风格 · 多彩渐变 · 悬浮胶囊导航</p>
+
+    <!-- ==================== 首页 - 浅色模式 ==================== -->
+    <div class="phone-frame">
+      <!-- 状态栏 -->
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <div class="status-bar-icons">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- 欢迎横幅 -->
+        <div class="welcome-banner">
+          <div class="welcome-emoji">👋</div>
+          <div class="welcome-title">你好，开发者</div>
+          <div class="welcome-subtitle">欢迎使用 EH Tools 工具箱</div>
+          <span class="welcome-version">v2.0.0 全新设计</span>
+        </div>
+
+        <!-- 搜索框 -->
+        <div class="search-box">
+          <span class="search-box-icon">🔍</span>
+          <input type="text" class="search-box-input" placeholder="搜索工具...">
+        </div>
+
+        <!-- 快捷功能 -->
+        <div class="quick-actions">
+          <div class="quick-action">
+            <div class="quick-action-icon" style="background: var(--gradient-time);">📅</div>
+            <span class="quick-action-text">万年历</span>
+          </div>
+          <div class="quick-action">
+            <div class="quick-action-icon" style="background: var(--gradient-calc);">🧮</div>
+            <span class="quick-action-text">计算器</span>
+          </div>
+          <div class="quick-action">
+            <div class="quick-action-icon" style="background: var(--gradient-text);">📱</div>
+            <span class="quick-action-text">二维码</span>
+          </div>
+        </div>
+
+        <!-- 时间工具 -->
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">⏰</span> 时间工具</h3>
+          <span class="section-more">查看全部 ›</span>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);">📅</div>
+            <span class="tool-card-name">万年历</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #feca57, #f9ca24);">⏱️</div>
+            <span class="tool-card-name">倒计时</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #48dbfb, #0abde3);">⏳</div>
+            <span class="tool-card-name">时间差</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #ff9ff3, #f368e0);">🌍</div>
+            <span class="tool-card-name">世界时钟</span>
+          </div>
+        </div>
+
+        <!-- 计算工具 -->
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">🔢</span> 计算工具</h3>
+          <span class="section-more">查看全部 ›</span>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">🧮</div>
+            <span class="tool-card-name">计算器</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">💰</div>
+            <span class="tool-card-name">工资计算</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">⚖️</div>
+            <span class="tool-card-name">BMI</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">🏠</div>
+            <span class="tool-card-name">房贷</span>
+          </div>
+        </div>
+
+        <!-- 推荐工具 -->
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">⭐</span> 推荐</h3>
+        </div>
+        <div class="featured-tool">
+          <div class="featured-tool-icon" style="background: var(--gradient-life);">🎰</div>
+          <div class="featured-tool-info">
+            <div class="featured-tool-name">大转盘抽奖</div>
+            <div class="featured-tool-desc">选择困难症救星，随机选择器</div>
+          </div>
+          <span class="featured-tool-arrow">›</span>
+        </div>
+      </div>
+
+      <!-- 悬浮胶囊 TabBar -->
+      <div class="tabbar-float">
+        <div class="tabbar-item active">
+          <span class="icon">🏠</span>
+          <span class="label">首页</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">🔧</span>
+          <span class="label">工具</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">⭐</span>
+          <span class="label">收藏</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">👤</span>
+          <span class="label">我的</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 首页 - 深色模式 ==================== -->
+    <div class="phone-frame dark">
+      <!-- 状态栏 -->
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <div class="status-bar-icons">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- 欢迎横幅 -->
+        <div class="welcome-banner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <div class="welcome-emoji">🌙</div>
+          <div class="welcome-title">晚上好</div>
+          <div class="welcome-subtitle">深色模式已开启</div>
+          <span class="welcome-version">护眼体验</span>
+        </div>
+
+        <!-- 搜索框 -->
+        <div class="search-box">
+          <span class="search-box-icon">🔍</span>
+          <input type="text" class="search-box-input" placeholder="搜索工具...">
+        </div>
+
+        <!-- 快捷功能 -->
+        <div class="quick-actions">
+          <div class="quick-action">
+            <div class="quick-action-icon" style="background: var(--gradient-time);">📅</div>
+            <span class="quick-action-text">万年历</span>
+          </div>
+          <div class="quick-action">
+            <div class="quick-action-icon" style="background: var(--gradient-calc);">🧮</div>
+            <span class="quick-action-text">计算器</span>
+          </div>
+          <div class="quick-action">
+            <div class="quick-action-icon" style="background: var(--gradient-text);">📱</div>
+            <span class="quick-action-text">二维码</span>
+          </div>
+        </div>
+
+        <!-- 时间工具 -->
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">⏰</span> 时间工具</h3>
+          <span class="section-more">查看全部 ›</span>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);">📅</div>
+            <span class="tool-card-name">万年历</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #feca57, #f9ca24);">⏱️</div>
+            <span class="tool-card-name">倒计时</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #48dbfb, #0abde3);">⏳</div>
+            <span class="tool-card-name">时间差</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #ff9ff3, #f368e0);">🌍</div>
+            <span class="tool-card-name">世界时钟</span>
+          </div>
+        </div>
+
+        <!-- 计算工具 -->
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">🔢</span> 计算工具</h3>
+          <span class="section-more">查看全部 ›</span>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">🧮</div>
+            <span class="tool-card-name">计算器</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">💰</div>
+            <span class="tool-card-name">工资计算</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">⚖️</div>
+            <span class="tool-card-name">BMI</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">🏠</div>
+            <span class="tool-card-name">房贷</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 悬浮胶囊 TabBar -->
+      <div class="tabbar-float">
+        <div class="tabbar-item active">
+          <span class="icon">🏠</span>
+          <span class="label">首页</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">🔧</span>
+          <span class="label">工具</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">⭐</span>
+          <span class="label">收藏</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">👤</span>
+          <span class="label">我的</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 工具列表页 ==================== -->
+    <div class="phone-frame">
+      <!-- 状态栏 -->
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <div class="status-bar-icons">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- 搜索框 -->
+        <div class="search-box" style="margin-top: var(--space-md);">
+          <span class="search-box-icon">🔍</span>
+          <input type="text" class="search-box-input" placeholder="搜索工具...">
+        </div>
+
+        <!-- 全部工具分类 -->
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">⏰</span> 时间工具</h3>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);">📅</div>
+            <span class="tool-card-name">万年历</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #feca57, #f9ca24);">⏱️</div>
+            <span class="tool-card-name">倒计时</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #48dbfb, #0abde3);">⏳</div>
+            <span class="tool-card-name">时间差</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #ff9ff3, #f368e0);">🌍</div>
+            <span class="tool-card-name">世界时钟</span>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">🔢</span> 计算工具</h3>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">🧮</div>
+            <span class="tool-card-name">计算器</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">💰</div>
+            <span class="tool-card-name">工资计算</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">⚖️</div>
+            <span class="tool-card-name">BMI</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">🏠</div>
+            <span class="tool-card-name">房贷</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">📏</div>
+            <span class="tool-card-name">单位换算</span>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">📝</span> 文本工具</h3>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">🔐</div>
+            <span class="tool-card-name">加密解密</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">📱</div>
+            <span class="tool-card-name">二维码</span>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">🖼️</span> 图片工具</h3>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">🗜️</div>
+            <span class="tool-card-name">图片压缩</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">🎨</div>
+            <span class="tool-card-name">图片滤镜</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #f7971e, #ffd200);">🎴</div>
+            <span class="tool-card-name">色卡</span>
+          </div>
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">🔄</div>
+            <span class="tool-card-name">颜色转换</span>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3 class="section-title"><span class="icon">🎯</span> 生活工具</h3>
+        </div>
+        <div class="tool-grid" style="padding-bottom: var(--space-xl);">
+          <div class="tool-card">
+            <div class="tool-card-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">🎰</div>
+            <span class="tool-card-name">大转盘</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 悬浮胶囊 TabBar -->
+      <div class="tabbar-float">
+        <div class="tabbar-item">
+          <span class="icon">🏠</span>
+          <span class="label">首页</span>
+        </div>
+        <div class="tabbar-item active">
+          <span class="icon">🔧</span>
+          <span class="label">工具</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">⭐</span>
+          <span class="label">收藏</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">👤</span>
+          <span class="label">我的</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

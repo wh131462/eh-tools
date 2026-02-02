@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 工资计算器</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .salary-result {
+      background: linear-gradient(135deg, #1890ff, #096dd9);
+      margin: 12px;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      color: #fff;
+    }
+    .salary-result.illegal {
+      background: linear-gradient(135deg, #ff4d4f, #cf1322);
+    }
+    .salary-label {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    .salary-value {
+      font-size: 48px;
+      font-weight: 600;
+      margin: 8px 0;
+    }
+    .salary-unit {
+      font-size: 16px;
+      font-weight: normal;
+    }
+    .salary-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .salary-tag {
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      font-size: 12px;
+    }
+    .input-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .input-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 16px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    .input-group:last-child { margin-bottom: 0; }
+    .input-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .input-hint {
+      color: #999;
+      font-size: 12px;
+    }
+    .input-field {
+      display: flex;
+      align-items: center;
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 0 12px;
+    }
+    .input-field input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 12px 0;
+      font-size: 16px;
+      outline: none;
+    }
+    .input-field .unit {
+      color: #999;
+      font-size: 14px;
+    }
+    .warning-box {
+      background: rgba(255,77,79,0.1);
+      border: 1px solid #ff4d4f;
+      border-radius: 12px;
+      margin: 12px;
+      padding: 16px;
+    }
+    .warning-title {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: #ff4d4f;
+      margin-bottom: 12px;
+    }
+    .warning-title span {
+      margin-right: 8px;
+    }
+    .warning-item {
+      display: flex;
+      align-items: flex-start;
+      font-size: 13px;
+      color: #ff4d4f;
+      margin-bottom: 8px;
+    }
+    .warning-item:last-child { margin-bottom: 0; }
+    .warning-item::before {
+      content: '•';
+      margin-right: 8px;
+    }
+    .detail-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .detail-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .detail-item:last-child { border-bottom: none; }
+    .detail-label { color: #666; }
+    .detail-value { font-weight: 500; color: #333; }
+    .progress-bar {
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+    .progress-fill.legal { background: #52c41a; }
+    .progress-fill.illegal { background: #ff4d4f; }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">劳动法工资计算器</h2>
+
+    <!-- 合法状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">工资计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="salary-result">
+          <div class="salary-label">预计月收入</div>
+          <div class="salary-value">6,521.74<span class="salary-unit">元</span></div>
+          <div class="salary-tags">
+            <span class="salary-tag">正常工资 ¥5,000</span>
+            <span class="salary-tag">工作日加班 ¥1,521.74</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill legal" style="width: 65%;"></div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-title">基本信息</div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>基本工资</span>
+              <span class="input-hint">月薪</span>
+            </div>
+            <div class="input-field">
+              <input type="number" value="5000">
+              <span class="unit">元</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>日工作时长</span>
+              <span class="input-hint">标准8小时</span>
+            </div>
+            <div class="input-field">
+              <input type="number" value="9">
+              <span class="unit">小时</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-title">加班信息</div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>周末加班时长</span>
+              <span class="input-hint">月累计</span>
+            </div>
+            <div class="input-field">
+              <input type="number" value="0">
+              <span class="unit">小时</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>法定节假日加班</span>
+              <span class="input-hint">月累计</span>
+            </div>
+            <div class="input-field">
+              <input type="number" value="0">
+              <span class="unit">小时</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-title">工资明细</div>
+          <div class="detail-item">
+            <span class="detail-label">时薪</span>
+            <span class="detail-value">¥28.74</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">正常工资</span>
+            <span class="detail-value">¥5,000.00</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">工作日加班费 (1.5倍)</span>
+            <span class="detail-value">¥1,521.74</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">周末加班费 (2倍)</span>
+            <span class="detail-value">¥0.00</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">节假日加班费 (3倍)</span>
+            <span class="detail-value">¥0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 违法状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">工资计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="salary-result illegal">
+          <div class="salary-label">预计月收入</div>
+          <div class="salary-value">9,195.40<span class="salary-unit">元</span></div>
+          <div class="salary-tags">
+            <span class="salary-tag">正常工资 ¥5,000</span>
+            <span class="salary-tag">工作日加班 ¥2,608.70</span>
+            <span class="salary-tag">周末加班 ¥1,149.43</span>
+            <span class="salary-tag">节假日加班 ¥437.27</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill illegal" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <div class="warning-title">
+            <span>⚠️</span>
+            违反劳动法规定
+          </div>
+          <div class="warning-item">日工作时长超过12小时限制 (当前: 13小时)</div>
+          <div class="warning-item">日加班时长超过3小时限制 (当前: 5小时)</div>
+          <div class="warning-item">月加班总时长超过36小时限制 (当前: 148.75小时)</div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-title">基本信息</div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>基本工资</span>
+              <span class="input-hint">月薪</span>
+            </div>
+            <div class="input-field">
+              <input type="number" value="5000">
+              <span class="unit">元</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>日工作时长</span>
+              <span class="input-hint" style="color: #ff4d4f;">超出限制!</span>
+            </div>
+            <div class="input-field" style="border: 1px solid #ff4d4f;">
+              <input type="number" value="13">
+              <span class="unit">小时</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-title">加班信息</div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>周末加班时长</span>
+              <span class="input-hint">月累计</span>
+            </div>
+            <div class="input-field">
+              <input type="number" value="20">
+              <span class="unit">小时</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>法定节假日加班</span>
+              <span class="input-hint">月累计</span>
+            </div>
+            <div class="input-field">
+              <input type="number" value="8">
+              <span class="unit">小时</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

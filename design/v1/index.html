@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 首页</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-header {
+      background: #1890ff;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    .page-header h1 { font-size: 28px; margin-bottom: 8px; }
+    .page-header p { opacity: 0.8; }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <h1>EH-Tools 设计稿</h1>
+    <p>完整应用界面设计预览</p>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">首页导航</h2>
+
+    <!-- 首页 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-title">EH Tools</span>
+        <span class="navbar-right">⋯</span>
+      </div>
+
+      <div class="phone-content">
+        <!-- 轮播横幅 -->
+        <div style="padding: 12px;">
+          <div class="swiper">
+            <div style="text-align: center;">
+              <div style="font-size: 24px; margin-bottom: 8px;">🎉</div>
+              <div>欢迎使用 EH Tools</div>
+              <div style="font-size: 12px; opacity: 0.8;">v1.0.7 全新发布</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 时间工具 -->
+        <div class="section-title">⏰ 时间工具</div>
+        <div style="padding: 0 12px;">
+          <div class="grid grid-4">
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);">📅</div>
+              <div class="tool-name">万年历</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #feca57, #f9ca24);">⏱️</div>
+              <div class="tool-name">倒计时</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #48dbfb, #0abde3);">⏳</div>
+              <div class="tool-name">时间差</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #ff9ff3, #f368e0);">🌍</div>
+              <div class="tool-name">世界时钟</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 计算工具 -->
+        <div class="section-title">🔢 计算工具</div>
+        <div style="padding: 0 12px;">
+          <div class="grid grid-4">
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #54a0ff, #2e86de);">🧮</div>
+              <div class="tool-name">计算器</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #5f27cd, #341f97);">💰</div>
+              <div class="tool-name">工资计算</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #00d2d3, #01a3a4);">⚖️</div>
+              <div class="tool-name">BMI</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #1dd1a1, #10ac84);">🏠</div>
+              <div class="tool-name">房贷</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);">📏</div>
+              <div class="tool-name">单位换算</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 文本工具 -->
+        <div class="section-title">📝 文本工具</div>
+        <div style="padding: 0 12px;">
+          <div class="grid grid-4">
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7);">🔐</div>
+              <div class="tool-name">加密解密</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #fd79a8, #e84393);">📱</div>
+              <div class="tool-name">二维码</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 图片工具 -->
+        <div class="section-title">🖼️ 图片工具</div>
+        <div style="padding: 0 12px;">
+          <div class="grid grid-4">
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #74b9ff, #0984e3);">🗜️</div>
+              <div class="tool-name">图片压缩</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #55efc4, #00b894);">🎨</div>
+              <div class="tool-name">图片滤镜</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #fdcb6e, #f39c12);">🎴</div>
+              <div class="tool-name">色卡</div>
+            </div>
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #e17055, #d63031);">🔄</div>
+              <div class="tool-name">颜色转换</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 生活工具 -->
+        <div class="section-title">🎯 生活工具</div>
+        <div style="padding: 0 12px 20px;">
+          <div class="grid grid-4">
+            <div class="tool-item">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #e056fd, #be2edd);">🎰</div>
+              <div class="tool-name">大转盘</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TabBar -->
+      <div class="tabbar">
+        <div class="tabbar-item active">
+          <span class="icon">🏠</span>
+          <span>首页</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">👤</span>
+          <span>我的</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 首页 - 深色模式 -->
+    <div class="phone-frame dark">
+      <div class="navbar" style="background: #2d2d2d; border-color: #333;">
+        <span class="navbar-title" style="color: #fff;">EH Tools</span>
+        <span class="navbar-right" style="color: #999;">⋯</span>
+      </div>
+
+      <div class="phone-content" style="background: #1a1a1a;">
+        <!-- 轮播横幅 -->
+        <div style="padding: 12px;">
+          <div class="swiper" style="background: linear-gradient(135deg, #1890ff, #096dd9);">
+            <div style="text-align: center;">
+              <div style="font-size: 24px; margin-bottom: 8px;">🌙</div>
+              <div>深色模式</div>
+              <div style="font-size: 12px; opacity: 0.8;">护眼体验</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 时间工具 -->
+        <div class="section-title" style="color: #fff;">⏰ 时间工具</div>
+        <div style="padding: 0 12px;">
+          <div class="grid grid-4">
+            <div class="tool-item" style="background: #2d2d2d;">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);">📅</div>
+              <div class="tool-name" style="color: #fff;">万年历</div>
+            </div>
+            <div class="tool-item" style="background: #2d2d2d;">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #feca57, #f9ca24);">⏱️</div>
+              <div class="tool-name" style="color: #fff;">倒计时</div>
+            </div>
+            <div class="tool-item" style="background: #2d2d2d;">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #48dbfb, #0abde3);">⏳</div>
+              <div class="tool-name" style="color: #fff;">时间差</div>
+            </div>
+            <div class="tool-item" style="background: #2d2d2d;">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #ff9ff3, #f368e0);">🌍</div>
+              <div class="tool-name" style="color: #fff;">世界时钟</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 计算工具 -->
+        <div class="section-title" style="color: #fff;">🔢 计算工具</div>
+        <div style="padding: 0 12px;">
+          <div class="grid grid-4">
+            <div class="tool-item" style="background: #2d2d2d;">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #54a0ff, #2e86de);">🧮</div>
+              <div class="tool-name" style="color: #fff;">计算器</div>
+            </div>
+            <div class="tool-item" style="background: #2d2d2d;">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #5f27cd, #341f97);">💰</div>
+              <div class="tool-name" style="color: #fff;">工资计算</div>
+            </div>
+            <div class="tool-item" style="background: #2d2d2d;">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #00d2d3, #01a3a4);">⚖️</div>
+              <div class="tool-name" style="color: #fff;">BMI</div>
+            </div>
+            <div class="tool-item" style="background: #2d2d2d;">
+              <div class="tool-icon" style="background: linear-gradient(135deg, #1dd1a1, #10ac84);">🏠</div>
+              <div class="tool-name" style="color: #fff;">房贷</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TabBar -->
+      <div class="tabbar" style="background: #2d2d2d; border-color: #333;">
+        <div class="tabbar-item active">
+          <span class="icon">🏠</span>
+          <span>首页</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">👤</span>
+          <span>我的</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 色卡工具</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .color-display {
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .color-hex {
+      font-size: 32px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .control-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .control-row {
+      display: flex;
+      gap: 12px;
+    }
+    .control-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .control-btn.primary {
+      background: #1890ff;
+      color: #fff;
+    }
+    .control-btn.success {
+      background: #52c41a;
+      color: #fff;
+    }
+    .favorites-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .section-title {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .favorite-item {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+    .favorite-item:hover {
+      transform: scale(1.05);
+    }
+    .favorite-item:active {
+      transform: scale(0.95);
+    }
+    .empty-favorites {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+    }
+    .empty-favorites .icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+    .fullscreen-mode {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .color-picker-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      padding: 20px;
+      z-index: 200;
+    }
+    .picker-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .picker-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .preset-colors {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .preset-color {
+      aspect-ratio: 1;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .preset-color.selected {
+      border-color: #333;
+    }
+    .hex-input-section {
+      margin-top: 16px;
+    }
+    .hex-input-label {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .hex-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: 'SF Mono', Monaco, monospace;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">色卡工具</h2>
+
+    <!-- 正常模式 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #1890ff; border: none;">
+        <span class="navbar-back" style="color: #fff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">色卡</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5; padding-top: 44px;">
+        <div class="color-display" style="background: #1890ff;">
+          <span class="color-hex" style="color: #fff;">#1890FF</span>
+        </div>
+
+        <div class="control-section">
+          <div class="control-row">
+            <button class="control-btn primary">🎨 选择颜色</button>
+            <button class="control-btn success">❤️ 添加收藏</button>
+          </div>
+        </div>
+
+        <div class="favorites-section">
+          <div class="section-title">收藏夹</div>
+          <div class="favorites-grid">
+            <div class="favorite-item" style="background: #FF6B6B; color: #fff;">#FF6B6B</div>
+            <div class="favorite-item" style="background: #4ECDC4; color: #fff;">#4ECDC4</div>
+            <div class="favorite-item" style="background: #45B7D1; color: #fff;">#45B7D1</div>
+            <div class="favorite-item" style="background: #96CEB4; color: #fff;">#96CEB4</div>
+            <div class="favorite-item" style="background: #FFEAA7; color: #333;">#FFEAA7</div>
+            <div class="favorite-item" style="background: #DDA0DD; color: #fff;">#DDA0DD</div>
+            <div class="favorite-item" style="background: #98D8C8; color: #333;">#98D8C8</div>
+            <div class="favorite-item" style="background: #F7DC6F; color: #333;">#F7DC6F</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 全屏模式 -->
+    <div class="phone-frame">
+      <div class="fullscreen-mode" style="background: #52C41A;">
+        <span style="color: #fff; font-size: 14px; opacity: 0.8;">点击退出全屏</span>
+      </div>
+    </div>
+
+    <!-- 颜色选择器 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #FF6B6B; border: none;">
+        <span class="navbar-back" style="color: #fff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">色卡</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5; padding-top: 44px;">
+        <div class="color-display" style="background: #FF6B6B;">
+          <span class="color-hex" style="color: #fff;">#FF6B6B</span>
+        </div>
+
+        <div class="control-section">
+          <div class="control-row">
+            <button class="control-btn primary">🎨 选择颜色</button>
+            <button class="control-btn success">❤️ 添加收藏</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 遮罩 -->
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 150;"></div>
+
+      <!-- 颜色选择器 -->
+      <div class="color-picker-overlay">
+        <div class="picker-header">
+          <span class="picker-title">选择颜色</span>
+          <span style="color: #1890ff; cursor: pointer;">确定</span>
+        </div>
+
+        <div class="preset-colors">
+          <div class="preset-color" style="background: #F5222D;"></div>
+          <div class="preset-color" style="background: #FA541C;"></div>
+          <div class="preset-color" style="background: #FA8C16;"></div>
+          <div class="preset-color" style="background: #FAAD14;"></div>
+          <div class="preset-color" style="background: #FADB14;"></div>
+          <div class="preset-color" style="background: #A0D911;"></div>
+          <div class="preset-color" style="background: #52C41A;"></div>
+          <div class="preset-color" style="background: #13C2C2;"></div>
+          <div class="preset-color selected" style="background: #1890FF;"></div>
+          <div class="preset-color" style="background: #2F54EB;"></div>
+          <div class="preset-color" style="background: #722ED1;"></div>
+          <div class="preset-color" style="background: #EB2F96;"></div>
+          <div class="preset-color" style="background: #000000;"></div>
+          <div class="preset-color" style="background: #434343;"></div>
+          <div class="preset-color" style="background: #8C8C8C;"></div>
+          <div class="preset-color" style="background: #FFFFFF; border: 1px solid #e8e8e8;"></div>
+        </div>
+
+        <div class="hex-input-section">
+          <div class="hex-input-label">自定义 HEX 值</div>
+          <input type="text" class="hex-input" value="#1890FF" placeholder="#000000">
+        </div>
+      </div>
+    </div>
+
+    <!-- 空收藏状态 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #667EEA; border: none;">
+        <span class="navbar-back" style="color: #fff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">色卡</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5; padding-top: 44px;">
+        <div class="color-display" style="background: #667EEA;">
+          <span class="color-hex" style="color: #fff;">#667EEA</span>
+        </div>
+
+        <div class="control-section">
+          <div class="control-row">
+            <button class="control-btn primary">🎨 选择颜色</button>
+            <button class="control-btn success">❤️ 添加收藏</button>
+          </div>
+        </div>
+
+        <div class="favorites-section">
+          <div class="section-title">收藏夹</div>
+          <div class="empty-favorites">
+            <div class="icon">💝</div>
+            <div>暂无收藏</div>
+            <div style="font-size: 12px; margin-top: 4px;">点击上方按钮添加喜欢的颜色</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

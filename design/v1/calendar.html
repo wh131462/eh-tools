@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 万年历</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: #fff;
+    }
+    .calendar-nav {
+      font-size: 20px;
+      color: #1890ff;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .calendar-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: #fff;
+      padding: 8px 12px;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+    }
+    .calendar-weekdays span:first-child,
+    .calendar-weekdays span:last-child {
+      color: #ff4d4f;
+    }
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      padding: 8px 12px;
+      background: #fff;
+    }
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      position: relative;
+    }
+    .calendar-day:hover { background: rgba(24,144,255,0.1); }
+    .calendar-day.today {
+      background: #1890ff;
+      color: #fff;
+    }
+    .calendar-day.selected {
+      border: 2px solid #1890ff;
+    }
+    .calendar-day.other-month {
+      color: #ccc;
+    }
+    .calendar-day .lunar {
+      font-size: 9px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .calendar-day.today .lunar {
+      color: rgba(255,255,255,0.8);
+    }
+    .calendar-day .dot {
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      background: #ff4d4f;
+      border-radius: 50%;
+    }
+    .calendar-day.holiday .lunar {
+      color: #ff4d4f;
+    }
+    .lunar-detail {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .lunar-date {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    .lunar-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .lunar-item {
+      display: flex;
+      align-items: center;
+    }
+    .lunar-label {
+      font-size: 12px;
+      color: #999;
+      width: 60px;
+    }
+    .lunar-value {
+      font-size: 13px;
+      color: #333;
+    }
+    .yi-ji-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .yi-ji-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .yi-ji-title.yi { color: #52c41a; }
+    .yi-ji-title.ji { color: #ff4d4f; }
+    .yi-ji-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .yi-ji-tag {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .yi-ji-tag.yi {
+      background: rgba(82,196,26,0.1);
+      color: #52c41a;
+    }
+    .yi-ji-tag.ji {
+      background: rgba(255,77,79,0.1);
+      color: #ff4d4f;
+    }
+    .shichen-table {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .shichen-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .shichen-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+    .shichen-item {
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+    .shichen-item.ji {
+      background: rgba(82,196,26,0.1);
+      color: #52c41a;
+    }
+    .shichen-item.xiong {
+      background: rgba(255,77,79,0.1);
+      color: #ff4d4f;
+    }
+    .shichen-name { font-weight: 500; }
+    .shichen-time { font-size: 10px; color: #999; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">万年历</h2>
+
+    <!-- 万年历主页 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">万年历</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="calendar-header">
+          <span class="calendar-nav">‹</span>
+          <span class="calendar-title">2026年1月</span>
+          <span class="calendar-nav">›</span>
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>日</span>
+          <span>一</span>
+          <span>二</span>
+          <span>三</span>
+          <span>四</span>
+          <span>五</span>
+          <span>六</span>
+        </div>
+
+        <div class="calendar-days">
+          <div class="calendar-day other-month"><span>28</span><span class="lunar">廿八</span></div>
+          <div class="calendar-day other-month"><span>29</span><span class="lunar">廿九</span></div>
+          <div class="calendar-day other-month"><span>30</span><span class="lunar">三十</span></div>
+          <div class="calendar-day other-month"><span>31</span><span class="lunar">初一</span></div>
+          <div class="calendar-day holiday"><span>1</span><span class="lunar">元旦</span></div>
+          <div class="calendar-day"><span>2</span><span class="lunar">初三</span></div>
+          <div class="calendar-day"><span>3</span><span class="lunar">初四</span></div>
+
+          <div class="calendar-day"><span>4</span><span class="lunar">初五</span></div>
+          <div class="calendar-day"><span>5</span><span class="lunar">小寒</span></div>
+          <div class="calendar-day"><span>6</span><span class="lunar">初七</span></div>
+          <div class="calendar-day"><span>7</span><span class="lunar">初八</span></div>
+          <div class="calendar-day"><span>8</span><span class="lunar">初九</span></div>
+          <div class="calendar-day"><span>9</span><span class="lunar">初十</span></div>
+          <div class="calendar-day"><span>10</span><span class="lunar">十一</span></div>
+
+          <div class="calendar-day"><span>11</span><span class="lunar">十二</span></div>
+          <div class="calendar-day"><span>12</span><span class="lunar">十三</span></div>
+          <div class="calendar-day"><span>13</span><span class="lunar">十四</span></div>
+          <div class="calendar-day"><span>14</span><span class="lunar">十五</span></div>
+          <div class="calendar-day"><span>15</span><span class="lunar">十六</span></div>
+          <div class="calendar-day"><span>16</span><span class="lunar">十七</span></div>
+          <div class="calendar-day"><span>17</span><span class="lunar">十八</span></div>
+
+          <div class="calendar-day"><span>18</span><span class="lunar">十九</span></div>
+          <div class="calendar-day"><span>19</span><span class="lunar">二十</span></div>
+          <div class="calendar-day"><span>20</span><span class="lunar">大寒</span></div>
+          <div class="calendar-day"><span>21</span><span class="lunar">廿二</span></div>
+          <div class="calendar-day"><span>22</span><span class="lunar">廿三</span></div>
+          <div class="calendar-day"><span>23</span><span class="lunar">廿四</span></div>
+          <div class="calendar-day"><span>24</span><span class="lunar">廿五</span></div>
+
+          <div class="calendar-day"><span>25</span><span class="lunar">廿六</span></div>
+          <div class="calendar-day"><span>26</span><span class="lunar">廿七</span></div>
+          <div class="calendar-day"><span>27</span><span class="lunar">廿八</span></div>
+          <div class="calendar-day"><span>28</span><span class="lunar">廿九</span></div>
+          <div class="calendar-day holiday"><span>29</span><span class="lunar">除夕</span><span class="dot"></span></div>
+          <div class="calendar-day today selected"><span>30</span><span class="lunar">春节</span></div>
+          <div class="calendar-day"><span>31</span><span class="lunar">初二</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 农历详情 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">万年历</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="lunar-detail">
+          <div class="lunar-date">农历乙巳年正月初一 春节</div>
+
+          <div class="lunar-info">
+            <div class="lunar-item">
+              <span class="lunar-label">干支</span>
+              <span class="lunar-value">乙巳年 己丑月 甲子日</span>
+            </div>
+            <div class="lunar-item">
+              <span class="lunar-label">生肖</span>
+              <span class="lunar-value">蛇</span>
+            </div>
+            <div class="lunar-item">
+              <span class="lunar-label">星座</span>
+              <span class="lunar-value">水瓶座</span>
+            </div>
+            <div class="lunar-item">
+              <span class="lunar-label">节气</span>
+              <span class="lunar-value">大寒后10天</span>
+            </div>
+            <div class="lunar-item">
+              <span class="lunar-label">建除</span>
+              <span class="lunar-value">建</span>
+            </div>
+            <div class="lunar-item">
+              <span class="lunar-label">二十八宿</span>
+              <span class="lunar-value">角木蛟</span>
+            </div>
+            <div class="lunar-item">
+              <span class="lunar-label">胎神</span>
+              <span class="lunar-value">门碓外东南</span>
+            </div>
+            <div class="lunar-item">
+              <span class="lunar-label">彭祖百忌</span>
+              <span class="lunar-value">甲不开仓 子不问卜</span>
+            </div>
+          </div>
+
+          <div class="yi-ji-section">
+            <div class="yi-ji-title yi">宜</div>
+            <div class="yi-ji-tags">
+              <span class="yi-ji-tag yi">祭祀</span>
+              <span class="yi-ji-tag yi">祈福</span>
+              <span class="yi-ji-tag yi">求嗣</span>
+              <span class="yi-ji-tag yi">开光</span>
+              <span class="yi-ji-tag yi">出行</span>
+              <span class="yi-ji-tag yi">解除</span>
+              <span class="yi-ji-tag yi">嫁娶</span>
+            </div>
+          </div>
+
+          <div class="yi-ji-section">
+            <div class="yi-ji-title ji">忌</div>
+            <div class="yi-ji-tags">
+              <span class="yi-ji-tag ji">动土</span>
+              <span class="yi-ji-tag ji">破土</span>
+              <span class="yi-ji-tag ji">安葬</span>
+              <span class="yi-ji-tag ji">开仓</span>
+            </div>
+          </div>
+
+          <div class="shichen-table">
+            <div class="shichen-title">时辰吉凶</div>
+            <div class="shichen-grid">
+              <div class="shichen-item ji">
+                <div class="shichen-name">子</div>
+                <div class="shichen-time">23-01</div>
+                <div>吉</div>
+              </div>
+              <div class="shichen-item xiong">
+                <div class="shichen-name">丑</div>
+                <div class="shichen-time">01-03</div>
+                <div>凶</div>
+              </div>
+              <div class="shichen-item ji">
+                <div class="shichen-name">寅</div>
+                <div class="shichen-time">03-05</div>
+                <div>吉</div>
+              </div>
+              <div class="shichen-item ji">
+                <div class="shichen-name">卯</div>
+                <div class="shichen-time">05-07</div>
+                <div>吉</div>
+              </div>
+              <div class="shichen-item xiong">
+                <div class="shichen-name">辰</div>
+                <div class="shichen-time">07-09</div>
+                <div>凶</div>
+              </div>
+              <div class="shichen-item ji">
+                <div class="shichen-name">巳</div>
+                <div class="shichen-time">09-11</div>
+                <div>吉</div>
+              </div>
+              <div class="shichen-item xiong">
+                <div class="shichen-name">午</div>
+                <div class="shichen-time">11-13</div>
+                <div>凶</div>
+              </div>
+              <div class="shichen-item ji">
+                <div class="shichen-name">未</div>
+                <div class="shichen-time">13-15</div>
+                <div>吉</div>
+              </div>
+              <div class="shichen-item xiong">
+                <div class="shichen-name">申</div>
+                <div class="shichen-time">15-17</div>
+                <div>凶</div>
+              </div>
+              <div class="shichen-item ji">
+                <div class="shichen-name">酉</div>
+                <div class="shichen-time">17-19</div>
+                <div>吉</div>
+              </div>
+              <div class="shichen-item xiong">
+                <div class="shichen-name">戌</div>
+                <div class="shichen-time">19-21</div>
+                <div>凶</div>
+              </div>
+              <div class="shichen-item ji">
+                <div class="shichen-name">亥</div>
+                <div class="shichen-time">21-23</div>
+                <div>吉</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

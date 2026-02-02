@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - BMI计算器</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .bmi-result {
+      margin: 12px;
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      color: #fff;
+    }
+    .bmi-result.underweight { background: linear-gradient(135deg, #faad14, #d48806); }
+    .bmi-result.normal { background: linear-gradient(135deg, #52c41a, #389e0d); }
+    .bmi-result.overweight { background: linear-gradient(135deg, #fa8c16, #d46b08); }
+    .bmi-result.obese { background: linear-gradient(135deg, #ff4d4f, #cf1322); }
+    .bmi-result.severe { background: linear-gradient(135deg, #722ed1, #531dab); }
+    .bmi-value {
+      font-size: 64px;
+      font-weight: 600;
+    }
+    .bmi-category {
+      font-size: 20px;
+      margin-top: 8px;
+      opacity: 0.9;
+    }
+    .bmi-advice {
+      font-size: 14px;
+      margin-top: 12px;
+      opacity: 0.8;
+    }
+    .input-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .input-row {
+      display: flex;
+      gap: 16px;
+    }
+    .input-group {
+      flex: 1;
+    }
+    .input-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .input-field {
+      display: flex;
+      align-items: center;
+      background: #f5f5f5;
+      border-radius: 10px;
+      padding: 0 12px;
+    }
+    .input-field input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 14px 0;
+      font-size: 18px;
+      font-weight: 500;
+      outline: none;
+      text-align: center;
+    }
+    .input-field .unit {
+      color: #999;
+      font-size: 14px;
+    }
+    .bmi-scale {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .bmi-scale-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 16px;
+    }
+    .bmi-scale-bar {
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(to right,
+        #faad14 0%, #faad14 18.5%,
+        #52c41a 18.5%, #52c41a 24%,
+        #fa8c16 24%, #fa8c16 28%,
+        #ff4d4f 28%, #ff4d4f 32%,
+        #722ed1 32%, #722ed1 100%
+      );
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .bmi-scale-pointer {
+      position: absolute;
+      top: -6px;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 10px solid #333;
+      transform: translateX(-50%);
+    }
+    .bmi-scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #999;
+    }
+    .bmi-table {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .bmi-table-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .bmi-table-row {
+      display: flex;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .bmi-table-row:last-child { border-bottom: none; }
+    .bmi-table-row.active {
+      background: rgba(82,196,26,0.1);
+    }
+    .bmi-table-range {
+      flex: 1;
+      font-size: 14px;
+      color: #333;
+    }
+    .bmi-table-category {
+      width: 80px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .bmi-table-category.underweight { color: #faad14; }
+    .bmi-table-category.normal { color: #52c41a; }
+    .bmi-table-category.overweight { color: #fa8c16; }
+    .bmi-table-category.obese { color: #ff4d4f; }
+    .bmi-table-category.severe { color: #722ed1; }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">BMI 计算器</h2>
+
+    <!-- 正常体重 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">BMI 计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="bmi-result normal">
+          <div class="bmi-value">21.6</div>
+          <div class="bmi-category">正常</div>
+          <div class="bmi-advice">保持当前状态，继续保持健康的生活方式</div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-row">
+            <div class="input-group">
+              <div class="input-label">身高</div>
+              <div class="input-field">
+                <input type="number" value="175">
+                <span class="unit">cm</span>
+              </div>
+            </div>
+            <div class="input-group">
+              <div class="input-label">体重</div>
+              <div class="input-field">
+                <input type="number" value="66">
+                <span class="unit">kg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bmi-scale">
+          <div class="bmi-scale-title">BMI 指数范围</div>
+          <div class="bmi-scale-bar">
+            <div class="bmi-scale-pointer" style="left: 45%;"></div>
+          </div>
+          <div class="bmi-scale-labels">
+            <span>偏瘦</span>
+            <span>正常</span>
+            <span>超重</span>
+            <span>肥胖</span>
+            <span>严重</span>
+          </div>
+        </div>
+
+        <div class="bmi-table">
+          <div class="bmi-table-title">BMI 参考标准 (中国标准)</div>
+          <div class="bmi-table-row">
+            <span class="bmi-table-range">&lt; 18.5</span>
+            <span class="bmi-table-category underweight">体重过轻</span>
+          </div>
+          <div class="bmi-table-row active">
+            <span class="bmi-table-range">18.5 ~ 23.9</span>
+            <span class="bmi-table-category normal">正常</span>
+          </div>
+          <div class="bmi-table-row">
+            <span class="bmi-table-range">24.0 ~ 27.9</span>
+            <span class="bmi-table-category overweight">超重</span>
+          </div>
+          <div class="bmi-table-row">
+            <span class="bmi-table-range">28.0 ~ 31.9</span>
+            <span class="bmi-table-category obese">肥胖</span>
+          </div>
+          <div class="bmi-table-row">
+            <span class="bmi-table-range">≥ 32.0</span>
+            <span class="bmi-table-category severe">严重肥胖</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 超重状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">BMI 计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="bmi-result overweight">
+          <div class="bmi-value">26.1</div>
+          <div class="bmi-category">超重</div>
+          <div class="bmi-advice">建议适当运动，控制饮食</div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-row">
+            <div class="input-group">
+              <div class="input-label">身高</div>
+              <div class="input-field">
+                <input type="number" value="170">
+                <span class="unit">cm</span>
+              </div>
+            </div>
+            <div class="input-group">
+              <div class="input-label">体重</div>
+              <div class="input-field">
+                <input type="number" value="75">
+                <span class="unit">kg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bmi-scale">
+          <div class="bmi-scale-title">BMI 指数范围</div>
+          <div class="bmi-scale-bar">
+            <div class="bmi-scale-pointer" style="left: 60%;"></div>
+          </div>
+          <div class="bmi-scale-labels">
+            <span>偏瘦</span>
+            <span>正常</span>
+            <span>超重</span>
+            <span>肥胖</span>
+            <span>严重</span>
+          </div>
+        </div>
+
+        <div class="bmi-table">
+          <div class="bmi-table-title">BMI 参考标准 (中国标准)</div>
+          <div class="bmi-table-row">
+            <span class="bmi-table-range">&lt; 18.5</span>
+            <span class="bmi-table-category underweight">体重过轻</span>
+          </div>
+          <div class="bmi-table-row">
+            <span class="bmi-table-range">18.5 ~ 23.9</span>
+            <span class="bmi-table-category normal">正常</span>
+          </div>
+          <div class="bmi-table-row active" style="background: rgba(250,140,22,0.1);">
+            <span class="bmi-table-range">24.0 ~ 27.9</span>
+            <span class="bmi-table-category overweight">超重</span>
+          </div>
+          <div class="bmi-table-row">
+            <span class="bmi-table-range">28.0 ~ 31.9</span>
+            <span class="bmi-table-category obese">肥胖</span>
+          </div>
+          <div class="bmi-table-row">
+            <span class="bmi-table-range">≥ 32.0</span>
+            <span class="bmi-table-category severe">严重肥胖</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 偏瘦状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">BMI 计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="bmi-result underweight">
+          <div class="bmi-value">17.3</div>
+          <div class="bmi-category">体重过轻</div>
+          <div class="bmi-advice">建议增加营养摄入，适当增重</div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-row">
+            <div class="input-group">
+              <div class="input-label">身高</div>
+              <div class="input-field">
+                <input type="number" value="168">
+                <span class="unit">cm</span>
+              </div>
+            </div>
+            <div class="input-group">
+              <div class="input-label">体重</div>
+              <div class="input-field">
+                <input type="number" value="49">
+                <span class="unit">kg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bmi-scale">
+          <div class="bmi-scale-title">BMI 指数范围</div>
+          <div class="bmi-scale-bar">
+            <div class="bmi-scale-pointer" style="left: 12%;"></div>
+          </div>
+          <div class="bmi-scale-labels">
+            <span>偏瘦</span>
+            <span>正常</span>
+            <span>超重</span>
+            <span>肥胖</span>
+            <span>严重</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

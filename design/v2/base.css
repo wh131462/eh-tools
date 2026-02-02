@@ -1,0 +1,868 @@
+/* ============================================
+   EH-Tools Design System v2.0
+   新拟态风格 + 多彩渐变 + 悬浮胶囊导航
+   ============================================ */
+
+/* ==================== 设计令牌 ==================== */
+:root {
+  /* 基础色 - 浅色模式 */
+  --bg-base: #e8ecef;
+  --bg-card: #e8ecef;
+  --bg-elevated: #f0f4f7;
+  --bg-sunken: #dde1e4;
+
+  /* 文字色 */
+  --text-primary: #2d3436;
+  --text-secondary: #636e72;
+  --text-hint: #9ca3af;
+  --text-inverse: #ffffff;
+
+  /* 多彩渐变主题色 */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  --gradient-warning: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-danger: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+  --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-gold: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+
+  /* 工具分类渐变 */
+  --gradient-time: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  --gradient-calc: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  --gradient-text: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-life: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+  /* 新拟态阴影 */
+  --shadow-neumorphic:
+    8px 8px 16px rgba(163, 177, 198, 0.6),
+    -8px -8px 16px rgba(255, 255, 255, 0.8);
+  --shadow-neumorphic-sm:
+    4px 4px 8px rgba(163, 177, 198, 0.5),
+    -4px -4px 8px rgba(255, 255, 255, 0.7);
+  --shadow-neumorphic-inset:
+    inset 4px 4px 8px rgba(163, 177, 198, 0.5),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+  --shadow-neumorphic-pressed:
+    inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.8);
+
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* 间距 */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* 字体 */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+
+  /* 布局 */
+  --nav-height: 56px;
+  --tabbar-height: 70px;
+  --safe-bottom: 20px;
+}
+
+/* 深色模式 */
+.dark {
+  --bg-base: #1a1a2e;
+  --bg-card: #1a1a2e;
+  --bg-elevated: #222240;
+  --bg-sunken: #12121f;
+
+  --text-primary: #edf2f7;
+  --text-secondary: #a0aec0;
+  --text-hint: #718096;
+
+  --shadow-neumorphic:
+    8px 8px 16px rgba(0, 0, 0, 0.5),
+    -8px -8px 16px rgba(50, 50, 80, 0.3);
+  --shadow-neumorphic-sm:
+    4px 4px 8px rgba(0, 0, 0, 0.4),
+    -4px -4px 8px rgba(50, 50, 80, 0.2);
+  --shadow-neumorphic-inset:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 8px rgba(50, 50, 80, 0.2);
+}
+
+/* ==================== 基础重置 ==================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ==================== 手机框架 ==================== */
+.phone-frame {
+  width: 390px;
+  height: 844px;
+  background: var(--bg-base);
+  border-radius: 50px;
+  box-shadow:
+    20px 20px 60px rgba(0, 0, 0, 0.3),
+    -10px -10px 40px rgba(255, 255, 255, 0.1),
+    inset 0 0 0 12px #1a1a1a;
+  overflow: hidden;
+  position: relative;
+  margin: 20px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* 刘海 */
+.phone-frame::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 34px;
+  background: #1a1a1a;
+  border-radius: 0 0 24px 24px;
+  z-index: 100;
+}
+
+/* 状态栏 */
+.status-bar {
+  height: 54px;
+  padding: 14px 28px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  position: relative;
+  z-index: 50;
+}
+
+.status-bar-time {
+  font-weight: 600;
+}
+
+.status-bar-icons {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+}
+
+/* 页面内容 */
+.page-content {
+  height: calc(100% - 54px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom));
+  scroll-behavior: smooth;
+}
+
+.page-content::-webkit-scrollbar {
+  display: none;
+}
+
+.page-content.no-tabbar {
+  padding-bottom: var(--safe-bottom);
+}
+
+/* ==================== 悬浮胶囊 TabBar ==================== */
+.tabbar-float {
+  position: absolute;
+  bottom: var(--safe-bottom);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-neumorphic);
+  padding: 8px 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+}
+
+.tabbar-item {
+  width: 60px;
+  height: 50px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-hint);
+  position: relative;
+}
+
+.tabbar-item .icon {
+  font-size: 22px;
+  margin-bottom: 2px;
+  transition: transform 0.3s;
+}
+
+.tabbar-item .label {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.3s;
+}
+
+.tabbar-item.active {
+  background: var(--gradient-primary);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.tabbar-item.active .icon {
+  transform: scale(1.1);
+}
+
+.tabbar-item.active .label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tabbar-item:not(.active):hover {
+  background: var(--bg-sunken);
+  box-shadow: var(--shadow-neumorphic-inset);
+}
+
+/* ==================== 导航栏 ==================== */
+.navbar {
+  height: var(--nav-height);
+  padding: 0 var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: var(--bg-base);
+  z-index: 50;
+}
+
+.navbar-back {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-neumorphic-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navbar-back:active {
+  box-shadow: var(--shadow-neumorphic-inset);
+}
+
+.navbar-title {
+  font-size: 18px;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.navbar-action {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-neumorphic-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navbar-action:active {
+  box-shadow: var(--shadow-neumorphic-inset);
+}
+
+/* ==================== 新拟态卡片 ==================== */
+.neu-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neumorphic);
+  padding: var(--space-lg);
+  margin: var(--space-md);
+  transition: all 0.3s;
+}
+
+.neu-card-flat {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-md);
+}
+
+.neu-card-pressed {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neumorphic-inset);
+  padding: var(--space-lg);
+  margin: var(--space-md);
+}
+
+/* ==================== 新拟态按钮 ==================== */
+.neu-btn {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-neumorphic-sm);
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.neu-btn:active {
+  box-shadow: var(--shadow-neumorphic-inset);
+}
+
+.neu-btn-primary {
+  background: var(--gradient-primary);
+  color: var(--text-inverse);
+  box-shadow:
+    4px 4px 12px rgba(102, 126, 234, 0.4),
+    -2px -2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.neu-btn-primary:active {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.2),
+    inset -2px -2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.neu-btn-success {
+  background: var(--gradient-success);
+  color: var(--text-inverse);
+  box-shadow:
+    4px 4px 12px rgba(17, 153, 142, 0.4),
+    -2px -2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.neu-btn-block {
+  width: 100%;
+  display: flex;
+}
+
+.neu-btn-circle {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* ==================== 新拟态输入框 ==================== */
+.neu-input {
+  width: 100%;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-neumorphic-inset);
+  padding: 14px 18px;
+  font-size: 16px;
+  color: var(--text-primary);
+  border: none;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.neu-input:focus {
+  box-shadow:
+    var(--shadow-neumorphic-inset),
+    0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+.neu-input::placeholder {
+  color: var(--text-hint);
+}
+
+/* 输入框组 */
+.neu-input-group {
+  margin-bottom: var(--space-md);
+}
+
+.neu-input-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== 新拟态开关 ==================== */
+.neu-switch {
+  width: 56px;
+  height: 32px;
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-neumorphic-inset);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.neu-switch::after {
+  content: '';
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  background: var(--bg-elevated);
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  box-shadow: var(--shadow-neumorphic-sm);
+  transition: all 0.3s;
+}
+
+.neu-switch.active {
+  background: var(--gradient-primary);
+}
+
+.neu-switch.active::after {
+  left: 27px;
+  background: white;
+}
+
+/* ==================== 新拟态滑块 ==================== */
+.neu-slider {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-neumorphic-inset);
+  position: relative;
+}
+
+.neu-slider-track {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+  position: relative;
+}
+
+.neu-slider-thumb {
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: var(--bg-elevated);
+  border-radius: 50%;
+  box-shadow: var(--shadow-neumorphic-sm);
+  cursor: pointer;
+}
+
+/* ==================== 新拟态进度条 ==================== */
+.neu-progress {
+  width: 100%;
+  height: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-neumorphic-inset);
+  overflow: hidden;
+}
+
+.neu-progress-bar {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease;
+}
+
+/* ==================== 工具卡片网格 ==================== */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  padding: 0 var(--space-md);
+}
+
+.tool-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neumorphic-sm);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tool-card:active {
+  box-shadow: var(--shadow-neumorphic-inset);
+  transform: scale(0.96);
+}
+
+.tool-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: var(--space-sm);
+  color: white;
+}
+
+.tool-card-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* ==================== 分类标题 ==================== */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-lg) var(--space-md) var(--space-md);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.section-title .icon {
+  font-size: 20px;
+}
+
+.section-more {
+  font-size: 13px;
+  color: var(--text-hint);
+  cursor: pointer;
+}
+
+/* ==================== 列表项 ==================== */
+.neu-list {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neumorphic);
+  margin: var(--space-md);
+  overflow: hidden;
+}
+
+.neu-list-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.neu-list-item:not(:last-child) {
+  border-bottom: 1px solid var(--bg-sunken);
+}
+
+.neu-list-item:active {
+  background: var(--bg-sunken);
+}
+
+.neu-list-item-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: var(--space-md);
+  color: white;
+}
+
+.neu-list-item-content {
+  flex: 1;
+}
+
+.neu-list-item-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.neu-list-item-subtitle {
+  font-size: 13px;
+  color: var(--text-hint);
+  margin-top: 2px;
+}
+
+.neu-list-item-value {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-right: var(--space-sm);
+}
+
+.neu-list-item-arrow {
+  color: var(--text-hint);
+  font-size: 18px;
+}
+
+/* ==================== 头像 ==================== */
+.avatar {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: white;
+  box-shadow: var(--shadow-neumorphic-sm);
+}
+
+.avatar-sm { width: 40px; height: 40px; font-size: 16px; }
+.avatar-md { width: 64px; height: 64px; font-size: 24px; }
+.avatar-lg { width: 100px; height: 100px; font-size: 36px; }
+
+/* ==================== 标签 ==================== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.tag-primary {
+  background: rgba(102, 126, 234, 0.15);
+  color: #667eea;
+}
+
+.tag-success {
+  background: rgba(17, 153, 142, 0.15);
+  color: #11998e;
+}
+
+.tag-warning {
+  background: rgba(245, 87, 108, 0.15);
+  color: #f5576c;
+}
+
+/* ==================== 弹窗 ==================== */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal {
+  width: 300px;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-neumorphic);
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.modal-icon {
+  font-size: 56px;
+  margin-bottom: var(--space-md);
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.modal-content {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.modal-actions {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.modal-actions .neu-btn {
+  flex: 1;
+}
+
+/* ==================== 底部弹出面板 ==================== */
+.bottom-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+  padding: var(--space-lg);
+  z-index: 200;
+}
+
+.bottom-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--bg-sunken);
+  border-radius: var(--radius-full);
+  margin: 0 auto var(--space-lg);
+}
+
+.bottom-sheet-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+/* ==================== Toast 提示 ==================== */
+.toast {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-neumorphic);
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  z-index: 300;
+}
+
+.toast-success {
+  background: var(--gradient-success);
+  color: white;
+}
+
+.toast-error {
+  background: var(--gradient-danger);
+  color: white;
+}
+
+/* ==================== 空状态 ==================== */
+.empty-state {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  margin-bottom: var(--space-md);
+}
+
+.empty-state-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-state-desc {
+  font-size: 14px;
+  color: var(--text-hint);
+  margin-bottom: var(--space-lg);
+}
+
+/* ==================== 页面容器 ==================== */
+.design-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.design-title {
+  width: 100%;
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.design-subtitle {
+  width: 100%;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 32px;
+}
+
+/* ==================== 动画 ==================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

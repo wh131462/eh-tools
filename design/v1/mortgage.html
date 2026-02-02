@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 房贷计算器</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .mortgage-result {
+      background: linear-gradient(135deg, #1890ff, #096dd9);
+      margin: 12px;
+      border-radius: 16px;
+      padding: 24px;
+      color: #fff;
+    }
+    .mortgage-main {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .mortgage-label {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    .mortgage-value {
+      font-size: 42px;
+      font-weight: 600;
+      margin: 8px 0;
+    }
+    .mortgage-unit {
+      font-size: 16px;
+      font-weight: normal;
+    }
+    .mortgage-stats {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .mortgage-stat {
+      text-align: center;
+    }
+    .mortgage-stat-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .mortgage-stat-label {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+    .input-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .input-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 16px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    .input-group:last-child { margin-bottom: 0; }
+    .input-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .input-field {
+      display: flex;
+      align-items: center;
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 0 12px;
+    }
+    .input-field input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 12px 0;
+      font-size: 16px;
+      outline: none;
+    }
+    .input-field .unit {
+      color: #999;
+      font-size: 14px;
+    }
+    .method-switch {
+      display: flex;
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 4px;
+    }
+    .method-btn {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #666;
+    }
+    .method-btn.active {
+      background: #fff;
+      color: #1890ff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .schedule-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .schedule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .schedule-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+    .schedule-toggle {
+      font-size: 13px;
+      color: #1890ff;
+      cursor: pointer;
+    }
+    .schedule-summary {
+      padding: 12px 16px;
+      background: #fafafa;
+    }
+    .schedule-row {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 13px;
+    }
+    .schedule-row:last-child { border-bottom: none; }
+    .schedule-period {
+      width: 50px;
+      color: #999;
+    }
+    .schedule-principal {
+      flex: 1;
+      text-align: center;
+      color: #52c41a;
+    }
+    .schedule-interest {
+      flex: 1;
+      text-align: center;
+      color: #faad14;
+    }
+    .schedule-payment {
+      flex: 1;
+      text-align: center;
+      color: #333;
+      font-weight: 500;
+    }
+    .schedule-remaining {
+      flex: 1;
+      text-align: right;
+      color: #999;
+    }
+    .schedule-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .schedule-list-header {
+      display: flex;
+      padding: 12px 16px;
+      background: #f5f5f5;
+      font-size: 12px;
+      color: #999;
+      position: sticky;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">房贷计算器</h2>
+
+    <!-- 等额本息 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">房贷计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mortgage-result">
+          <div class="mortgage-main">
+            <div class="mortgage-label">月供</div>
+            <div class="mortgage-value">5,307.27<span class="mortgage-unit">元</span></div>
+          </div>
+          <div class="mortgage-stats">
+            <div class="mortgage-stat">
+              <div class="mortgage-stat-value">1,910,616</div>
+              <div class="mortgage-stat-label">总还款额(元)</div>
+            </div>
+            <div class="mortgage-stat">
+              <div class="mortgage-stat-value">910,616</div>
+              <div class="mortgage-stat-label">总利息(元)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-title">贷款信息</div>
+          <div class="input-group">
+            <div class="input-label">贷款金额</div>
+            <div class="input-field">
+              <input type="number" value="1000000">
+              <span class="unit">元</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">贷款期限</div>
+            <div class="input-field">
+              <input type="number" value="30">
+              <span class="unit">年</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">年利率</div>
+            <div class="input-field">
+              <input type="number" value="4.2">
+              <span class="unit">%</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">还款方式</div>
+            <div class="method-switch">
+              <div class="method-btn active">等额本息</div>
+              <div class="method-btn">等额本金</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="schedule-section">
+          <div class="schedule-header">
+            <span class="schedule-title">还款计划</span>
+            <span class="schedule-toggle">展开全部 ›</span>
+          </div>
+          <div class="schedule-summary">
+            <div class="schedule-row">
+              <span class="schedule-period">第1期</span>
+              <span class="schedule-principal">¥1,807</span>
+              <span class="schedule-interest">¥3,500</span>
+              <span class="schedule-payment">¥5,307</span>
+              <span class="schedule-remaining">¥998,193</span>
+            </div>
+            <div class="schedule-row">
+              <span class="schedule-period">...</span>
+              <span class="schedule-principal"></span>
+              <span class="schedule-interest"></span>
+              <span class="schedule-payment"></span>
+              <span class="schedule-remaining"></span>
+            </div>
+            <div class="schedule-row">
+              <span class="schedule-period">第360期</span>
+              <span class="schedule-principal">¥5,289</span>
+              <span class="schedule-interest">¥18</span>
+              <span class="schedule-payment">¥5,307</span>
+              <span class="schedule-remaining">¥0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 等额本金 + 展开列表 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">房贷计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mortgage-result" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
+          <div class="mortgage-main">
+            <div class="mortgage-label">首月还款</div>
+            <div class="mortgage-value">6,277.78<span class="mortgage-unit">元</span></div>
+          </div>
+          <div class="mortgage-stats">
+            <div class="mortgage-stat">
+              <div class="mortgage-stat-value">1,631,750</div>
+              <div class="mortgage-stat-label">总还款额(元)</div>
+            </div>
+            <div class="mortgage-stat">
+              <div class="mortgage-stat-value">631,750</div>
+              <div class="mortgage-stat-label">总利息(元)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-title">贷款信息</div>
+          <div class="input-group">
+            <div class="input-label">贷款金额</div>
+            <div class="input-field">
+              <input type="number" value="1000000">
+              <span class="unit">元</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">贷款期限</div>
+            <div class="input-field">
+              <input type="number" value="30">
+              <span class="unit">年</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">年利率</div>
+            <div class="input-field">
+              <input type="number" value="4.2">
+              <span class="unit">%</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">还款方式</div>
+            <div class="method-switch">
+              <div class="method-btn">等额本息</div>
+              <div class="method-btn active">等额本金</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="schedule-section">
+          <div class="schedule-header">
+            <span class="schedule-title">还款计划</span>
+            <span class="schedule-toggle">收起 ‹</span>
+          </div>
+          <div class="schedule-list-header">
+            <span class="schedule-period">期数</span>
+            <span class="schedule-principal" style="flex:1;text-align:center;">本金</span>
+            <span class="schedule-interest" style="flex:1;text-align:center;">利息</span>
+            <span class="schedule-payment" style="flex:1;text-align:center;">月供</span>
+            <span class="schedule-remaining" style="flex:1;text-align:right;">剩余</span>
+          </div>
+          <div class="schedule-list">
+            <div class="schedule-row">
+              <span class="schedule-period">1</span>
+              <span class="schedule-principal">¥2,778</span>
+              <span class="schedule-interest">¥3,500</span>
+              <span class="schedule-payment">¥6,278</span>
+              <span class="schedule-remaining">¥997,222</span>
+            </div>
+            <div class="schedule-row">
+              <span class="schedule-period">2</span>
+              <span class="schedule-principal">¥2,778</span>
+              <span class="schedule-interest">¥3,490</span>
+              <span class="schedule-payment">¥6,268</span>
+              <span class="schedule-remaining">¥994,444</span>
+            </div>
+            <div class="schedule-row">
+              <span class="schedule-period">3</span>
+              <span class="schedule-principal">¥2,778</span>
+              <span class="schedule-interest">¥3,481</span>
+              <span class="schedule-payment">¥6,259</span>
+              <span class="schedule-remaining">¥991,667</span>
+            </div>
+            <div class="schedule-row">
+              <span class="schedule-period">4</span>
+              <span class="schedule-principal">¥2,778</span>
+              <span class="schedule-interest">¥3,471</span>
+              <span class="schedule-payment">¥6,249</span>
+              <span class="schedule-remaining">¥988,889</span>
+            </div>
+            <div class="schedule-row">
+              <span class="schedule-period">5</span>
+              <span class="schedule-principal">¥2,778</span>
+              <span class="schedule-interest">¥3,461</span>
+              <span class="schedule-payment">¥6,239</span>
+              <span class="schedule-remaining">¥986,111</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

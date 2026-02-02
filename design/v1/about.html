@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 关于</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .about-header {
+      text-align: center;
+      padding: 40px 20px;
+      background: #fff;
+    }
+    .about-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #1890ff, #096dd9);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      box-shadow: 0 4px 12px rgba(24,144,255,0.3);
+    }
+    .about-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: #333;
+    }
+    .about-version {
+      font-size: 14px;
+      color: #999;
+      margin-top: 4px;
+    }
+    .about-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .about-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .about-item:last-child { border-bottom: none; }
+    .about-item-label {
+      flex: 1;
+      font-size: 15px;
+      color: #333;
+    }
+    .about-item-value {
+      font-size: 14px;
+      color: #999;
+    }
+    .about-item-action {
+      color: #1890ff;
+      font-size: 14px;
+    }
+    .donate-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      padding: 20px;
+      z-index: 200;
+    }
+    .donate-title {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .donate-qrcode {
+      width: 200px;
+      height: 200px;
+      background: #f5f5f5;
+      margin: 0 auto;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+    }
+    .donate-tip {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-top: 16px;
+    }
+    .donate-close {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">关于</h2>
+
+    <!-- 关于页面 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">关于</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="about-header">
+          <div class="about-logo">🛠️</div>
+          <div class="about-name">EH Tools</div>
+          <div class="about-version">Version 1.0.7</div>
+        </div>
+
+        <div class="about-section">
+          <div class="about-item">
+            <span class="about-item-label">应用名称</span>
+            <span class="about-item-value">EH Tools</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">版本号</span>
+            <span class="about-item-value">1.0.7</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">应用描述</span>
+            <span class="about-item-value">实用工具集合</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">开发者</span>
+            <span class="about-item-value">EternalHeart</span>
+          </div>
+        </div>
+
+        <div class="about-section">
+          <div class="about-item">
+            <span class="about-item-label">项目地址</span>
+            <span class="about-item-action">复制链接</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">提交反馈</span>
+            <span class="about-item-action">复制链接</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">赞赏支持</span>
+            <span class="about-item-action">打开 ›</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 赞赏弹窗 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">关于</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="about-header">
+          <div class="about-logo">🛠️</div>
+          <div class="about-name">EH Tools</div>
+          <div class="about-version">Version 1.0.7</div>
+        </div>
+
+        <div class="about-section">
+          <div class="about-item">
+            <span class="about-item-label">应用名称</span>
+            <span class="about-item-value">EH Tools</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">版本号</span>
+            <span class="about-item-value">1.0.7</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 遮罩 -->
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 150;"></div>
+
+      <!-- 赞赏弹窗 -->
+      <div class="donate-sheet">
+        <div class="donate-title">赞赏支持</div>
+        <div class="donate-qrcode">💝</div>
+        <div class="donate-tip">长按或点击图片可放大查看</div>
+        <div class="donate-close">
+          <button class="btn btn-default" style="width: 120px;">关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 复制成功提示 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">关于</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="about-header">
+          <div class="about-logo">🛠️</div>
+          <div class="about-name">EH Tools</div>
+          <div class="about-version">Version 1.0.7</div>
+        </div>
+
+        <div class="about-section">
+          <div class="about-item">
+            <span class="about-item-label">应用名称</span>
+            <span class="about-item-value">EH Tools</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">版本号</span>
+            <span class="about-item-value">1.0.7</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">应用描述</span>
+            <span class="about-item-value">实用工具集合</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">开发者</span>
+            <span class="about-item-value">EternalHeart</span>
+          </div>
+        </div>
+
+        <div class="about-section">
+          <div class="about-item">
+            <span class="about-item-label">项目地址</span>
+            <span class="about-item-action">复制链接</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">提交反馈</span>
+            <span class="about-item-action">复制链接</span>
+          </div>
+          <div class="about-item">
+            <span class="about-item-label">赞赏支持</span>
+            <span class="about-item-action">打开 ›</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast 提示 -->
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 300;">
+        ✓ 已复制到剪贴板
+      </div>
+    </div>
+  </div>
+</body>
+</html>

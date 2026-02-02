@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools v2.0 - 个人中心</title>
+  <link rel="stylesheet" href="base.css">
+  <style>
+    /* 页面导航 */
+    .page-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 20px 40px;
+      background: rgba(255,255,255,0.1);
+    }
+    .page-nav a {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      text-decoration: none;
+      color: white;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .page-nav a:hover {
+      background: white;
+      color: #667eea;
+    }
+
+    /* 个人信息头部 */
+    .profile-header {
+      padding: var(--space-xl) var(--space-md);
+      text-align: center;
+    }
+    .profile-avatar-wrapper {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto var(--space-lg);
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: white;
+      box-shadow: var(--shadow-neumorphic);
+    }
+    .profile-avatar-edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--bg-card);
+      border-radius: 50%;
+      box-shadow: var(--shadow-neumorphic-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .profile-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+    .profile-bio {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .profile-login-btn {
+      margin-top: var(--space-lg);
+    }
+
+    /* 统计卡片 */
+    .stats-card {
+      margin: 0 var(--space-md);
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-neumorphic);
+      padding: var(--space-lg);
+      display: flex;
+      justify-content: space-around;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-hint);
+      margin-top: var(--space-xs);
+    }
+
+    /* 菜单列表 */
+    .menu-section {
+      margin-top: var(--space-lg);
+    }
+    .menu-title {
+      padding: var(--space-md) var(--space-md) var(--space-sm);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-hint);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面导航 -->
+  <nav class="page-nav">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="settings.html">设置</a>
+    <a href="tools-time.html">时间工具</a>
+    <a href="tools-calc.html">计算工具</a>
+    <a href="tools-text.html">文本工具</a>
+    <a href="tools-image.html">图片工具</a>
+    <a href="tools-life.html">生活工具</a>
+  </nav>
+
+  <div class="design-container">
+    <h1 class="design-title">个人中心</h1>
+    <p class="design-subtitle">用户资料、设置与关于页面</p>
+
+    <!-- ==================== 未登录状态 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <div class="status-bar-icons">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="profile-header">
+          <div class="profile-avatar-wrapper">
+            <div class="profile-avatar">👤</div>
+          </div>
+          <div class="profile-name">未登录</div>
+          <div class="profile-bio">点击登录，同步你的数据</div>
+          <button class="neu-btn neu-btn-primary profile-login-btn">
+            立即登录
+          </button>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-title">设置</div>
+          <div class="neu-list">
+            <div class="neu-list-item">
+              <div class="neu-list-item-icon" style="background: var(--gradient-primary);">⚙️</div>
+              <div class="neu-list-item-content">
+                <div class="neu-list-item-title">通用设置</div>
+                <div class="neu-list-item-subtitle">语言、主题、通知</div>
+              </div>
+              <span class="neu-list-item-arrow">›</span>
+            </div>
+            <div class="neu-list-item">
+              <div class="neu-list-item-icon" style="background: var(--gradient-info);">ℹ️</div>
+              <div class="neu-list-item-content">
+                <div class="neu-list-item-title">关于</div>
+                <div class="neu-list-item-subtitle">版本、反馈、赞赏</div>
+              </div>
+              <span class="neu-list-item-arrow">›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TabBar -->
+      <div class="tabbar-float">
+        <div class="tabbar-item">
+          <span class="icon">🏠</span>
+          <span class="label">首页</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">🔧</span>
+          <span class="label">工具</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">⭐</span>
+          <span class="label">收藏</span>
+        </div>
+        <div class="tabbar-item active">
+          <span class="icon">👤</span>
+          <span class="label">我的</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 已登录状态 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <div class="status-bar-icons">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="profile-header">
+          <div class="profile-avatar-wrapper">
+            <div class="profile-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">E</div>
+            <div class="profile-avatar-edit">📷</div>
+          </div>
+          <div class="profile-name">EternalHeart</div>
+          <div class="profile-bio">一个热爱开发的程序员</div>
+        </div>
+
+        <div class="stats-card">
+          <div class="stat-item">
+            <div class="stat-value">128</div>
+            <div class="stat-label">使用次数</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">12</div>
+            <div class="stat-label">收藏工具</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">7</div>
+            <div class="stat-label">使用天数</div>
+          </div>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-title">账户</div>
+          <div class="neu-list">
+            <div class="neu-list-item">
+              <div class="neu-list-item-icon" style="background: var(--gradient-success);">✏️</div>
+              <div class="neu-list-item-content">
+                <div class="neu-list-item-title">编辑资料</div>
+              </div>
+              <span class="neu-list-item-arrow">›</span>
+            </div>
+            <div class="neu-list-item">
+              <div class="neu-list-item-icon" style="background: var(--gradient-warning);">⭐</div>
+              <div class="neu-list-item-content">
+                <div class="neu-list-item-title">我的收藏</div>
+              </div>
+              <span class="neu-list-item-value">12 项</span>
+              <span class="neu-list-item-arrow">›</span>
+            </div>
+            <div class="neu-list-item">
+              <div class="neu-list-item-icon" style="background: var(--gradient-info);">🕐</div>
+              <div class="neu-list-item-content">
+                <div class="neu-list-item-title">使用历史</div>
+              </div>
+              <span class="neu-list-item-arrow">›</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-title">设置</div>
+          <div class="neu-list">
+            <div class="neu-list-item">
+              <div class="neu-list-item-icon" style="background: var(--gradient-primary);">⚙️</div>
+              <div class="neu-list-item-content">
+                <div class="neu-list-item-title">通用设置</div>
+              </div>
+              <span class="neu-list-item-arrow">›</span>
+            </div>
+            <div class="neu-list-item">
+              <div class="neu-list-item-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">ℹ️</div>
+              <div class="neu-list-item-content">
+                <div class="neu-list-item-title">关于</div>
+              </div>
+              <span class="neu-list-item-value">v2.0.0</span>
+              <span class="neu-list-item-arrow">›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TabBar -->
+      <div class="tabbar-float">
+        <div class="tabbar-item">
+          <span class="icon">🏠</span>
+          <span class="label">首页</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">🔧</span>
+          <span class="label">工具</span>
+        </div>
+        <div class="tabbar-item">
+          <span class="icon">⭐</span>
+          <span class="label">收藏</span>
+        </div>
+        <div class="tabbar-item active">
+          <span class="icon">👤</span>
+          <span class="label">我的</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 设置页面 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <div class="status-bar-icons">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <!-- 导航栏 -->
+        <div class="navbar">
+          <div class="navbar-back">‹</div>
+          <span class="navbar-title">设置</span>
+          <div class="navbar-action" style="visibility: hidden;">‹</div>
+        </div>
+
+        <div class="neu-list" style="margin-top: 0;">
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: var(--gradient-primary);">🌐</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">语言</div>
+              <div class="neu-list-item-subtitle">切换应用显示语言</div>
+            </div>
+            <span class="neu-list-item-value">中文</span>
+            <span class="neu-list-item-arrow">›</span>
+          </div>
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: linear-gradient(135deg, #2d3436, #636e72);">🌙</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">深色模式</div>
+              <div class="neu-list-item-subtitle">护眼夜间模式</div>
+            </div>
+            <div class="neu-switch"></div>
+          </div>
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: var(--gradient-warning);">🔔</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">通知</div>
+              <div class="neu-list-item-subtitle">接收更新提醒</div>
+            </div>
+            <div class="neu-switch active"></div>
+          </div>
+        </div>
+
+        <div class="menu-title" style="padding: var(--space-lg) var(--space-md) var(--space-sm);">数据</div>
+        <div class="neu-list">
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: var(--gradient-info);">☁️</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">数据同步</div>
+              <div class="neu-list-item-subtitle">上次同步: 刚刚</div>
+            </div>
+            <span class="neu-list-item-arrow">›</span>
+          </div>
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: var(--gradient-danger);">🗑️</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">清除缓存</div>
+              <div class="neu-list-item-subtitle">释放存储空间</div>
+            </div>
+            <span class="neu-list-item-value">12.3 MB</span>
+            <span class="neu-list-item-arrow">›</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 关于页面 ==================== -->
+    <div class="phone-frame">
+      <div class="status-bar">
+        <span class="status-bar-time">9:41</span>
+        <div class="status-bar-icons">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <div class="page-content no-tabbar">
+        <!-- 导航栏 -->
+        <div class="navbar">
+          <div class="navbar-back">‹</div>
+          <span class="navbar-title">关于</span>
+          <div class="navbar-action" style="visibility: hidden;">‹</div>
+        </div>
+
+        <!-- Logo 区域 -->
+        <div style="text-align: center; padding: var(--space-xl) 0;">
+          <div style="width: 100px; height: 100px; margin: 0 auto var(--space-md); border-radius: var(--radius-xl); background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: var(--shadow-neumorphic);">
+            🛠️
+          </div>
+          <div style="font-size: 24px; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">EH Tools</div>
+          <div style="font-size: 14px; color: var(--text-secondary); margin-top: var(--space-xs);">Version 2.0.0</div>
+          <div style="display: inline-block; margin-top: var(--space-md); padding: 6px 16px; background: rgba(102, 126, 234, 0.1); border-radius: var(--radius-full); font-size: 12px; color: #667eea;">
+            实用工具集合
+          </div>
+        </div>
+
+        <div class="neu-list">
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: var(--gradient-primary);">👨‍💻</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">开发者</div>
+            </div>
+            <span class="neu-list-item-value">EternalHeart</span>
+          </div>
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: var(--gradient-success);">🔗</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">项目地址</div>
+            </div>
+            <span class="neu-list-item-value">复制</span>
+            <span class="neu-list-item-arrow">›</span>
+          </div>
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: var(--gradient-warning);">💬</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">提交反馈</div>
+            </div>
+            <span class="neu-list-item-arrow">›</span>
+          </div>
+          <div class="neu-list-item">
+            <div class="neu-list-item-icon" style="background: var(--gradient-gold);">💝</div>
+            <div class="neu-list-item-content">
+              <div class="neu-list-item-title">赞赏支持</div>
+            </div>
+            <span class="neu-list-item-arrow">›</span>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding: var(--space-xl); color: var(--text-hint); font-size: 12px;">
+          © 2025-2026 EternalHeart<br>
+          All rights reserved.
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

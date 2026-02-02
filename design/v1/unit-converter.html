@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 单位换算</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .category-tabs {
+      display: flex;
+      background: #fff;
+      padding: 12px;
+      gap: 8px;
+    }
+    .category-tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #f5f5f5;
+      color: #666;
+    }
+    .category-tab.active {
+      background: #1890ff;
+      color: #fff;
+    }
+    .converter-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .converter-input {
+      margin-bottom: 20px;
+    }
+    .converter-label {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .converter-field {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .converter-value {
+      flex: 1;
+      background: #f5f5f5;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 24px;
+      font-weight: 500;
+      text-align: center;
+      border: none;
+      outline: none;
+    }
+    .converter-value:focus {
+      background: #e6f7ff;
+    }
+    .converter-unit {
+      min-width: 100px;
+      padding: 14px 16px;
+      background: #f5f5f5;
+      border-radius: 10px;
+      font-size: 14px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .converter-unit .arrow {
+      color: #999;
+      margin-left: 8px;
+    }
+    .converter-arrow {
+      text-align: center;
+      font-size: 24px;
+      color: #1890ff;
+      margin: 16px 0;
+    }
+    .converter-result {
+      background: linear-gradient(135deg, #1890ff, #096dd9);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .result-value {
+      font-size: 36px;
+      font-weight: 600;
+      word-break: break-all;
+    }
+    .result-unit {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-top: 8px;
+    }
+    .unit-picker {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      max-height: 50%;
+      z-index: 200;
+    }
+    .unit-picker-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .unit-picker-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .unit-picker-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+    }
+    .unit-picker-item:hover {
+      background: #f5f5f5;
+    }
+    .unit-picker-item.selected {
+      background: rgba(24,144,255,0.1);
+      color: #1890ff;
+    }
+    .unit-picker-name {
+      font-size: 15px;
+    }
+    .unit-picker-symbol {
+      font-size: 13px;
+      color: #999;
+    }
+    .quick-convert {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .quick-convert-title {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    .quick-convert-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .quick-convert-item {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .quick-convert-value {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+    .quick-convert-unit {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">单位换算器</h2>
+
+    <!-- 长度换算 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">单位换算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="category-tabs">
+          <div class="category-tab active">📏 长度</div>
+          <div class="category-tab">📐 面积</div>
+          <div class="category-tab">🧊 体积</div>
+        </div>
+
+        <div class="converter-section">
+          <div class="converter-input">
+            <div class="converter-label">输入值</div>
+            <div class="converter-field">
+              <input type="number" class="converter-value" value="100">
+              <div class="converter-unit">
+                厘米 (cm)
+                <span class="arrow">›</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="converter-arrow">↓</div>
+
+          <div class="converter-input">
+            <div class="converter-label">转换为</div>
+            <div class="converter-field">
+              <div class="converter-unit" style="flex: 1; justify-content: center;">
+                米 (m)
+                <span class="arrow">›</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="converter-result">
+            <div class="result-value">1</div>
+            <div class="result-unit">米 (m)</div>
+          </div>
+        </div>
+
+        <div class="quick-convert">
+          <div class="quick-convert-title">快速换算 (100 厘米 =)</div>
+          <div class="quick-convert-grid">
+            <div class="quick-convert-item">
+              <div class="quick-convert-value">0.001</div>
+              <div class="quick-convert-unit">公里 (km)</div>
+            </div>
+            <div class="quick-convert-item">
+              <div class="quick-convert-value">1</div>
+              <div class="quick-convert-unit">米 (m)</div>
+            </div>
+            <div class="quick-convert-item">
+              <div class="quick-convert-value">39.3701</div>
+              <div class="quick-convert-unit">英寸 (inch)</div>
+            </div>
+            <div class="quick-convert-item">
+              <div class="quick-convert-value">3.28084</div>
+              <div class="quick-convert-unit">英尺 (foot)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 面积换算 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">单位换算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="category-tabs">
+          <div class="category-tab">📏 长度</div>
+          <div class="category-tab active">📐 面积</div>
+          <div class="category-tab">🧊 体积</div>
+        </div>
+
+        <div class="converter-section">
+          <div class="converter-input">
+            <div class="converter-label">输入值</div>
+            <div class="converter-field">
+              <input type="number" class="converter-value" value="1">
+              <div class="converter-unit">
+                公顷 (ha)
+                <span class="arrow">›</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="converter-arrow">↓</div>
+
+          <div class="converter-input">
+            <div class="converter-label">转换为</div>
+            <div class="converter-field">
+              <div class="converter-unit" style="flex: 1; justify-content: center;">
+                平方米 (m²)
+                <span class="arrow">›</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="converter-result" style="background: linear-gradient(135deg, #52c41a, #389e0d);">
+            <div class="result-value">10,000</div>
+            <div class="result-unit">平方米 (m²)</div>
+          </div>
+        </div>
+
+        <div class="quick-convert">
+          <div class="quick-convert-title">快速换算 (1 公顷 =)</div>
+          <div class="quick-convert-grid">
+            <div class="quick-convert-item">
+              <div class="quick-convert-value">0.01</div>
+              <div class="quick-convert-unit">平方公里 (km²)</div>
+            </div>
+            <div class="quick-convert-item">
+              <div class="quick-convert-value">10,000</div>
+              <div class="quick-convert-unit">平方米 (m²)</div>
+            </div>
+            <div class="quick-convert-item">
+              <div class="quick-convert-value">2.47105</div>
+              <div class="quick-convert-unit">英亩 (acre)</div>
+            </div>
+            <div class="quick-convert-item">
+              <div class="quick-convert-value">107,639</div>
+              <div class="quick-convert-unit">平方英尺 (ft²)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 单位选择器 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">单位换算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="category-tabs">
+          <div class="category-tab">📏 长度</div>
+          <div class="category-tab">📐 面积</div>
+          <div class="category-tab active">🧊 体积</div>
+        </div>
+
+        <div class="converter-section">
+          <div class="converter-input">
+            <div class="converter-label">输入值</div>
+            <div class="converter-field">
+              <input type="number" class="converter-value" value="1">
+              <div class="converter-unit">
+                升 (L)
+                <span class="arrow">›</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 遮罩 -->
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 150;"></div>
+
+      <!-- 单位选择器 -->
+      <div class="unit-picker">
+        <div class="unit-picker-header">
+          <span style="color: #999;">取消</span>
+          <span style="font-weight: 600;">选择单位</span>
+          <span style="color: #1890ff;">确定</span>
+        </div>
+        <div class="unit-picker-list">
+          <div class="unit-picker-item">
+            <span class="unit-picker-name">立方米</span>
+            <span class="unit-picker-symbol">m³</span>
+          </div>
+          <div class="unit-picker-item">
+            <span class="unit-picker-name">立方分米</span>
+            <span class="unit-picker-symbol">dm³</span>
+          </div>
+          <div class="unit-picker-item">
+            <span class="unit-picker-name">立方厘米</span>
+            <span class="unit-picker-symbol">cm³</span>
+          </div>
+          <div class="unit-picker-item selected">
+            <span class="unit-picker-name">升</span>
+            <span class="unit-picker-symbol">L</span>
+          </div>
+          <div class="unit-picker-item">
+            <span class="unit-picker-name">毫升</span>
+            <span class="unit-picker-symbol">mL</span>
+          </div>
+          <div class="unit-picker-item">
+            <span class="unit-picker-name">加仑</span>
+            <span class="unit-picker-symbol">gal</span>
+          </div>
+          <div class="unit-picker-item">
+            <span class="unit-picker-name">立方英尺</span>
+            <span class="unit-picker-symbol">ft³</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

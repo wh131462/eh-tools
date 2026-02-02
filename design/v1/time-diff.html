@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 时间差计算</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .time-input-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .time-input-label {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .time-input-box {
+      display: flex;
+      align-items: center;
+      padding: 14px;
+      background: #f5f5f5;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .time-input-icon {
+      font-size: 20px;
+      margin-right: 12px;
+    }
+    .time-input-value {
+      flex: 1;
+      font-size: 16px;
+      color: #333;
+    }
+    .time-input-arrow {
+      color: #ccc;
+    }
+    .quick-options {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      overflow-x: auto;
+    }
+    .quick-option {
+      padding: 8px 16px;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 20px;
+      font-size: 13px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .quick-option:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+    }
+    .quick-option.active {
+      background: #1890ff;
+      color: #fff;
+      border-color: #1890ff;
+    }
+    .result-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .result-title {
+      font-size: 14px;
+      color: #999;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .result-item {
+      text-align: center;
+      padding: 16px 8px;
+      background: linear-gradient(135deg, #f5f7fa, #e4e8eb);
+      border-radius: 12px;
+    }
+    .result-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: #1890ff;
+    }
+    .result-unit {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+    .result-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .result-row .result-item {
+      flex: 1;
+    }
+    .total-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .total-title {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    .total-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .total-item:last-child { border-bottom: none; }
+    .total-label { color: #666; }
+    .total-value { font-weight: 500; color: #333; }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">时间差计算</h2>
+
+    <!-- 时间差计算页面 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">时间差计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="time-input-section">
+          <div class="time-input-label">开始时间</div>
+          <div class="time-input-box">
+            <span class="time-input-icon">📅</span>
+            <span class="time-input-value">2026-01-23 10:30</span>
+            <span class="time-input-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="time-input-section">
+          <div class="time-input-label">结束时间</div>
+          <div class="time-input-box">
+            <span class="time-input-icon">📅</span>
+            <span class="time-input-value">2026-01-30 14:25</span>
+            <span class="time-input-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="quick-options">
+          <div class="quick-option active">一周前</div>
+          <div class="quick-option">一月前</div>
+          <div class="quick-option">一年前</div>
+          <div class="quick-option">下周</div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-title">时间差结果</div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">年</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">月</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">1</div>
+              <div class="result-unit">周</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">天</div>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-item">
+              <div class="result-value">3</div>
+              <div class="result-unit">小时</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">55</div>
+              <div class="result-unit">分钟</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">秒</div>
+            </div>
+          </div>
+
+          <div class="total-section">
+            <div class="total-title">总计</div>
+            <div class="total-item">
+              <span class="total-label">总天数</span>
+              <span class="total-value">7.16 天</span>
+            </div>
+            <div class="total-item">
+              <span class="total-label">总小时</span>
+              <span class="total-value">171.92 小时</span>
+            </div>
+            <div class="total-item">
+              <span class="total-label">总分钟</span>
+              <span class="total-value">10,315 分钟</span>
+            </div>
+            <div class="total-item">
+              <span class="total-label">总秒数</span>
+              <span class="total-value">618,900 秒</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 一年前示例 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">时间差计算</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="time-input-section">
+          <div class="time-input-label">开始时间</div>
+          <div class="time-input-box">
+            <span class="time-input-icon">📅</span>
+            <span class="time-input-value">2025-01-30 14:25</span>
+            <span class="time-input-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="time-input-section">
+          <div class="time-input-label">结束时间</div>
+          <div class="time-input-box">
+            <span class="time-input-icon">📅</span>
+            <span class="time-input-value">2026-01-30 14:25</span>
+            <span class="time-input-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="quick-options">
+          <div class="quick-option">一周前</div>
+          <div class="quick-option">一月前</div>
+          <div class="quick-option active">一年前</div>
+          <div class="quick-option">下周</div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-title">时间差结果</div>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="result-value">1</div>
+              <div class="result-unit">年</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">月</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">周</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">天</div>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">小时</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">分钟</div>
+            </div>
+            <div class="result-item">
+              <div class="result-value">0</div>
+              <div class="result-unit">秒</div>
+            </div>
+          </div>
+
+          <div class="total-section">
+            <div class="total-title">总计</div>
+            <div class="total-item">
+              <span class="total-label">总天数</span>
+              <span class="total-value">365 天</span>
+            </div>
+            <div class="total-item">
+              <span class="total-label">总小时</span>
+              <span class="total-value">8,760 小时</span>
+            </div>
+            <div class="total-item">
+              <span class="total-label">总分钟</span>
+              <span class="total-value">525,600 分钟</span>
+            </div>
+            <div class="total-item">
+              <span class="total-label">总秒数</span>
+              <span class="total-value">31,536,000 秒</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

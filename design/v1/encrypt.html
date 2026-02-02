@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 文本加密解密</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .mode-switch {
+      display: flex;
+      margin: 12px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 4px;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #666;
+    }
+    .mode-btn.active {
+      background: #1890ff;
+      color: #fff;
+    }
+    .encrypt-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .section-title {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    .algorithm-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .algorithm-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      background: #f5f5f5;
+      color: #666;
+    }
+    .algorithm-tab.active {
+      background: rgba(24,144,255,0.1);
+      color: #1890ff;
+      border: 1px solid #1890ff;
+    }
+    .text-area {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+    }
+    .text-area:focus {
+      border-color: #1890ff;
+    }
+    .key-input {
+      margin-top: 12px;
+    }
+    .key-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .key-hint {
+      color: #999;
+      font-size: 12px;
+    }
+    .key-field {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .key-field:focus {
+      border-color: #1890ff;
+    }
+    .action-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      margin-top: 16px;
+    }
+    .action-btn.encrypt {
+      background: linear-gradient(135deg, #1890ff, #096dd9);
+      color: #fff;
+    }
+    .action-btn.decrypt {
+      background: linear-gradient(135deg, #52c41a, #389e0d);
+      color: #fff;
+    }
+    .action-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .result-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .result-title {
+      font-size: 14px;
+      color: #999;
+    }
+    .copy-btn {
+      padding: 6px 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #1890ff;
+      cursor: pointer;
+      border: none;
+    }
+    .result-content {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      word-break: break-all;
+      min-height: 60px;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    .error-msg {
+      background: rgba(255,77,79,0.1);
+      border: 1px solid #ff4d4f;
+      border-radius: 8px;
+      padding: 12px;
+      color: #ff4d4f;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">文本加密/解密</h2>
+
+    <!-- 加密模式 - Base64 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">加密解密</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mode-switch">
+          <div class="mode-btn active">🔒 加密</div>
+          <div class="mode-btn">🔓 解密</div>
+        </div>
+
+        <div class="encrypt-section">
+          <div class="section-title">选择算法</div>
+          <div class="algorithm-tabs">
+            <div class="algorithm-tab active">Base64</div>
+            <div class="algorithm-tab">AES</div>
+            <div class="algorithm-tab">DES</div>
+          </div>
+
+          <div class="section-title">输入文本</div>
+          <textarea class="text-area" placeholder="请输入要加密的文本...">Hello, World! 你好，世界！</textarea>
+
+          <button class="action-btn encrypt">加密</button>
+        </div>
+
+        <div class="result-section">
+          <div class="result-header">
+            <span class="result-title">加密结果</span>
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="result-content">SGVsbG8sIFdvcmxkISDkvaDlpb3vvIzkuJbnlYzvvIE=</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 加密模式 - AES -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">加密解密</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mode-switch">
+          <div class="mode-btn active">🔒 加密</div>
+          <div class="mode-btn">🔓 解密</div>
+        </div>
+
+        <div class="encrypt-section">
+          <div class="section-title">选择算法</div>
+          <div class="algorithm-tabs">
+            <div class="algorithm-tab">Base64</div>
+            <div class="algorithm-tab active">AES</div>
+            <div class="algorithm-tab">DES</div>
+          </div>
+
+          <div class="section-title">输入文本</div>
+          <textarea class="text-area" placeholder="请输入要加密的文本...">这是一段需要加密的敏感信息</textarea>
+
+          <div class="key-input">
+            <div class="key-label">
+              <span>密钥</span>
+              <span class="key-hint">16/24/32 字节</span>
+            </div>
+            <input type="text" class="key-field" placeholder="请输入密钥" value="1234567890123456">
+          </div>
+
+          <button class="action-btn encrypt">加密</button>
+        </div>
+
+        <div class="result-section">
+          <div class="result-header">
+            <span class="result-title">加密结果</span>
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="result-content">U2FsdGVkX1+vupppZksvRf5pq5g5XjFRIipRkwB0K1Y=</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 解密模式 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">加密解密</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mode-switch">
+          <div class="mode-btn">🔒 加密</div>
+          <div class="mode-btn active">🔓 解密</div>
+        </div>
+
+        <div class="encrypt-section">
+          <div class="section-title">选择算法</div>
+          <div class="algorithm-tabs">
+            <div class="algorithm-tab active">Base64</div>
+            <div class="algorithm-tab">AES</div>
+            <div class="algorithm-tab">DES</div>
+          </div>
+
+          <div class="section-title">输入密文</div>
+          <textarea class="text-area" placeholder="请输入要解密的文本...">SGVsbG8sIFdvcmxkISDkvaDlpb3vvIzkuJbnlYzvvIE=</textarea>
+
+          <button class="action-btn decrypt">解密</button>
+        </div>
+
+        <div class="result-section">
+          <div class="result-header">
+            <span class="result-title">解密结果</span>
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="result-content">Hello, World! 你好，世界！</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 错误状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">加密解密</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mode-switch">
+          <div class="mode-btn active">🔒 加密</div>
+          <div class="mode-btn">🔓 解密</div>
+        </div>
+
+        <div class="encrypt-section">
+          <div class="section-title">选择算法</div>
+          <div class="algorithm-tabs">
+            <div class="algorithm-tab">Base64</div>
+            <div class="algorithm-tab">AES</div>
+            <div class="algorithm-tab active">DES</div>
+          </div>
+
+          <div class="section-title">输入文本</div>
+          <textarea class="text-area" placeholder="请输入要加密的文本...">测试文本</textarea>
+
+          <div class="key-input">
+            <div class="key-label">
+              <span>密钥</span>
+              <span class="key-hint" style="color: #ff4d4f;">需要 8 字节</span>
+            </div>
+            <input type="text" class="key-field" placeholder="请输入密钥" value="123" style="border-color: #ff4d4f;">
+          </div>
+
+          <div class="error-msg">
+            ⚠️ DES 密钥长度必须为 8 字节，当前长度: 3 字节
+          </div>
+
+          <button class="action-btn encrypt" disabled>加密</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

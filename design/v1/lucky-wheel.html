@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 大转盘</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .wheel-header {
+      background: #fff;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wheel-info {
+      flex: 1;
+    }
+    .wheel-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    .wheel-desc {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+    .wheel-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .wheel-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .wheel-container {
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .wheel {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      background: conic-gradient(
+        #FF6B6B 0deg 45deg,
+        #FECA57 45deg 90deg,
+        #48DBFB 90deg 135deg,
+        #FF9FF3 135deg 180deg,
+        #54A0FF 180deg 225deg,
+        #5F27CD 225deg 270deg,
+        #00D2D3 270deg 315deg,
+        #1DD1A1 315deg 360deg
+      );
+    }
+    .wheel-pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid #FF4D4F;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      z-index: 10;
+    }
+    .wheel-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fff, #f0f0f0);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1890ff;
+      cursor: pointer;
+    }
+    .wheel-labels {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    .wheel-label {
+      position: absolute;
+      font-size: 12px;
+      font-weight: 500;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    .mode-switch {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .mode-btn {
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid #e8e8e8;
+      background: #fff;
+      color: #666;
+    }
+    .mode-btn.active {
+      background: #1890ff;
+      color: #fff;
+      border-color: #1890ff;
+    }
+    .slot-machine {
+      display: flex;
+      gap: 8px;
+      padding: 20px;
+      background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+      border-radius: 16px;
+      margin-top: 20px;
+    }
+    .slot-reel {
+      width: 80px;
+      height: 100px;
+      background: #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .config-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .config-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 16px;
+    }
+    .config-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .config-item:last-child { border-bottom: none; }
+    .config-name {
+      font-size: 14px;
+      color: #333;
+    }
+    .config-count {
+      font-size: 12px;
+      color: #999;
+    }
+    .config-arrow {
+      color: #ccc;
+    }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: #fff;
+      margin: 0 12px 8px;
+      border-radius: 10px;
+    }
+    .history-result {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    .history-meta {
+      text-align: right;
+    }
+    .history-config {
+      font-size: 12px;
+      color: #999;
+    }
+    .history-time {
+      font-size: 11px;
+      color: #ccc;
+      margin-top: 2px;
+    }
+    .result-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .result-content {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      width: 280px;
+    }
+    .result-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    .result-text {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .result-hint {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 24px;
+    }
+    .result-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .result-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+    }
+    .result-btn.primary {
+      background: #1890ff;
+      color: #fff;
+    }
+    .result-btn.default {
+      background: #f5f5f5;
+      color: #666;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    .empty-text {
+      font-size: 16px;
+      color: #999;
+      margin-bottom: 20px;
+    }
+    .create-btn {
+      padding: 12px 32px;
+      background: #1890ff;
+      color: #fff;
+      border: none;
+      border-radius: 24px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">大转盘 / 抽奖机</h2>
+
+    <!-- 转盘模式 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">大转盘</span>
+        <span class="navbar-right">⚙️</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="wheel-header">
+          <div class="wheel-info">
+            <div class="wheel-name">今天吃什么</div>
+            <div class="wheel-desc">15 个选项</div>
+          </div>
+          <div class="wheel-actions">
+            <div class="wheel-action-btn">🔄</div>
+          </div>
+        </div>
+
+        <div class="wheel-container">
+          <div style="position: relative;">
+            <div class="wheel-pointer"></div>
+            <div class="wheel">
+              <div class="wheel-center">开始</div>
+            </div>
+          </div>
+
+          <div class="mode-switch">
+            <button class="mode-btn active">🎡 转盘</button>
+            <button class="mode-btn">🎰 老虎机</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 老虎机模式 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">大转盘</span>
+        <span class="navbar-right">⚙️</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="wheel-header">
+          <div class="wheel-info">
+            <div class="wheel-name">是或否</div>
+            <div class="wheel-desc">2 个选项</div>
+          </div>
+        </div>
+
+        <div class="wheel-container">
+          <div class="slot-machine">
+            <div class="slot-reel">是</div>
+            <div class="slot-reel">否</div>
+            <div class="slot-reel">是</div>
+          </div>
+
+          <div style="margin-top: 24px;">
+            <button class="create-btn">开始</button>
+          </div>
+
+          <div class="mode-switch">
+            <button class="mode-btn">🎡 转盘</button>
+            <button class="mode-btn active">🎰 老虎机</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果弹窗 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">大转盘</span>
+        <span class="navbar-right">⚙️</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="wheel-header">
+          <div class="wheel-info">
+            <div class="wheel-name">今天吃什么</div>
+            <div class="wheel-desc">15 个选项</div>
+          </div>
+        </div>
+
+        <div class="wheel-container">
+          <div style="position: relative;">
+            <div class="wheel-pointer"></div>
+            <div class="wheel" style="transform: rotate(127deg);">
+              <div class="wheel-center">开始</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 结果弹窗 -->
+      <div class="result-modal">
+        <div class="result-content">
+          <div class="result-icon">🎉</div>
+          <div class="result-text">火锅</div>
+          <div class="result-hint">今天就吃这个吧！</div>
+          <div class="result-actions">
+            <button class="result-btn default">复制</button>
+            <button class="result-btn primary">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 配置列表 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">配置列表</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div style="padding: 12px;">
+          <button class="create-btn" style="width: 100%; border-radius: 10px;">+ 创建新配置</button>
+        </div>
+
+        <div class="config-section">
+          <div class="config-item">
+            <div>
+              <div class="config-name">是或否 (2)</div>
+              <div class="config-count">二项选择</div>
+            </div>
+            <span class="config-arrow">›</span>
+          </div>
+          <div class="config-item">
+            <div>
+              <div class="config-name">十二星座 (12)</div>
+              <div class="config-count">12个星座</div>
+            </div>
+            <span class="config-arrow">›</span>
+          </div>
+          <div class="config-item">
+            <div>
+              <div class="config-name">传统八卦 (8)</div>
+              <div class="config-count">8个卦象</div>
+            </div>
+            <span class="config-arrow">›</span>
+          </div>
+          <div class="config-item">
+            <div>
+              <div class="config-name">今天吃什么 (15)</div>
+              <div class="config-count">15种食物选项</div>
+            </div>
+            <span class="config-arrow">›</span>
+          </div>
+          <div class="config-item">
+            <div>
+              <div class="config-name">选择什么语言 (8)</div>
+              <div class="config-count">8种编程语言</div>
+            </div>
+            <span class="config-arrow">›</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 历史记录 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">历史记录</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5; padding-top: 56px;">
+        <div class="history-item">
+          <div class="history-result">🔥 火锅</div>
+          <div class="history-meta">
+            <div class="history-config">今天吃什么</div>
+            <div class="history-time">2026-01-30 14:25:36</div>
+          </div>
+        </div>
+        <div class="history-item">
+          <div class="history-result">✓ 是</div>
+          <div class="history-meta">
+            <div class="history-config">是或否</div>
+            <div class="history-time">2026-01-30 14:20:12</div>
+          </div>
+        </div>
+        <div class="history-item">
+          <div class="history-result">♌ 狮子座</div>
+          <div class="history-meta">
+            <div class="history-config">十二星座</div>
+            <div class="history-time">2026-01-30 14:15:08</div>
+          </div>
+        </div>
+        <div class="history-item">
+          <div class="history-result">☰ 乾</div>
+          <div class="history-meta">
+            <div class="history-config">传统八卦</div>
+            <div class="history-time">2026-01-30 14:10:45</div>
+          </div>
+        </div>
+        <div class="history-item">
+          <div class="history-result">🍜 拉面</div>
+          <div class="history-meta">
+            <div class="history-config">今天吃什么</div>
+            <div class="history-time">2026-01-30 12:30:22</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 空状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">大转盘</span>
+        <span class="navbar-right">⚙️</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="empty-state">
+          <div class="empty-icon">🎡</div>
+          <div class="empty-text">还没有配置<br>创建一个开始抽奖吧</div>
+          <button class="create-btn">+ 创建配置</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 图片压缩</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .upload-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .upload-area {
+      border: 2px dashed #d9d9d9;
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .upload-area:hover {
+      border-color: #1890ff;
+    }
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .upload-text {
+      font-size: 14px;
+      color: #666;
+    }
+    .upload-hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 8px;
+    }
+    .quality-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .quality-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .quality-label {
+      font-size: 14px;
+      color: #333;
+    }
+    .quality-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1890ff;
+    }
+    .quality-slider {
+      width: 100%;
+      height: 6px;
+      background: #e8e8e8;
+      border-radius: 3px;
+      position: relative;
+    }
+    .quality-track {
+      height: 100%;
+      background: linear-gradient(90deg, #52c41a, #faad14, #ff4d4f);
+      border-radius: 3px;
+      width: 80%;
+    }
+    .quality-thumb {
+      position: absolute;
+      top: 50%;
+      left: 80%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border: 2px solid #1890ff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .compress-btn {
+      width: 100%;
+      padding: 14px;
+      background: #1890ff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .image-list {
+      padding: 0 12px;
+    }
+    .image-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .image-compare {
+      display: flex;
+      gap: 12px;
+    }
+    .image-box {
+      flex: 1;
+      text-align: center;
+    }
+    .image-preview {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+    .image-label {
+      font-size: 12px;
+      color: #999;
+    }
+    .image-size {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      margin-top: 4px;
+    }
+    .compress-result {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    .compress-ratio {
+      font-size: 20px;
+      font-weight: 600;
+      color: #52c41a;
+    }
+    .compress-ratio.warning {
+      color: #faad14;
+    }
+    .image-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .image-action-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+    }
+    .image-action-btn.save {
+      background: #52c41a;
+      color: #fff;
+    }
+    .image-action-btn.delete {
+      background: #f5f5f5;
+      color: #ff4d4f;
+    }
+    .save-all-btn {
+      margin: 12px;
+      padding: 14px;
+      background: #52c41a;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      width: calc(100% - 24px);
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">图片压缩</h2>
+
+    <!-- 初始状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">图片压缩</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="upload-section">
+          <div class="upload-area">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">点击选择图片</div>
+            <div class="upload-hint">最多选择 9 张图片</div>
+          </div>
+        </div>
+
+        <div class="quality-section">
+          <div class="quality-header">
+            <span class="quality-label">压缩质量</span>
+            <span class="quality-value">80%</span>
+          </div>
+          <div class="quality-slider">
+            <div class="quality-track"></div>
+            <div class="quality-thumb"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 已选择图片 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">图片压缩</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="upload-section">
+          <div class="upload-area" style="padding: 20px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px;"></div>
+              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 8px;"></div>
+              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 8px;"></div>
+              <div style="width: 60px; height: 60px; border: 2px dashed #d9d9d9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">+</div>
+            </div>
+            <div class="upload-hint" style="margin-top: 12px;">已选择 3 张，点击添加更多</div>
+          </div>
+          <button class="compress-btn">开始压缩</button>
+        </div>
+
+        <div class="quality-section">
+          <div class="quality-header">
+            <span class="quality-label">压缩质量</span>
+            <span class="quality-value">80%</span>
+          </div>
+          <div class="quality-slider">
+            <div class="quality-track"></div>
+            <div class="quality-thumb"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 压缩结果 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">图片压缩</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="image-list">
+          <div class="image-item">
+            <div class="image-compare">
+              <div class="image-box">
+                <div class="image-preview" style="background: linear-gradient(135deg, #667eea, #764ba2);">🖼️</div>
+                <div class="image-label">原图</div>
+                <div class="image-size">2.34 MB</div>
+              </div>
+              <div class="image-box">
+                <div class="image-preview" style="background: linear-gradient(135deg, #667eea99, #764ba299);">🖼️</div>
+                <div class="image-label">压缩后</div>
+                <div class="image-size">456.78 KB</div>
+              </div>
+            </div>
+            <div class="compress-result">
+              <span style="color: #999; margin-right: 8px;">压缩率</span>
+              <span class="compress-ratio">-80.9%</span>
+            </div>
+            <div class="image-actions">
+              <button class="image-action-btn save">保存</button>
+              <button class="image-action-btn delete">删除</button>
+            </div>
+          </div>
+
+          <div class="image-item">
+            <div class="image-compare">
+              <div class="image-box">
+                <div class="image-preview" style="background: linear-gradient(135deg, #f093fb, #f5576c);">🖼️</div>
+                <div class="image-label">原图</div>
+                <div class="image-size">156.23 KB</div>
+              </div>
+              <div class="image-box">
+                <div class="image-preview" style="background: linear-gradient(135deg, #f093fb99, #f5576c99);">🖼️</div>
+                <div class="image-label">压缩后</div>
+                <div class="image-size">178.45 KB</div>
+              </div>
+            </div>
+            <div class="compress-result">
+              <span style="color: #999; margin-right: 8px;">压缩率</span>
+              <span class="compress-ratio warning">最佳质量</span>
+            </div>
+            <div class="image-actions">
+              <button class="image-action-btn save">保存</button>
+              <button class="image-action-btn delete">删除</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="save-all-btn">全部保存</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 个人中心</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .profile-header {
+      background: linear-gradient(135deg, #1890ff, #096dd9);
+      padding: 40px 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #fff;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .profile-name {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .profile-login {
+      font-size: 14px;
+      opacity: 0.8;
+      cursor: pointer;
+    }
+    .menu-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:hover { background: #fafafa; }
+    .menu-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-size: 18px;
+    }
+    .menu-text { flex: 1; font-size: 15px; }
+    .menu-arrow { color: #ccc; font-size: 18px; }
+    .copyright {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">个人中心</h2>
+
+    <!-- 未登录状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-title">我的</span>
+      </div>
+
+      <div class="phone-content" style="padding-top: 0;">
+        <div class="profile-header">
+          <div class="profile-avatar">👤</div>
+          <div class="profile-login">点击登录</div>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-item">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #54a0ff, #2e86de);">⚙️</div>
+            <span class="menu-text">设置</span>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #5f27cd, #341f97);">ℹ️</div>
+            <span class="menu-text">关于</span>
+            <span class="menu-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="copyright">
+          © 2025-2026 EternalHeart. All rights reserved.
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tabbar-item">
+          <span class="icon">🏠</span>
+          <span>首页</span>
+        </div>
+        <div class="tabbar-item active">
+          <span class="icon">👤</span>
+          <span>我的</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 已登录状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-title">我的</span>
+      </div>
+
+      <div class="phone-content" style="padding-top: 0;">
+        <div class="profile-header">
+          <div class="profile-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;">E</div>
+          <div class="profile-name">EternalHeart</div>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-item">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #54a0ff, #2e86de);">⚙️</div>
+            <span class="menu-text">设置</span>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #5f27cd, #341f97);">ℹ️</div>
+            <span class="menu-text">关于</span>
+            <span class="menu-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="copyright">
+          © 2025-2026 EternalHeart. All rights reserved.
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tabbar-item">
+          <span class="icon">🏠</span>
+          <span>首页</span>
+        </div>
+        <div class="tabbar-item active">
+          <span class="icon">👤</span>
+          <span>我的</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 深色模式 -->
+    <div class="phone-frame dark">
+      <div class="navbar" style="background: #2d2d2d; border-color: #333;">
+        <span class="navbar-title" style="color: #fff;">我的</span>
+      </div>
+
+      <div class="phone-content" style="padding-top: 0; background: #1a1a1a;">
+        <div class="profile-header" style="background: linear-gradient(135deg, #1890ff, #096dd9);">
+          <div class="profile-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;">E</div>
+          <div class="profile-name">EternalHeart</div>
+        </div>
+
+        <div class="menu-section" style="background: #2d2d2d;">
+          <div class="menu-item" style="border-color: #333;">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #54a0ff, #2e86de);">⚙️</div>
+            <span class="menu-text" style="color: #fff;">设置</span>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background: linear-gradient(135deg, #5f27cd, #341f97);">ℹ️</div>
+            <span class="menu-text" style="color: #fff;">关于</span>
+            <span class="menu-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="copyright">
+          © 2025-2026 EternalHeart. All rights reserved.
+        </div>
+      </div>
+
+      <div class="tabbar" style="background: #2d2d2d; border-color: #333;">
+        <div class="tabbar-item">
+          <span class="icon">🏠</span>
+          <span>首页</span>
+        </div>
+        <div class="tabbar-item active">
+          <span class="icon">👤</span>
+          <span>我的</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

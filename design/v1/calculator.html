@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 科学计算器</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .calc-display {
+      background: #1a1a1a;
+      padding: 20px;
+      text-align: right;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .calc-expression {
+      font-size: 16px;
+      color: #888;
+      margin-bottom: 8px;
+      min-height: 20px;
+      word-break: break-all;
+    }
+    .calc-result {
+      font-size: 48px;
+      font-weight: 300;
+      color: #fff;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    .calc-mode-switch {
+      display: flex;
+      padding: 12px;
+      background: #2d2d2d;
+      gap: 8px;
+    }
+    .calc-mode-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      color: #888;
+      background: transparent;
+      border: none;
+    }
+    .calc-mode-btn.active {
+      background: #1890ff;
+      color: #fff;
+    }
+    .calc-keypad {
+      background: #2d2d2d;
+      padding: 8px;
+    }
+    .calc-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .calc-row:last-child { margin-bottom: 0; }
+    .calc-btn {
+      flex: 1;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.1s;
+    }
+    .calc-btn:active { transform: scale(0.95); }
+    .calc-btn.number {
+      background: #505050;
+      color: #fff;
+    }
+    .calc-btn.operator {
+      background: #1890ff;
+      color: #fff;
+    }
+    .calc-btn.function {
+      background: #a5a5a5;
+      color: #000;
+    }
+    .calc-btn.zero {
+      flex: 2.1;
+      border-radius: 40px;
+      aspect-ratio: auto;
+      padding: 20px;
+      justify-content: flex-start;
+      padding-left: 30px;
+    }
+    .calc-btn.scientific {
+      background: #3d3d3d;
+      color: #fff;
+      font-size: 16px;
+    }
+    .calc-scientific-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .calc-scientific-btn {
+      flex: 1;
+      padding: 14px 8px;
+      border-radius: 8px;
+      background: #3d3d3d;
+      color: #fff;
+      font-size: 14px;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">科学计算器</h2>
+
+    <!-- 基础模式 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #1a1a1a; border: none;">
+        <span class="navbar-back" style="color: #1890ff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">计算器</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="padding-top: 44px; background: #2d2d2d;">
+        <div class="calc-display">
+          <div class="calc-expression">123 + 456 × 2</div>
+          <div class="calc-result">1,035</div>
+        </div>
+
+        <div class="calc-mode-switch">
+          <button class="calc-mode-btn active">基础</button>
+          <button class="calc-mode-btn">科学</button>
+        </div>
+
+        <div class="calc-keypad">
+          <div class="calc-row">
+            <button class="calc-btn function">C</button>
+            <button class="calc-btn function">⌫</button>
+            <button class="calc-btn function">%</button>
+            <button class="calc-btn operator">÷</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number">7</button>
+            <button class="calc-btn number">8</button>
+            <button class="calc-btn number">9</button>
+            <button class="calc-btn operator">×</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number">4</button>
+            <button class="calc-btn number">5</button>
+            <button class="calc-btn number">6</button>
+            <button class="calc-btn operator">−</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number">1</button>
+            <button class="calc-btn number">2</button>
+            <button class="calc-btn number">3</button>
+            <button class="calc-btn operator">+</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number zero">0</button>
+            <button class="calc-btn number">.</button>
+            <button class="calc-btn operator">=</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 科学模式 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #1a1a1a; border: none;">
+        <span class="navbar-back" style="color: #1890ff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">计算器</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="padding-top: 44px; background: #2d2d2d;">
+        <div class="calc-display">
+          <div class="calc-expression">sin(30) + √(16)</div>
+          <div class="calc-result">4.5</div>
+        </div>
+
+        <div class="calc-mode-switch">
+          <button class="calc-mode-btn">基础</button>
+          <button class="calc-mode-btn active">科学</button>
+        </div>
+
+        <div class="calc-keypad">
+          <!-- 科学函数行 -->
+          <div class="calc-scientific-row">
+            <button class="calc-scientific-btn">sin</button>
+            <button class="calc-scientific-btn">cos</button>
+            <button class="calc-scientific-btn">tan</button>
+            <button class="calc-scientific-btn">√</button>
+          </div>
+          <div class="calc-scientific-row">
+            <button class="calc-scientific-btn">(</button>
+            <button class="calc-scientific-btn">)</button>
+            <button class="calc-scientific-btn">x²</button>
+            <button class="calc-scientific-btn">π</button>
+          </div>
+
+          <div class="calc-row">
+            <button class="calc-btn function" style="font-size: 18px;">C</button>
+            <button class="calc-btn function" style="font-size: 18px;">⌫</button>
+            <button class="calc-btn function" style="font-size: 18px;">%</button>
+            <button class="calc-btn operator" style="font-size: 20px;">÷</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number" style="font-size: 20px;">7</button>
+            <button class="calc-btn number" style="font-size: 20px;">8</button>
+            <button class="calc-btn number" style="font-size: 20px;">9</button>
+            <button class="calc-btn operator" style="font-size: 20px;">×</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number" style="font-size: 20px;">4</button>
+            <button class="calc-btn number" style="font-size: 20px;">5</button>
+            <button class="calc-btn number" style="font-size: 20px;">6</button>
+            <button class="calc-btn operator" style="font-size: 20px;">−</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number" style="font-size: 20px;">1</button>
+            <button class="calc-btn number" style="font-size: 20px;">2</button>
+            <button class="calc-btn number" style="font-size: 20px;">3</button>
+            <button class="calc-btn operator" style="font-size: 20px;">+</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number zero" style="font-size: 20px;">0</button>
+            <button class="calc-btn number" style="font-size: 20px;">.</button>
+            <button class="calc-btn operator" style="font-size: 20px;">=</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 错误状态 -->
+    <div class="phone-frame">
+      <div class="navbar" style="background: #1a1a1a; border: none;">
+        <span class="navbar-back" style="color: #1890ff;">‹</span>
+        <span class="navbar-title" style="color: #fff;">计算器</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="padding-top: 44px; background: #2d2d2d;">
+        <div class="calc-display">
+          <div class="calc-expression">1 ÷ 0</div>
+          <div class="calc-result" style="color: #ff4d4f;">错误</div>
+        </div>
+
+        <div class="calc-mode-switch">
+          <button class="calc-mode-btn active">基础</button>
+          <button class="calc-mode-btn">科学</button>
+        </div>
+
+        <div class="calc-keypad">
+          <div class="calc-row">
+            <button class="calc-btn function">C</button>
+            <button class="calc-btn function">⌫</button>
+            <button class="calc-btn function">%</button>
+            <button class="calc-btn operator">÷</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number">7</button>
+            <button class="calc-btn number">8</button>
+            <button class="calc-btn number">9</button>
+            <button class="calc-btn operator">×</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number">4</button>
+            <button class="calc-btn number">5</button>
+            <button class="calc-btn number">6</button>
+            <button class="calc-btn operator">−</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number">1</button>
+            <button class="calc-btn number">2</button>
+            <button class="calc-btn number">3</button>
+            <button class="calc-btn operator">+</button>
+          </div>
+          <div class="calc-row">
+            <button class="calc-btn number zero">0</button>
+            <button class="calc-btn number">.</button>
+            <button class="calc-btn operator">=</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

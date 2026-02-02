@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 拟态外凸阴影 -->
+    <filter id="neu-raised" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="8" dy="8" stdDeviation="12" flood-color="#C5CAE9" flood-opacity="0.8"/>
+      <feDropShadow dx="-6" dy="-6" stdDeviation="10" flood-color="#FFFFFF" flood-opacity="1"/>
+    </filter>
+
+    <!-- 拟态内凹阴影 -->
+    <filter id="neu-inset" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="4" dy="4" stdDeviation="6" flood-color="#C5CAE9" flood-opacity="0.6"/>
+      <feDropShadow dx="-3" dy="-3" stdDeviation="5" flood-color="#FFFFFF" flood-opacity="0.9"/>
+    </filter>
+
+    <!-- 文字拟态阴影 -->
+    <filter id="text-neu">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-color="#C5CAE9" flood-opacity="0.5"/>
+      <feDropShadow dx="-2" dy="-2" stdDeviation="3" flood-color="#FFFFFF" flood-opacity="0.8"/>
+    </filter>
+
+    <!-- 主色渐变 -->
+    <linearGradient id="main-color" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5C6BC0"/>
+      <stop offset="100%" stop-color="#7E57C2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 拟态背景 -->
+  <rect width="512" height="512" rx="100" fill="#E8EAF6"/>
+
+  <!-- 拟态容器卡片 -->
+  <rect
+    x="60" y="60"
+    width="392" height="392"
+    rx="60"
+    fill="#E8EAF6"
+    filter="url(#neu-raised)"
+  />
+
+  <!-- 工具箱图标 - 拟态风格 -->
+  <g transform="translate(256, 140)">
+    <!-- 箱体 - 凸起效果 -->
+    <rect x="-50" y="-15" width="100" height="65" rx="12" fill="#E8EAF6" filter="url(#neu-raised)"/>
+
+    <!-- 内部装饰 - 凹陷效果 -->
+    <g filter="url(#neu-inset)">
+      <rect x="-30" y="5" width="25" height="20" rx="4" fill="#E8EAF6"/>
+      <rect x="5" y="5" width="25" height="20" rx="4" fill="#E8EAF6"/>
+    </g>
+
+    <!-- 把手 -->
+    <path d="M-30,-15 Q-30,-30 -15,-30 L15,-30 Q30,-30 30,-15"
+          stroke="url(#main-color)" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.8"/>
+  </g>
+
+  <!-- EH 文字 - 拟态风格 -->
+  <g filter="url(#text-neu)">
+    <text
+      x="256" y="285"
+      text-anchor="middle"
+      font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+      font-size="140"
+      font-weight="800"
+      fill="url(#main-color)"
+      letter-spacing="-2"
+    >EH</text>
+  </g>
+
+  <!-- TOOLS 文字 - 拟态风格 -->
+  <g filter="url(#text-neu)">
+    <text
+      x="256" y="350"
+      text-anchor="middle"
+      font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+      font-size="48"
+      font-weight="600"
+      fill="url(#main-color)"
+      opacity="0.85"
+      letter-spacing="10"
+    >TOOLS</text>
+  </g>
+
+  <!-- 底部拟态装饰线 -->
+  <line x1="180" y1="385" x2="332" y2="385"
+        stroke="url(#main-color)" stroke-width="4" opacity="0.4"
+        stroke-linecap="round" filter="url(#neu-inset)"/>
+
+  <!-- 拟态装饰圆点 -->
+  <g filter="url(#neu-raised)">
+    <circle cx="226" cy="410" r="6" fill="#E8EAF6"/>
+    <circle cx="256" cy="410" r="6" fill="#E8EAF6"/>
+    <circle cx="286" cy="410" r="6" fill="#E8EAF6"/>
+  </g>
+
+</svg>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 颜色转换器</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+    .nav-links a:hover { background: #1890ff; color: #fff; }
+    .color-preview {
+      margin: 12px;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .color-block {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .color-values {
+      background: #fff;
+      padding: 16px;
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+    .color-value-item {
+      font-size: 12px;
+      color: #666;
+    }
+    .color-value-item .value {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      margin-top: 4px;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    .input-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .copy-btn {
+      padding: 4px 10px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #1890ff;
+      cursor: pointer;
+      border: none;
+      font-weight: normal;
+    }
+    .hex-input-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hex-prefix {
+      font-size: 24px;
+      font-weight: 600;
+      color: #999;
+    }
+    .hex-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 20px;
+      font-family: 'SF Mono', Monaco, monospace;
+      text-transform: uppercase;
+      outline: none;
+    }
+    .hex-input:focus {
+      border-color: #1890ff;
+    }
+    .rgb-inputs {
+      display: flex;
+      gap: 12px;
+    }
+    .rgb-input-group {
+      flex: 1;
+    }
+    .rgb-label {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .rgb-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 18px;
+      text-align: center;
+      outline: none;
+    }
+    .rgb-input:focus {
+      border-color: #1890ff;
+    }
+    .rgb-input.r:focus { border-color: #ff4d4f; }
+    .rgb-input.g:focus { border-color: #52c41a; }
+    .rgb-input.b:focus { border-color: #1890ff; }
+    .hsl-display {
+      display: flex;
+      gap: 12px;
+    }
+    .hsl-item {
+      flex: 1;
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .hsl-value {
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+    }
+    .hsl-label {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+    .error-toast {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,77,79,0.9);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      z-index: 300;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">颜色转换器</h2>
+
+    <!-- 正常状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">颜色转换</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="color-preview">
+          <div class="color-block" style="background: #1890FF;"></div>
+          <div class="color-values">
+            <div class="color-value-item">
+              <div>HEX</div>
+              <div class="value">#1890FF</div>
+            </div>
+            <div class="color-value-item">
+              <div>RGB</div>
+              <div class="value">24, 144, 255</div>
+            </div>
+            <div class="color-value-item">
+              <div>HSL</div>
+              <div class="value">209°, 100%, 55%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="section-title">
+            HEX
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="hex-input-row">
+            <span class="hex-prefix">#</span>
+            <input type="text" class="hex-input" value="1890FF" maxlength="6">
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="section-title">
+            RGB
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="rgb-inputs">
+            <div class="rgb-input-group">
+              <div class="rgb-label">R</div>
+              <input type="number" class="rgb-input r" value="24" min="0" max="255">
+            </div>
+            <div class="rgb-input-group">
+              <div class="rgb-label">G</div>
+              <input type="number" class="rgb-input g" value="144" min="0" max="255">
+            </div>
+            <div class="rgb-input-group">
+              <div class="rgb-label">B</div>
+              <input type="number" class="rgb-input b" value="255" min="0" max="255">
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="section-title">
+            HSL
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="hsl-display">
+            <div class="hsl-item">
+              <div class="hsl-value">209°</div>
+              <div class="hsl-label">色调 H</div>
+            </div>
+            <div class="hsl-item">
+              <div class="hsl-value">100%</div>
+              <div class="hsl-label">饱和度 S</div>
+            </div>
+            <div class="hsl-item">
+              <div class="hsl-value">55%</div>
+              <div class="hsl-label">亮度 L</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 其他颜色示例 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">颜色转换</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="color-preview">
+          <div class="color-block" style="background: #52C41A;"></div>
+          <div class="color-values">
+            <div class="color-value-item">
+              <div>HEX</div>
+              <div class="value">#52C41A</div>
+            </div>
+            <div class="color-value-item">
+              <div>RGB</div>
+              <div class="value">82, 196, 26</div>
+            </div>
+            <div class="color-value-item">
+              <div>HSL</div>
+              <div class="value">100°, 77%, 44%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="section-title">
+            HEX
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="hex-input-row">
+            <span class="hex-prefix">#</span>
+            <input type="text" class="hex-input" value="52C41A" maxlength="6">
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="section-title">
+            RGB
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="rgb-inputs">
+            <div class="rgb-input-group">
+              <div class="rgb-label">R</div>
+              <input type="number" class="rgb-input r" value="82" min="0" max="255">
+            </div>
+            <div class="rgb-input-group">
+              <div class="rgb-label">G</div>
+              <input type="number" class="rgb-input g" value="196" min="0" max="255">
+            </div>
+            <div class="rgb-input-group">
+              <div class="rgb-label">B</div>
+              <input type="number" class="rgb-input b" value="26" min="0" max="255">
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="section-title">
+            HSL
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="hsl-display">
+            <div class="hsl-item">
+              <div class="hsl-value">100°</div>
+              <div class="hsl-label">色调 H</div>
+            </div>
+            <div class="hsl-item">
+              <div class="hsl-value">77%</div>
+              <div class="hsl-label">饱和度 S</div>
+            </div>
+            <div class="hsl-item">
+              <div class="hsl-value">44%</div>
+              <div class="hsl-label">亮度 L</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 错误状态 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">颜色转换</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="color-preview">
+          <div class="color-block" style="background: #1890FF;"></div>
+          <div class="color-values">
+            <div class="color-value-item">
+              <div>HEX</div>
+              <div class="value">#1890FF</div>
+            </div>
+            <div class="color-value-item">
+              <div>RGB</div>
+              <div class="value">24, 144, 255</div>
+            </div>
+            <div class="color-value-item">
+              <div>HSL</div>
+              <div class="value">209°, 100%, 55%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="section-title">
+            HEX
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="hex-input-row">
+            <span class="hex-prefix">#</span>
+            <input type="text" class="hex-input" value="GGGGGG" maxlength="6" style="border-color: #ff4d4f;">
+          </div>
+        </div>
+      </div>
+
+      <!-- 错误提示 -->
+      <div class="error-toast">
+        ⚠️ 无效的 HEX 颜色值
+      </div>
+    </div>
+  </div>
+</body>
+</html>

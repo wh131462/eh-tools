@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EH-Tools 设计稿 - 二维码工具</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .nav-links a {
+      padding: 8px 16px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 13px;
+    }
+
+    .nav-links a:hover {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    .mode-switch {
+      display: flex;
+      margin: 12px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .mode-btn.active {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    .qr-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+
+    .text-area {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .text-area:focus {
+      border-color: #1890ff;
+    }
+
+    .qr-preview {
+      margin: 20px auto;
+      width: 210px;
+      height: 210px;
+      background: #fff;
+      border: 2px solid #e8e8e8;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .qr-code {
+      width: 180px;
+      height: 180px;
+      background:
+        linear-gradient(90deg, #000 50%, transparent 50%),
+        linear-gradient(#000 50%, transparent 50%);
+      background-size: 10px 10px;
+    }
+
+    .qr-placeholder {
+      color: #ccc;
+      font-size: 48px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .action-btn.primary {
+      background: #1890ff;
+      color: #fff;
+    }
+
+    .action-btn.success {
+      background: #52c41a;
+      color: #fff;
+    }
+
+    .action-btn.default {
+      background: #f5f5f5;
+      color: #666;
+    }
+
+    .scan-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .scan-options {
+      display: flex;
+      gap: 12px;
+    }
+
+    .scan-option {
+      flex: 1;
+      padding: 24px 16px;
+      background: #f5f5f5;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .scan-option:hover {
+      transform: scale(1.02);
+    }
+
+    .scan-option:active {
+      transform: scale(0.98);
+    }
+
+    .scan-icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .scan-label {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .result-section {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .result-title {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .copy-btn {
+      padding: 6px 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #1890ff;
+      cursor: pointer;
+      border: none;
+    }
+
+    .result-content {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      word-break: break-all;
+      min-height: 40px;
+    }
+
+    .verify-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: rgba(82, 196, 26, 0.1);
+      color: #52c41a;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="profile.html">个人中心</a>
+    <a href="edit-profile.html">编辑资料</a>
+    <a href="settings.html">设置</a>
+    <a href="about.html">关于</a>
+    <a href="calendar.html">万年历</a>
+    <a href="countdown.html">倒计时</a>
+    <a href="time-diff.html">时间差</a>
+    <a href="world-clock.html">世界时钟</a>
+    <a href="calculator.html">计算器</a>
+    <a href="salary.html">工资计算</a>
+    <a href="bmi.html">BMI</a>
+    <a href="mortgage.html">房贷</a>
+    <a href="unit-converter.html">单位换算</a>
+    <a href="encrypt.html">加密解密</a>
+    <a href="qrcode.html">二维码</a>
+    <a href="compress.html">图片压缩</a>
+    <a href="filter.html">图片滤镜</a>
+    <a href="color-card.html">色卡</a>
+    <a href="color-converter.html">颜色转换</a>
+    <a href="lucky-wheel.html">大转盘</a>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="page-title">二维码工具</h2>
+
+    <!-- 生成模式 - 初始 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">二维码</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mode-switch">
+          <div class="mode-btn active">生成</div>
+          <div class="mode-btn">扫描</div>
+        </div>
+
+        <div class="qr-section">
+          <div class="section-title">输入内容</div>
+          <textarea class="text-area" placeholder="请输入要生成二维码的文本或链接..."></textarea>
+
+          <div class="qr-preview">
+            <span class="qr-placeholder">📱</span>
+          </div>
+
+          <div class="action-buttons">
+            <button class="action-btn primary">生成二维码</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 生成模式 - 已生成 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">二维码</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mode-switch">
+          <div class="mode-btn active">生成</div>
+          <div class="mode-btn">扫描</div>
+        </div>
+
+        <div class="qr-section">
+          <div class="section-title">输入内容</div>
+          <textarea class="text-area">https://github.com/wh131462/eh-tools</textarea>
+
+          <div class="qr-preview" style="border-color: #1890ff;">
+            <!-- 模拟二维码 -->
+            <svg width="180" height="180" viewBox="0 0 180 180">
+              <rect fill="#fff" width="180" height="180" />
+              <g fill="#000">
+                <!-- 左上角定位图案 -->
+                <rect x="10" y="10" width="50" height="50" />
+                <rect x="15" y="15" width="40" height="40" fill="#fff" />
+                <rect x="20" y="20" width="30" height="30" />
+                <!-- 右上角定位图案 -->
+                <rect x="120" y="10" width="50" height="50" />
+                <rect x="125" y="15" width="40" height="40" fill="#fff" />
+                <rect x="130" y="20" width="30" height="30" />
+                <!-- 左下角定位图案 -->
+                <rect x="10" y="120" width="50" height="50" />
+                <rect x="15" y="125" width="40" height="40" fill="#fff" />
+                <rect x="20" y="130" width="30" height="30" />
+                <!-- 数据区域模拟 -->
+                <rect x="70" y="10" width="10" height="10" />
+                <rect x="90" y="10" width="10" height="10" />
+                <rect x="70" y="30" width="10" height="10" />
+                <rect x="80" y="40" width="10" height="10" />
+                <rect x="100" y="70" width="10" height="10" />
+                <rect x="70" y="80" width="10" height="10" />
+                <rect x="90" y="90" width="10" height="10" />
+                <rect x="110" y="100" width="10" height="10" />
+                <rect x="80" y="120" width="10" height="10" />
+                <rect x="100" y="130" width="10" height="10" />
+                <rect x="120" y="140" width="10" height="10" />
+                <rect x="140" y="120" width="10" height="10" />
+                <rect x="150" y="140" width="10" height="10" />
+              </g>
+            </svg>
+          </div>
+
+          <div class="action-buttons">
+            <button class="action-btn success">保存到相册</button>
+            <button class="action-btn default">验证</button>
+          </div>
+
+          <div class="verify-badge">✓ 验证通过</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 扫描模式 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">二维码</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mode-switch">
+          <div class="mode-btn">生成</div>
+          <div class="mode-btn active">扫描</div>
+        </div>
+
+        <div class="scan-section">
+          <div class="section-title">选择扫描方式</div>
+          <div class="scan-options">
+            <div class="scan-option">
+              <div class="scan-icon">📷</div>
+              <div class="scan-label">摄像头扫描</div>
+            </div>
+            <div class="scan-option">
+              <div class="scan-icon">🖼️</div>
+              <div class="scan-label">相册选择</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 扫描结果 -->
+    <div class="phone-frame">
+      <div class="navbar">
+        <span class="navbar-back">‹</span>
+        <span class="navbar-title">二维码</span>
+      </div>
+
+      <div class="phone-content no-tabbar" style="background: #f5f5f5;">
+        <div class="mode-switch">
+          <div class="mode-btn">生成</div>
+          <div class="mode-btn active">扫描</div>
+        </div>
+
+        <div class="scan-section">
+          <div class="section-title">选择扫描方式</div>
+          <div class="scan-options">
+            <div class="scan-option">
+              <div class="scan-icon">📷</div>
+              <div class="scan-label">摄像头扫描</div>
+            </div>
+            <div class="scan-option">
+              <div class="scan-icon">🖼️</div>
+              <div class="scan-label">相册选择</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-header">
+            <span class="result-title">扫描结果</span>
+            <button class="copy-btn">复制</button>
+          </div>
+          <div class="result-content">https://github.com/wh131462/eh-tools</div>
+        </div>
+
+        <div class="qr-section">
+          <div class="section-title">验证二维码</div>
+          <div class="qr-preview" style="border-color: #52c41a; margin: 12px auto;">
+            <svg width="180" height="180" viewBox="0 0 180 180">
+              <rect fill="#fff" width="180" height="180" />
+              <g fill="#000">
+                <rect x="10" y="10" width="50" height="50" />
+                <rect x="15" y="15" width="40" height="40" fill="#fff" />
+                <rect x="20" y="20" width="30" height="30" />
+                <rect x="120" y="10" width="50" height="50" />
+                <rect x="125" y="15" width="40" height="40" fill="#fff" />
+                <rect x="130" y="20" width="30" height="30" />
+                <rect x="10" y="120" width="50" height="50" />
+                <rect x="15" y="125" width="40" height="40" fill="#fff" />
+                <rect x="20" y="130" width="30" height="30" />
+                <rect x="70" y="10" width="10" height="10" />
+                <rect x="90" y="10" width="10" height="10" />
+                <rect x="70" y="30" width="10" height="10" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
