@@ -1,0 +1,208 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^welcome-banner$": "@/components/common/WelcomeBanner.vue",
+      "^search-box$": "@/components/common/SearchBox.vue",
+      "^tool-card$": "@/components/common/ToolCard.vue",
+      "^float-tab-bar$": "@/components/common/FloatTabBar.vue",
+      "^banner$": "@/components/common/Banner.vue",
+      "^empty$": "@/components/common/Empty.vue",
+      "^list-cell$": "@/components/common/ListCell.vue",
+      "^section-title$": "@/components/common/SectionTitle.vue",
+      "^nav-bar$": "@/components/common/NavBar.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/favorites/index",
+      "style": {
+        "navigationBarTitleText": "收藏"
+      }
+    },
+    {
+      "path": "pages/mine/index",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": {
+        "navigationBarTitleText": "个人信息"
+      }
+    },
+    {
+      "path": "pages/settings/index",
+      "style": {
+        "navigationBarTitleText": "设置"
+      }
+    },
+    {
+      "path": "pages/about/index",
+      "style": {
+        "navigationBarTitleText": "关于"
+      }
+    },
+    {
+      "path": "pages/time/calendar/index",
+      "style": {
+        "navigationBarTitleText": "万年历"
+      }
+    },
+    {
+      "path": "pages/time/countdown/index",
+      "style": {
+        "navigationBarTitleText": "倒计时"
+      }
+    },
+    {
+      "path": "pages/time/time-diff/index",
+      "style": {
+        "navigationBarTitleText": "时间差计算"
+      }
+    },
+    {
+      "path": "pages/time/world-clock/index",
+      "style": {
+        "navigationBarTitleText": "世界时钟"
+      }
+    },
+    {
+      "path": "pages/time/timestamp-converter/index",
+      "style": {
+        "navigationBarTitleText": "时间戳转换"
+      }
+    },
+    {
+      "path": "pages/time/age-calculator/index",
+      "style": {
+        "navigationBarTitleText": "年龄计算器"
+      }
+    },
+    {
+      "path": "pages/calc/calculator/index",
+      "style": {
+        "navigationBarTitleText": "计算器"
+      }
+    },
+    {
+      "path": "pages/calc/salary/index",
+      "style": {
+        "navigationBarTitleText": "工资计算"
+      }
+    },
+    {
+      "path": "pages/calc/bmi/index",
+      "style": {
+        "navigationBarTitleText": "BMI计算"
+      }
+    },
+    {
+      "path": "pages/calc/mortgage/index",
+      "style": {
+        "navigationBarTitleText": "房贷计算"
+      }
+    },
+    {
+      "path": "pages/calc/unit-converter/index",
+      "style": {
+        "navigationBarTitleText": "单位换算"
+      }
+    },
+    {
+      "path": "pages/calc/tax-calculator/index",
+      "style": {
+        "navigationBarTitleText": "个税计算"
+      }
+    },
+    {
+      "path": "pages/text/encrypt/index",
+      "style": {
+        "navigationBarTitleText": "编码转换"
+      }
+    },
+    {
+      "path": "pages/text/qrcode/index",
+      "style": {
+        "navigationBarTitleText": "二维码"
+      }
+    },
+    {
+      "path": "pages/text/json-formatter/index",
+      "style": {
+        "navigationBarTitleText": "JSON格式化"
+      }
+    },
+    {
+      "path": "pages/image/compress/index",
+      "style": {
+        "navigationBarTitleText": "图片压缩"
+      }
+    },
+    {
+      "path": "pages/image/color-tool/index",
+      "style": {
+        "navigationBarTitleText": "颜色工具"
+      }
+    },
+    {
+      "path": "pages/life/lucky-wheel/index/index",
+      "style": {
+        "navigationBarTitleText": "大转盘"
+      }
+    },
+    {
+      "path": "pages/life/lucky-wheel/config/index",
+      "style": {
+        "navigationBarTitleText": "配置编辑"
+      }
+    },
+    {
+      "path": "pages/life/lucky-wheel/list/index",
+      "style": {
+        "navigationBarTitleText": "配置列表"
+      }
+    },
+    {
+      "path": "pages/life/lucky-wheel/history/index",
+      "style": {
+        "navigationBarTitleText": "历史记录"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "EH Tools",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F5F7FA"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#909399",
+    "selectedColor": "#667eea",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/favorites/index",
+        "text": "收藏"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
+    ]
+  }
+}
