@@ -1,0 +1,14 @@
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 蛋糕主体 -->
+  <rect x="4" y="10" width="16" height="10" rx="1" stroke="#667eea" stroke-width="2"/>
+  <!-- 蛋糕分层 -->
+  <line x1="4" y1="14" x2="20" y2="14" stroke="#667eea" stroke-width="1.5"/>
+  <!-- 蜡烛（三根） -->
+  <rect x="7" y="5" width="1.5" height="5" rx="0.5" fill="#667eea"/>
+  <rect x="11.25" y="5" width="1.5" height="5" rx="0.5" fill="#667eea"/>
+  <rect x="15.5" y="5" width="1.5" height="5" rx="0.5" fill="#667eea"/>
+  <!-- 火焰 -->
+  <circle cx="7.75" cy="4" r="1" fill="#667eea"/>
+  <circle cx="12" cy="4" r="1" fill="#667eea"/>
+  <circle cx="16.25" cy="4" r="1" fill="#667eea"/>
+</svg>
