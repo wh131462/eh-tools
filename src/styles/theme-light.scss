@@ -1,0 +1,80 @@
+/**
+ * 亮色主题 - 新拟态风格
+ */
+@use './variables.scss' as *;
+
+.theme-light {
+  // 背景色
+  --bg-page: #{$bg-page};
+  --bg-card: #{$bg-card};
+  --bg-hover: #{$bg-hover};
+  --bg-elevated: #{$bg-elevated};
+  --bg-sunken: #{$bg-sunken};
+
+  // 文字色
+  --text-primary: #{$text-primary};
+  --text-regular: #{$text-regular};
+  --text-secondary: #{$text-secondary};
+  --text-placeholder: #{$text-placeholder};
+  --text-inverse: #ffffff;
+
+  // 边框色
+  --border-color: #{$border-color};
+  --border-light: #{$border-light};
+
+  // 主题色
+  --primary: #{$primary};
+  --primary-light: #{$primary-light};
+  --primary-dark: #{$primary-dark};
+
+  // 功能色
+  --success: #{$success};
+  --warning: #{$warning};
+  --error: #{$error};
+  --info: #{$info};
+
+  // 新拟态阴影
+  --shadow-neumorphic: #{$shadow-neumorphic};
+  --shadow-neumorphic-sm: #{$shadow-neumorphic-sm};
+  --shadow-neumorphic-inset: #{$shadow-neumorphic-inset};
+  --shadow-neumorphic-pressed: #{$shadow-neumorphic-pressed};
+
+  // 传统阴影
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+
+  // 渐变
+  --gradient-primary: #{$gradient-primary};
+  --gradient-success: #{$gradient-success};
+  --gradient-warning: #{$gradient-warning};
+  --gradient-danger: #{$gradient-danger};
+  --gradient-info: #{$gradient-info};
+  --gradient-gold: #{$gradient-gold};
+
+  // 工具分类渐变
+  --gradient-time: #{$gradient-time};
+  --gradient-calc: #{$gradient-calc};
+  --gradient-text: #{$gradient-text};
+  --gradient-image: #{$gradient-image};
+  --gradient-life: #{$gradient-life};
+
+  // 工具卡片渐变
+  --gradient-calendar: #{$gradient-calendar};
+  --gradient-timer: #{$gradient-timer};
+  --gradient-hourglass: #{$gradient-hourglass};
+  --gradient-globe: #{$gradient-globe};
+  --gradient-calculator: #{$gradient-calculator};
+  --gradient-money: #{$gradient-money};
+  --gradient-scale: #{$gradient-scale};
+  --gradient-building: #{$gradient-building};
+  --gradient-ruler: #{$gradient-ruler};
+  --gradient-lock: #{$gradient-lock};
+  --gradient-qrcode: #{$gradient-qrcode};
+  --gradient-json-format: #{$gradient-json-format};
+  --gradient-compress: #{$gradient-compress};
+  --gradient-palette: #{$gradient-palette};
+  --gradient-colorcard: #{$gradient-colorcard};
+  --gradient-colorswap: #{$gradient-colorswap};
+  --gradient-wheel: #{$gradient-wheel};
+}

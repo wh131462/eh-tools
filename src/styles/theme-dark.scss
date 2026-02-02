@@ -1,0 +1,80 @@
+/**
+ * 暗色主题 - 新拟态风格
+ */
+@use './variables.scss' as *;
+
+.theme-dark {
+  // 背景色
+  --bg-page: #{$dark-bg-page};
+  --bg-card: #{$dark-bg-card};
+  --bg-hover: #{$dark-bg-hover};
+  --bg-elevated: #{$dark-bg-elevated};
+  --bg-sunken: #{$dark-bg-sunken};
+
+  // 文字色
+  --text-primary: #{$dark-text-primary};
+  --text-regular: #{$dark-text-regular};
+  --text-secondary: #{$dark-text-secondary};
+  --text-placeholder: #{$dark-text-placeholder};
+  --text-inverse: #ffffff;
+
+  // 边框色
+  --border-color: #{$dark-border-color};
+  --border-light: #{$dark-border-light};
+
+  // 主题色（暗色模式下稍微调亮）
+  --primary: #8b9cf5;
+  --primary-light: #a8b5f7;
+  --primary-dark: #{$primary};
+
+  // 功能色
+  --success: #38ef7d;
+  --warning: #{$warning};
+  --error: #{$error};
+  --info: #00f2fe;
+
+  // 新拟态阴影
+  --shadow-neumorphic: #{$dark-shadow-neumorphic};
+  --shadow-neumorphic-sm: #{$dark-shadow-neumorphic-sm};
+  --shadow-neumorphic-inset: #{$dark-shadow-neumorphic-inset};
+  --shadow-neumorphic-pressed: #{$dark-shadow-neumorphic-inset};
+
+  // 传统阴影
+  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4rpx 12rpx rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.5);
+
+  // 渐变
+  --gradient-primary: #{$gradient-primary};
+  --gradient-success: #{$gradient-success};
+  --gradient-warning: #{$gradient-warning};
+  --gradient-danger: #{$gradient-danger};
+  --gradient-info: #{$gradient-info};
+  --gradient-gold: #{$gradient-gold};
+
+  // 工具分类渐变
+  --gradient-time: #{$gradient-time};
+  --gradient-calc: #{$gradient-calc};
+  --gradient-text: #{$gradient-text};
+  --gradient-image: #{$gradient-image};
+  --gradient-life: #{$gradient-life};
+
+  // 工具卡片渐变
+  --gradient-calendar: #{$gradient-calendar};
+  --gradient-timer: #{$gradient-timer};
+  --gradient-hourglass: #{$gradient-hourglass};
+  --gradient-globe: #{$gradient-globe};
+  --gradient-calculator: #{$gradient-calculator};
+  --gradient-money: #{$gradient-money};
+  --gradient-scale: #{$gradient-scale};
+  --gradient-building: #{$gradient-building};
+  --gradient-ruler: #{$gradient-ruler};
+  --gradient-lock: #{$gradient-lock};
+  --gradient-qrcode: #{$gradient-qrcode};
+  --gradient-json-format: #{$gradient-json-format};
+  --gradient-compress: #{$gradient-compress};
+  --gradient-palette: #{$gradient-palette};
+  --gradient-colorcard: #{$gradient-colorcard};
+  --gradient-colorswap: #{$gradient-colorswap};
+  --gradient-wheel: #{$gradient-wheel};
+}

@@ -1,0 +1,169 @@
+/**
+ * EH-Tools Design System v2.0
+ * 新拟态风格 + 多彩渐变 + 悬浮胶囊导航
+ */
+
+// ==================== 主题色 ====================
+$primary: #667eea;
+$primary-light: #8b9cf5;
+$primary-dark: #5568d3;
+
+// ==================== 功能色 ====================
+$success: #11998e;
+$warning: #f5576c;
+$error: #ff416c;
+$info: #4facfe;
+
+// ==================== 多彩渐变 ====================
+$gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+$gradient-warning: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+$gradient-danger: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+$gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+$gradient-gold: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+
+// ==================== 工具分类渐变 ====================
+$gradient-time: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+$gradient-calc: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+$gradient-text: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+$gradient-life: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+// ==================== 工具卡片渐变 ====================
+// 时间工具
+$gradient-calendar: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+$gradient-timer: linear-gradient(135deg, #feca57, #f9ca24);
+$gradient-hourglass: linear-gradient(135deg, #48dbfb, #0abde3);
+$gradient-globe: linear-gradient(135deg, #ff9ff3, #f368e0);
+$gradient-timestamp: linear-gradient(135deg, #6c5ce7, #a29bfe);
+$gradient-age: linear-gradient(135deg, #fd79a8, #fdcb6e);
+
+// 计算工具
+$gradient-calculator: linear-gradient(135deg, #a18cd1, #fbc2eb);
+$gradient-money: linear-gradient(135deg, #667eea, #764ba2);
+$gradient-scale: linear-gradient(135deg, #11998e, #38ef7d);
+$gradient-building: linear-gradient(135deg, #f093fb, #f5576c);
+$gradient-ruler: linear-gradient(135deg, #4facfe, #00f2fe);
+$gradient-tax-calculator: linear-gradient(135deg, #f7971e, #ffd200);
+
+// 文本工具
+$gradient-lock: linear-gradient(135deg, #667eea, #764ba2);
+$gradient-qrcode: linear-gradient(135deg, #f093fb, #f5576c);
+$gradient-json-format: linear-gradient(135deg, #4facfe, #00f2fe);
+
+// 图片工具
+$gradient-compress: linear-gradient(135deg, #4facfe, #00f2fe);
+$gradient-color-tool: linear-gradient(135deg, #f7971e, #ffd200);
+$gradient-palette: linear-gradient(135deg, #f7971e, #ffd200);
+$gradient-colorcard: linear-gradient(135deg, #ff9ff3, #f368e0);
+$gradient-colorswap: linear-gradient(135deg, #667eea, #764ba2);
+
+// 生活工具
+$gradient-wheel: linear-gradient(135deg, #a18cd1, #fbc2eb);
+
+// ==================== 中性色 - 亮色主题 ====================
+$text-primary: #2d3436;
+$text-regular: #636e72;
+$text-secondary: #9ca3af;
+$text-placeholder: #b2bec3;
+
+$bg-page: #e8ecef;
+$bg-card: #e8ecef;
+$bg-elevated: #f0f4f7;
+$bg-sunken: #dde1e4;
+$bg-hover: #dde1e4;
+
+$border-color: #dde1e4;
+$border-light: #e8ecef;
+
+// ==================== 中性色 - 暗色主题 ====================
+$dark-text-primary: #edf2f7;
+$dark-text-regular: #a0aec0;
+$dark-text-secondary: #718096;
+$dark-text-placeholder: #4a5568;
+
+$dark-bg-page: #1a1a2e;
+$dark-bg-card: #1a1a2e;
+$dark-bg-elevated: #222240;
+$dark-bg-sunken: #12121f;
+$dark-bg-hover: #222240;
+
+$dark-border-color: #2d2d44;
+$dark-border-light: #222240;
+
+// ==================== 新拟态阴影 - 亮色 ====================
+$shadow-neumorphic:
+  8px 8px 16px rgba(163, 177, 198, 0.6),
+  -8px -8px 16px rgba(255, 255, 255, 0.8);
+$shadow-neumorphic-sm:
+  4px 4px 8px rgba(163, 177, 198, 0.5),
+  -4px -4px 8px rgba(255, 255, 255, 0.7);
+$shadow-neumorphic-inset:
+  inset 4px 4px 8px rgba(163, 177, 198, 0.5),
+  inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+$shadow-neumorphic-pressed:
+  inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+  inset -6px -6px 12px rgba(255, 255, 255, 0.8);
+
+// ==================== 新拟态阴影 - 暗色 ====================
+$dark-shadow-neumorphic:
+  8px 8px 16px rgba(0, 0, 0, 0.5),
+  -8px -8px 16px rgba(50, 50, 80, 0.3);
+$dark-shadow-neumorphic-sm:
+  4px 4px 8px rgba(0, 0, 0, 0.4),
+  -4px -4px 8px rgba(50, 50, 80, 0.2);
+$dark-shadow-neumorphic-inset:
+  inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+  inset -4px -4px 8px rgba(50, 50, 80, 0.2);
+
+// 传统阴影
+$shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+$shadow-md: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+
+// ==================== 圆角 ====================
+$radius-sm: 16rpx;
+$radius-md: 32rpx;
+$radius-lg: 48rpx;
+$radius-xl: 64rpx;
+$radius-round: 9999rpx;
+
+// ==================== 间距 ====================
+$spacing-xs: 8rpx;
+$spacing-sm: 16rpx;
+$spacing-md: 32rpx;
+$spacing-lg: 48rpx;
+$spacing-xl: 64rpx;
+$spacing-2xl: 96rpx;
+
+// ==================== 字号 ====================
+$font-size-xs: 20rpx;
+$font-size-sm: 24rpx;
+$font-size-md: 28rpx;
+$font-size-lg: 32rpx;
+$font-size-xl: 36rpx;
+$font-size-xxl: 48rpx;
+
+// ==================== 布局 ====================
+$nav-height: 112rpx;
+$tabbar-height: 140rpx;
+$safe-bottom: 68rpx;
+
+// ==================== 动画 ====================
+$transition-fast: 0.2s ease-out;
+$transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 0.5s ease-out;
+
+// ==================== 导出变量供 JS 使用 ====================
+:export {
+  primary: $primary;
+  success: $success;
+  warning: $warning;
+  error: $error;
+  gradientPrimary: $gradient-primary;
+  gradientTime: $gradient-time;
+  gradientCalc: $gradient-calc;
+  gradientText: $gradient-text;
+  gradientImage: $gradient-image;
+  gradientLife: $gradient-life;
+}

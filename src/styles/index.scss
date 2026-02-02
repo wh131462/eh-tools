@@ -1,0 +1,454 @@
+/**
+ * EH-Tools v2.0 全局样式
+ * 新拟态风格设计系统
+ */
+@use './variables.scss' as *;
+@use './mixins.scss' as *;
+@use './theme-light.scss';
+@use './theme-dark.scss';
+
+// 页面基础样式
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: $font-size-md;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--bg-page);
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  // 默认亮色主题变量
+  --bg-page: #{$bg-page};
+  --bg-card: #{$bg-card};
+  --bg-hover: #{$bg-hover};
+  --bg-elevated: #{$bg-elevated};
+  --bg-sunken: #{$bg-sunken};
+  --text-primary: #{$text-primary};
+  --text-regular: #{$text-regular};
+  --text-secondary: #{$text-secondary};
+  --text-placeholder: #{$text-placeholder};
+  --text-inverse: #ffffff;
+  --border-color: #{$border-color};
+  --border-light: #{$border-light};
+  --primary: #{$primary};
+  --primary-light: #{$primary-light};
+  --primary-dark: #{$primary-dark};
+  --color-primary: #{$primary};
+  --success: #{$success};
+  --warning: #{$warning};
+  --error: #{$error};
+  --info: #{$info};
+  --shadow-neumorphic: #{$shadow-neumorphic};
+  --shadow-neumorphic-sm: #{$shadow-neumorphic-sm};
+  --shadow-neumorphic-inset: #{$shadow-neumorphic-inset};
+  --shadow-neumorphic-pressed: #{$shadow-neumorphic-pressed};
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --gradient-primary: #{$gradient-primary};
+  --gradient-success: #{$gradient-success};
+  --gradient-warning: #{$gradient-warning};
+  --gradient-danger: #{$gradient-danger};
+  --gradient-info: #{$gradient-info};
+  --gradient-gold: #{$gradient-gold};
+  --gradient-time: #{$gradient-time};
+  --gradient-calc: #{$gradient-calc};
+  --gradient-text: #{$gradient-text};
+  --gradient-image: #{$gradient-image};
+  --gradient-life: #{$gradient-life};
+  // 遮罩层颜色
+  --mask-bg: rgba(0, 0, 0, 0.5);
+  // 功能色背景
+  --bg-primary-light: rgba(102, 126, 234, 0.1);
+  --bg-success-light: rgba(17, 153, 142, 0.1);
+  --bg-warning-light: rgba(245, 87, 108, 0.1);
+  --bg-error-light: rgba(255, 65, 108, 0.1);
+}
+
+// 暗色主题
+page.dark {
+  --bg-page: #{$dark-bg-page};
+  --bg-card: #{$dark-bg-card};
+  --bg-hover: #{$dark-bg-hover};
+  --bg-elevated: #{$dark-bg-elevated};
+  --bg-sunken: #{$dark-bg-sunken};
+  --text-primary: #{$dark-text-primary};
+  --text-regular: #{$dark-text-regular};
+  --text-secondary: #{$dark-text-secondary};
+  --text-placeholder: #{$dark-text-placeholder};
+  --text-inverse: #1a1a2e;
+  --border-color: #{$dark-border-color};
+  --border-light: #{$dark-border-light};
+  --shadow-neumorphic: #{$dark-shadow-neumorphic};
+  --shadow-neumorphic-sm: #{$dark-shadow-neumorphic-sm};
+  --shadow-neumorphic-inset: #{$dark-shadow-neumorphic-inset};
+  // 遮罩层颜色（暗色模式下更深）
+  --mask-bg: rgba(0, 0, 0, 0.7);
+  // 功能色背景（暗色模式下更亮）
+  --bg-primary-light: rgba(102, 126, 234, 0.2);
+  --bg-success-light: rgba(17, 153, 142, 0.2);
+  --bg-warning-light: rgba(245, 87, 108, 0.2);
+  --bg-error-light: rgba(255, 65, 108, 0.2);
+}
+
+// 通用容器
+.container {
+  padding: $spacing-md;
+  box-sizing: border-box;
+}
+
+// 页面容器
+.page {
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  // 阻止子元素 margin 穿透，解决暗黑模式下导航栏下方白线问题
+  overflow: hidden;
+
+  // 暗黑模式下强制设置背景色（解决 page 元素背景色问题）
+  &.theme-dark {
+    background-color: $dark-bg-page;
+  }
+}
+
+// ==================== 新拟态卡片 ====================
+.card,
+.neu-card {
+  background-color: var(--bg-card);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-neumorphic);
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  transition: all $transition-normal;
+}
+
+.neu-card-sm {
+  background-color: var(--bg-card);
+  border-radius: $radius-md;
+  box-shadow: var(--shadow-neumorphic-sm);
+  padding: $spacing-md;
+}
+
+.neu-card-pressed {
+  background-color: var(--bg-card);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-neumorphic-inset);
+  padding: $spacing-lg;
+}
+
+// 分割线
+.divider {
+  height: 1rpx;
+  background-color: var(--border-light);
+  margin: $spacing-md 0;
+}
+
+// ==================== 文字颜色 ====================
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-regular {
+  color: var(--text-regular);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-placeholder {
+  color: var(--text-placeholder);
+}
+
+// 主题色文字
+.text-theme {
+  color: var(--primary);
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.text-error {
+  color: var(--error);
+}
+
+// ==================== 新拟态按钮 ====================
+.btn,
+.neu-btn {
+  @include btn-base;
+  height: 88rpx;
+  padding: 0 $spacing-lg;
+  font-size: $font-size-md;
+  font-weight: 600;
+  border-radius: $radius-md;
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-neumorphic-sm);
+  transition: all $transition-normal;
+
+  &:active {
+    box-shadow: var(--shadow-neumorphic-inset);
+  }
+}
+
+.btn-primary,
+.neu-btn-primary {
+  @extend .btn;
+  background: var(--gradient-primary);
+  color: #FFFFFF;
+  box-shadow: 4px 4px 12px rgba(102, 126, 234, 0.4),
+              -2px -2px 8px rgba(255, 255, 255, 0.1);
+
+  &:active {
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2),
+                inset -2px -2px 8px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.btn-success,
+.neu-btn-success {
+  @extend .btn;
+  background: var(--gradient-success);
+  color: #FFFFFF;
+  box-shadow: 4px 4px 12px rgba(17, 153, 142, 0.4),
+              -2px -2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.btn-default {
+  @extend .btn;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+
+  &:active {
+    box-shadow: var(--shadow-neumorphic-inset);
+  }
+}
+
+.btn-text {
+  @include btn-reset;
+  color: var(--primary);
+  font-size: $font-size-md;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-round {
+  border-radius: $radius-round;
+}
+
+.btn-circle {
+  width: 112rpx;
+  height: 112rpx;
+  padding: 0;
+  border-radius: 50%;
+}
+
+// ==================== 新拟态输入框 ====================
+.input,
+.neu-input {
+  @include input-base;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: $radius-md;
+  box-shadow: var(--shadow-neumorphic-inset);
+  padding: 28rpx 36rpx;
+  font-size: $font-size-md;
+  transition: all $transition-normal;
+
+  &:focus {
+    box-shadow: var(--shadow-neumorphic-inset),
+                0 0 0 6rpx rgba(102, 126, 234, 0.3);
+  }
+}
+
+.textarea {
+  width: 100%;
+  padding: $spacing-md;
+  font-size: $font-size-md;
+  background-color: var(--bg-card);
+  border-radius: $radius-md;
+  box-shadow: var(--shadow-neumorphic-inset);
+  box-sizing: border-box;
+}
+
+// ==================== 列表 ====================
+.list,
+.neu-list {
+  background-color: var(--bg-card);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-neumorphic);
+  overflow: hidden;
+}
+
+.list-item,
+.neu-list-item {
+  @include flex-between;
+  padding: $spacing-md;
+  border-bottom: 1rpx solid var(--border-light);
+  transition: all $transition-fast;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:active {
+    background-color: var(--bg-sunken);
+  }
+}
+
+.list-item-title {
+  font-size: $font-size-md;
+  color: var(--text-primary);
+}
+
+.list-item-value {
+  font-size: $font-size-md;
+  color: var(--text-secondary);
+}
+
+// ==================== 网格 ====================
+.grid {
+  @include grid(4, $spacing-md);
+}
+
+.grid-3 {
+  @include grid(3, $spacing-md);
+}
+
+.grid-2 {
+  @include grid(2, $spacing-md);
+}
+
+// ==================== 空状态 ====================
+.empty {
+  @include flex-center;
+  flex-direction: column;
+  padding: $spacing-xl * 2;
+  color: var(--text-placeholder);
+
+  .empty-icon {
+    font-size: 120rpx;
+    margin-bottom: $spacing-md;
+  }
+
+  .empty-text {
+    font-size: $font-size-md;
+  }
+}
+
+// ==================== 标签 ====================
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  border-radius: $radius-round;
+  background-color: var(--bg-sunken);
+  color: var(--text-secondary);
+}
+
+.tag-primary {
+  background: rgba(102, 126, 234, 0.15);
+  color: #667eea;
+}
+
+.tag-success {
+  background: rgba(17, 153, 142, 0.15);
+  color: #11998e;
+}
+
+.tag-warning {
+  background: rgba(245, 87, 108, 0.15);
+  color: #f5576c;
+}
+
+.tag-error {
+  background: rgba(255, 65, 108, 0.15);
+  color: #ff416c;
+}
+
+// ==================== 新拟态开关 ====================
+.neu-switch {
+  width: 112rpx;
+  height: 64rpx;
+  background: var(--bg-card);
+  border-radius: $radius-round;
+  box-shadow: var(--shadow-neumorphic-inset);
+  position: relative;
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 52rpx;
+    height: 52rpx;
+    background: var(--bg-elevated);
+    border-radius: 50%;
+    top: 6rpx;
+    left: 6rpx;
+    box-shadow: var(--shadow-neumorphic-sm);
+    transition: all $transition-normal;
+  }
+
+  &.active {
+    background: var(--gradient-primary);
+
+    &::after {
+      left: 54rpx;
+      background: white;
+    }
+  }
+}
+
+// ==================== 安全区域 ====================
+.safe-area-bottom {
+  @include safe-area-bottom;
+}
+
+// ==================== 隐藏滚动条 ====================
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+// ==================== 动画 ====================
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
