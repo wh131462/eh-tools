@@ -78,17 +78,40 @@
         </view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="calendarShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/store'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('calendar.title'),
+  icon: '📅',
+  category: 'time' as const,
+  subtitle: '农历黄历查询'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 当前显示的年月
 const currentYear = ref(new Date().getFullYear())
@@ -350,6 +373,20 @@ const selectDate = (day: any) => {
     currentMonth.value = day.date.getMonth() + 1
   }
 }
+
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('calendar.title')}`,
+    path: '/pages/time/calendar/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('calendar.title')}`
+  }
+})
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('calendar.title') })

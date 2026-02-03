@@ -115,6 +115,13 @@
 
     <!-- 底部占位 -->
     <view class="bottom-placeholder" />
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="pomodoroTimerShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
@@ -123,10 +130,25 @@ import { ref, computed, reactive, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
-import { getDefaultShareConfig } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('pomodoroTimer.title'),
+  icon: '🍅',
+  category: 'time' as const,
+  subtitle: '专注时间管理'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // === 类型 ===
 type Phase = 'focus' | 'shortBreak' | 'longBreak'
@@ -318,10 +340,19 @@ onUnmounted(() => {
   stopTimer()
 })
 
-onShareAppMessage(() => getDefaultShareConfig())
-onShareTimeline(() => ({
-  title: 'EH Tools - ' + t('pomodoroTimer.title')
-}))
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('pomodoroTimer.title')}`,
+    path: '/pages/time/pomodoro-timer/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('pomodoroTimer.title')}`
+  }
+})
 </script>
 
 <style lang="scss" scoped>

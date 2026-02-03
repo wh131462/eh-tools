@@ -101,6 +101,12 @@
       </view>
     </view>
 
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="timestampConverterShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
@@ -109,10 +115,25 @@ import { ref, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
-import { getDefaultShareConfig } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('timestampConverter.title'),
+  icon: '🔄',
+  category: 'time' as const,
+  subtitle: '时间戳互转工具'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // === 当前时间戳 ===
 const currentTimestamp = ref('')
@@ -209,10 +230,19 @@ onUnmounted(() => {
   if (timer) clearInterval(timer)
 })
 
-onShareAppMessage(() => getDefaultShareConfig())
-onShareTimeline(() => ({
-  title: 'EH Tools - ' + t('timestampConverter.title')
-}))
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('timestampConverter.title')}`,
+    path: '/pages/time/timestamp-converter/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('timestampConverter.title')}`
+  }
+})
 </script>
 
 <style lang="scss" scoped>

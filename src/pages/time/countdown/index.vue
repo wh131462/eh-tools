@@ -60,18 +60,41 @@
         </picker-view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="countdownShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import { formatTime as formatTimeUtil } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('countdown.title'),
+  icon: '⏱️',
+  category: 'time' as const,
+  subtitle: '定时提醒助手'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 状态
 const remainingSeconds = ref(0)
@@ -162,6 +185,20 @@ const showFinishDialog = () => {
 // 页面卸载时清除定时器
 onUnmounted(() => {
   stopTimer()
+})
+
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('countdown.title')}`,
+    path: '/pages/time/countdown/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('countdown.title')}`
+  }
 })
 
 onShow(() => {

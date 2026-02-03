@@ -123,17 +123,40 @@
         </view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="timeDiffShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('timeDiff.title'),
+  icon: '⏰',
+  category: 'time' as const,
+  subtitle: '日期时间差计算'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 格式化日期
 const formatDate = (date: Date) => {
@@ -271,6 +294,20 @@ const setQuickOption = (option: string) => {
     }
   }
 }
+
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('timeDiff.title')}`,
+    path: '/pages/time/time-diff/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('timeDiff.title')}`
+  }
+})
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('timeDiff.title') })

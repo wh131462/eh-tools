@@ -94,18 +94,41 @@
 
     <!-- 底部占位 -->
     <view class="bottom-placeholder" />
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="ageCalculatorShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import DatePickerPopup from '@/components/common/DatePickerPopup.vue'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('ageCalculator.title'),
+  icon: '🎂',
+  category: 'time' as const,
+  subtitle: '精确年龄计算'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 当前年份
 const currentYear = new Date().getFullYear()
@@ -217,6 +240,20 @@ const ageResult = computed(() => {
     weekday,
     zodiac,
     constellation
+  }
+})
+
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('ageCalculator.title')}`,
+    path: '/pages/time/age-calculator/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('ageCalculator.title')}`
   }
 })
 

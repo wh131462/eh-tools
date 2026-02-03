@@ -60,18 +60,41 @@
         </scroll-view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="worldClockShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow, onHide } from '@dcloudio/uni-app'
+import { onShow, onHide, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import { showToast } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('worldClock.title'),
+  icon: '🌍',
+  category: 'time' as const,
+  subtitle: '全球时区时间'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 interface Timezone {
   id: string
@@ -210,6 +233,20 @@ const stopTimer = () => {
     timer = null
   }
 }
+
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('worldClock.title')}`,
+    path: '/pages/time/world-clock/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('worldClock.title')}`
+  }
+})
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('worldClock.title') })
