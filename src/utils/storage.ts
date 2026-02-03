@@ -51,6 +51,7 @@ export const STORAGE_KEYS = {
   COLOR_CARD_FAVORITES: 'colorCardFavorites',
   SELECTED_TIME_ZONES: 'selectedTimeZones',
   WHEEL_CONFIGS: 'wheel_configs',
+  WHEEL_CURRENT_CONFIG: 'wheel_current_config',
   WHEEL_HISTORY: 'wheel_history',
   TOOL_FAVORITES: 'tool_favorites',
   RECENT_TOOLS: 'recent_tools'

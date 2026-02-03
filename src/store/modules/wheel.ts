@@ -10,13 +10,18 @@ import { storage, STORAGE_KEYS } from '@/utils'
 const MAX_HISTORY = 100
 
 export const useWheelStore = defineStore('wheel', () => {
-  // 配置列表
+  // 配置列表 - 确保空数组时使用预设配置
+  const storedConfigs = storage.get<WheelConfig[]>(STORAGE_KEYS.WHEEL_CONFIGS)
   const configs = ref<WheelConfig[]>(
-    storage.get<WheelConfig[]>(STORAGE_KEYS.WHEEL_CONFIGS) || [...PRESET_CONFIGS]
+    storedConfigs && storedConfigs.length > 0 ? storedConfigs : [...PRESET_CONFIGS]
   )
 
-  // 当前选中的配置 ID
-  const currentConfigId = ref<string>(configs.value[0]?.id || '')
+  // 当前选中的配置 ID - 确保 ID 有效
+  const storedConfigId = storage.get<string>(STORAGE_KEYS.WHEEL_CURRENT_CONFIG)
+  const initialConfigId = storedConfigId && configs.value.some(c => c.id === storedConfigId)
+    ? storedConfigId
+    : configs.value[0]?.id || ''
+  const currentConfigId = ref<string>(initialConfigId)
 
   // 历史记录
   const history = ref<WheelHistory[]>(
@@ -31,6 +36,7 @@ export const useWheelStore = defineStore('wheel', () => {
   // 设置当前配置
   function setCurrentConfig(id: string) {
     currentConfigId.value = id
+    storage.set(STORAGE_KEYS.WHEEL_CURRENT_CONFIG, id)
   }
 
   // 添加配置
@@ -54,8 +60,16 @@ export const useWheelStore = defineStore('wheel', () => {
     if (index !== -1) {
       configs.value.splice(index, 1)
       // 如果删除的是当前配置，切换到第一个
-      if (currentConfigId.value === id && configs.value.length > 0) {
+      if (currentConfigId.value === id) {
+        const newId = configs.value.length > 0 ? configs.value[0].id : ''
+        currentConfigId.value = newId
+        storage.set(STORAGE_KEYS.WHEEL_CURRENT_CONFIG, newId)
+      }
+      // 如果所有配置都被删除，恢复预设配置
+      if (configs.value.length === 0) {
+        configs.value = [...PRESET_CONFIGS]
         currentConfigId.value = configs.value[0].id
+        storage.set(STORAGE_KEYS.WHEEL_CURRENT_CONFIG, configs.value[0].id)
       }
       saveConfigs()
     }
