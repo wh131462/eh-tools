@@ -64,6 +64,12 @@
       </view>
     </view>
 
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="jsonFormatterShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
@@ -72,10 +78,26 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
-import { getDefaultShareConfig, showToast, copyToClipboard } from '@/utils'
+import { showToast, copyToClipboard } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('jsonFormatter.title'),
+  icon: '{ }',
+  category: 'text' as const,
+  subtitle: 'JSON格式化与压缩'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // === 状态 ===
 const inputText = ref('')
@@ -141,9 +163,16 @@ onShow(() => {
   settingsStore.initTheme()
 })
 
-onShareAppMessage(() => getDefaultShareConfig())
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('jsonFormatter.title')}`,
+    path: '/pages/text/json-formatter/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
 onShareTimeline(() => ({
-  title: 'EH Tools - ' + t('jsonFormatter.title')
+  title: `EH Tools - ${t('jsonFormatter.title')}`
 }))
 </script>
 

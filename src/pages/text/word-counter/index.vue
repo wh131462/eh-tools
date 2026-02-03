@@ -80,6 +80,13 @@
 
     <!-- 底部占位 -->
     <view class="bottom-placeholder" />
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="wordCounterShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
@@ -88,10 +95,25 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
-import { getDefaultShareConfig } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('wordCounter.title'),
+  icon: '📝',
+  category: 'text' as const,
+  subtitle: '字符/单词/行数统计'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // === 状态 ===
 const inputText = ref('')

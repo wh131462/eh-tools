@@ -151,13 +151,20 @@
         :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
       />
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="qrcodeShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import qrcode from 'qrcode-generator'
 import jsQR from 'jsqr'
 import { useSettingsStore } from '@/store'
@@ -165,6 +172,22 @@ import { copyToClipboard, showToast, checkSaveImagePermission } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('qrcode.title'),
+  icon: '📱',
+  category: 'text' as const,
+  subtitle: '生成与扫描二维码'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 状态
 const mode = ref<'generate' | 'scan'>('generate')
@@ -486,6 +509,18 @@ watch(mode, async (newMode) => {
     }, 50)
   }
 })
+
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('qrcode.title')}`,
+    path: '/pages/text/qrcode/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => ({
+  title: `EH Tools - ${t('qrcode.title')}`
+}))
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('qrcode.title') })

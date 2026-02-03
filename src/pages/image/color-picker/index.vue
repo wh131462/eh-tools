@@ -69,6 +69,13 @@
 
     <!-- 底部占位 -->
     <view class="bottom-placeholder" />
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="colorPickerShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
@@ -77,10 +84,26 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
-import { getDefaultShareConfig, showToast } from '@/utils'
+import { showToast } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('colorPicker.title'),
+  icon: '🖼️',
+  category: 'image' as const,
+  subtitle: '从图片中提取颜色'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // === 状态 ===
 const imageUrl = ref('')
@@ -277,10 +300,21 @@ onShow(() => {
   loadHistory()
 })
 
-onShareAppMessage(() => getDefaultShareConfig())
-onShareTimeline(() => ({
-  title: 'EH Tools - ' + t('colorPicker.title')
-}))
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('colorPicker.title')}`,
+    path: '/pages/image/color-picker/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('colorPicker.title')}`
+  }
+})
 </script>
 
 <style lang="scss" scoped>

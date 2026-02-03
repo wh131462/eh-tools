@@ -76,19 +76,42 @@
         <text selectable>{{ result }}</text>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="encryptShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import { showToast } from '@/utils'
 import CryptoJS from 'crypto-js'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('encrypt.title'),
+  icon: '🔐',
+  category: 'text' as const,
+  subtitle: '支持多种编码/加密算法'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 算法列表
 const algorithms = [
@@ -272,6 +295,18 @@ const copyResult = () => {
     }
   })
 }
+
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('encrypt.title')}`,
+    path: '/pages/text/encrypt/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => ({
+  title: `EH Tools - ${t('encrypt.title')}`
+}))
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('encrypt.title') })

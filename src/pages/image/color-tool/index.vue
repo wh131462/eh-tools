@@ -199,18 +199,41 @@
         <view class="palette-hint">{{ t('colorTool.longPressToDelete') }}</view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="colorToolShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow, onHide } from '@dcloudio/uni-app'
+import { onShow, onHide, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import { showToast } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('colorTool.title'),
+  icon: '🎨',
+  category: 'image' as const,
+  subtitle: '颜色选择与转换'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 状态
 const activeTab = ref<'picker' | 'converter' | 'palette'>('picker')
@@ -466,6 +489,22 @@ const exitFullscreen = () => {
     hintTimer = null
   }
 }
+
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('colorTool.title')}`,
+    path: '/pages/image/color-tool/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('colorTool.title')}`
+  }
+})
 
 onShow(() => {
   settingsStore.initTheme()
