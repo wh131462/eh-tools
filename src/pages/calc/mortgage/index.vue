@@ -89,9 +89,9 @@
       <!-- 表头 -->
       <view class="table-header">
         <text class="col-period">{{ t('mortgage.period') }}</text>
-        <text class="col-principal">{{ t('mortgage.principal') }}</text>
-        <text class="col-interest">{{ t('mortgage.interest') }}</text>
-        <text class="col-total">{{ t('mortgage.totalAmount') }}</text>
+        <text class="col-principal">{{ t('mortgage.principal') }}(万)</text>
+        <text class="col-interest">{{ t('mortgage.interest') }}(万)</text>
+        <text class="col-total">{{ t('mortgage.totalAmount') }}(万)</text>
       </view>
 
       <!-- 摘要显示 -->
@@ -164,6 +164,15 @@ const formatMoney = (num: number) => {
   })
 }
 
+// 格式化金额为万元（用于表格显示）
+const formatMoneyWan = (num: number) => {
+  const wan = num / 10000
+  return wan.toLocaleString('zh-CN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })
+}
+
 // 格式化输入框显示（千分位，无小数）
 const formatInputNumber = (value: string) => {
   const num = value.replace(/,/g, '')
@@ -215,9 +224,9 @@ const calculate = () => {
 
       schedule.push({
         period: i,
-        principal: formatMoney(principal),
-        interest: formatMoney(interest),
-        total: formatMoney(monthlyPayment),
+        principal: formatMoneyWan(principal),
+        interest: formatMoneyWan(interest),
+        total: formatMoneyWan(monthlyPayment),
         remaining: formatMoney(Math.max(0, remainingPrincipal))
       })
 
@@ -239,9 +248,9 @@ const calculate = () => {
 
       schedule.push({
         period: i,
-        principal: formatMoney(monthlyPrincipal),
-        interest: formatMoney(interest),
-        total: formatMoney(total),
+        principal: formatMoneyWan(monthlyPrincipal),
+        interest: formatMoneyWan(interest),
+        total: formatMoneyWan(total),
         remaining: formatMoney(Math.max(0, remainingPrincipal))
       })
 
