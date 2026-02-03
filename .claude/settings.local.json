@@ -36,7 +36,9 @@
       "Bash(git fetch:*)",
       "Bash(git fsck:*)",
       "Bash(git push:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "WebFetch(domain:developers.weixin.qq.com)",
+      "WebFetch(domain:blog.csdn.net)"
     ]
   }
 }
