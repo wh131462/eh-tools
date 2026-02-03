@@ -30,6 +30,22 @@ export default {
     noTools: 'No tools'
   },
 
+  // Share Result
+  shareResult: {
+    title: 'Share Result',
+    generating: 'Generating...',
+    saveImage: 'Save Image',
+    shareToFriend: 'Share',
+    tip: 'Long press to save',
+    generateFailed: 'Generate failed',
+    noImage: 'No image',
+    saveSuccess: 'Saved to album',
+    saveFailed: 'Save failed',
+    permissionTitle: 'Permission Required',
+    permissionContent: 'Please enable album permission in settings',
+    goSettings: 'Settings'
+  },
+
   // TabBar
   tabbar: {
     home: 'Home',
@@ -322,7 +338,8 @@ export default {
     unit: {
       cm: 'cm',
       kg: 'kg'
-    }
+    },
+    shareResult: 'Share Result'
   },
 
   // Mortgage

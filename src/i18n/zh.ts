@@ -30,6 +30,22 @@ export default {
     noTools: '暂无工具'
   },
 
+  // 分享结果
+  shareResult: {
+    title: '分享结果',
+    generating: '生成中...',
+    saveImage: '保存图片',
+    shareToFriend: '分享给好友',
+    tip: '长按图片可保存到相册',
+    generateFailed: '生成分享图失败',
+    noImage: '暂无分享图',
+    saveSuccess: '已保存到相册',
+    saveFailed: '保存失败',
+    permissionTitle: '需要相册权限',
+    permissionContent: '请在设置中开启相册权限',
+    goSettings: '去设置'
+  },
+
   // TabBar
   tabbar: {
     home: '首页',
@@ -322,7 +338,8 @@ export default {
     unit: {
       cm: '厘米',
       kg: '公斤'
-    }
+    },
+    shareResult: '分享结果'
   },
 
   // 房贷计算
