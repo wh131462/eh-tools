@@ -216,6 +216,36 @@
       "style": {
         "navigationBarTitleText": "打工人时钟"
       }
+    },
+    {
+      "path": "pages/life/kinship-calculator/index",
+      "style": {
+        "navigationBarTitleText": "亲戚称呼计算器"
+      }
+    },
+    {
+      "path": "pages/life/license-plate/index",
+      "style": {
+        "navigationBarTitleText": "车牌归属地"
+      }
+    },
+    {
+      "path": "pages/life/todo-list/index",
+      "style": {
+        "navigationBarTitleText": "待办清单"
+      }
+    },
+    {
+      "path": "pages/life/todo-list/detail/index",
+      "style": {
+        "navigationBarTitleText": "待办详情"
+      }
+    },
+    {
+      "path": "pages/life/size-chart/index",
+      "style": {
+        "navigationBarTitleText": "尺码对照表"
+      }
     }
   ],
   "globalStyle": {

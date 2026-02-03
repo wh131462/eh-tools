@@ -88,7 +88,11 @@ export default {
     ageCalculator: 'Age Calc',
     pomodoroTimer: 'Pomodoro',
     ledMarquee: 'Marquee',
-    workerClock: 'Work Clock'
+    workerClock: 'Work Clock',
+    kinshipCalculator: 'Kinship',
+    licensePlate: 'Plate',
+    todoList: 'Todo',
+    sizeChart: 'Size'
   },
 
   // Home
@@ -271,10 +275,43 @@ export default {
   // World Clock
   worldClock: {
     title: 'World Clock',
+    subtitle: 'Global Time Zones',
     localTime: 'Local Time',
     addTimezone: 'Add Timezone',
     selectTimezone: 'Select Timezone',
-    deleteConfirm: 'Delete this timezone?'
+    deleteConfirm: 'Delete this timezone?',
+    searchPlaceholder: 'Search city or timezone',
+    noResult: 'No matching timezone found',
+    hourFormat: 'h format',
+    sameAsLocal: 'Same as local time',
+    aheadOfLocal: '{time} ahead of local',
+    behindLocal: '{time} behind local',
+    hours: 'h',
+    minutes: 'min',
+    weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    cities: {
+      beijing: 'Beijing',
+      shanghai: 'Shanghai',
+      hongkong: 'Hong Kong',
+      taipei: 'Taipei',
+      singapore: 'Singapore',
+      tokyo: 'Tokyo',
+      seoul: 'Seoul',
+      mumbai: 'Mumbai',
+      dubai: 'Dubai',
+      london: 'London',
+      paris: 'Paris',
+      berlin: 'Berlin',
+      moscow: 'Moscow',
+      new_york: 'New York',
+      chicago: 'Chicago',
+      denver: 'Denver',
+      los_angeles: 'Los Angeles',
+      sao_paulo: 'Sao Paulo',
+      sydney: 'Sydney',
+      auckland: 'Auckland',
+      utc: 'UTC'
+    }
   },
 
   // Calculator
@@ -714,10 +751,12 @@ export default {
     clearHistory: 'Clear History',
     clearHistoryConfirm: 'Clear all color history?',
     tapToPick: 'Tap anywhere on image to pick color',
+    zoomTip: 'Pinch to zoom, drag to pan, tap to pick',
     colorInfo: 'Color Info',
     colorValue: 'Color Value',
     copySuccess: 'Color copied',
-    reselect: 'Reselect'
+    reselect: 'Reselect',
+    reset: 'Reset'
   },
 
   // LED Marquee
@@ -866,5 +905,151 @@ export default {
       selectTime: 'Select time',
       selectDate: 'Select date'
     }
+  },
+
+  // Kinship Calculator
+  kinshipCalculator: {
+    title: 'Kinship Calculator',
+    subtitle: 'Find relative titles quickly',
+    iAm: 'I am',
+    male: 'Male',
+    female: 'Female',
+    hisHer: '\'s',
+    result: 'Result',
+    callHimHer: 'I call them',
+    heSheCalls: 'They call me',
+    reset: 'Reset',
+    calculate: 'Query',
+    noResult: 'No matching title found',
+    selectRelation: 'Select a relation',
+    relationChain: 'Relation chain',
+    backspace: 'Undo',
+    relation: {
+      father: 'Father',
+      mother: 'Mother',
+      husband: 'Husband',
+      wife: 'Wife',
+      son: 'Son',
+      daughter: 'Daughter',
+      elderBrother: 'Elder Brother',
+      youngerBrother: 'Younger Brother',
+      elderSister: 'Elder Sister',
+      youngerSister: 'Younger Sister'
+    },
+    category: {
+      parent: 'Parents',
+      spouse: 'Spouse',
+      child: 'Children',
+      sibling: 'Siblings'
+    }
+  },
+
+  // License Plate
+  licensePlate: {
+    title: 'License Plate Lookup',
+    subtitle: 'Query vehicle plate origin',
+    inputPlaceholder: 'Enter plate number (e.g., 京A12345)',
+    query: 'Query',
+    result: 'Result',
+    province: 'Province',
+    city: 'City',
+    plateType: 'Plate Type',
+    noResult: 'No result found',
+    invalidPlate: 'Invalid plate number',
+    plateTypes: {
+      normal: 'Regular Plate',
+      newEnergy: 'EV Plate',
+      police: 'Police Plate',
+      army: 'Military Plate',
+      embassy: 'Embassy Plate',
+      hongkongMacao: 'HK/Macao Plate'
+    },
+    recentHistory: 'Recent Queries',
+    clearHistory: 'Clear History',
+    clearHistoryConfirm: 'Clear all query history?'
+  },
+
+  // Todo List
+  todoList: {
+    title: 'Todo List',
+    createList: 'Create List',
+    listName: 'List Name',
+    listNamePlaceholder: 'Enter list name',
+    bgColor: 'Background Color',
+    emptyList: 'No todo lists',
+    emptyListDesc: 'Tap the button below to create your first list',
+    items: 'items',
+    completed: 'Done',
+    deleteListConfirm: 'Delete this list? All items will be removed',
+    addItem: 'Add Item',
+    itemPlaceholder: 'Enter todo item',
+    emptyItems: 'No items',
+    emptyItemsDesc: 'Tap the button below to add todo items',
+    all: 'All',
+    todo: 'Todo',
+    done: 'Done',
+    clearCompleted: 'Clear Done',
+    clearCompletedConfirm: 'Clear all completed items?',
+    nameRequired: 'Please enter list name',
+    editList: 'Edit List'
+  },
+
+  // Size Chart
+  sizeChart: {
+    title: 'Size Chart',
+    subtitle: 'Clothing & Shoe Size Converter',
+    selectCategory: 'Select Category',
+    categories: {
+      clothing: 'Clothing',
+      shoes: 'Shoes',
+      kids: 'Kids',
+      ring: 'Ring'
+    },
+    gender: {
+      male: 'Men',
+      female: 'Women',
+      unisex: 'Unisex'
+    },
+    standards: {
+      cn: 'China(CN)',
+      us: 'US',
+      uk: 'UK',
+      eu: 'EU',
+      jp: 'Japan(JP)',
+      kr: 'Korea(KR)'
+    },
+    // Clothing sizes
+    clothing: {
+      title: 'Clothing Sizes',
+      size: 'Size',
+      chest: 'Chest(cm)',
+      waist: 'Waist(cm)',
+      hip: 'Hip(cm)',
+      height: 'Height(cm)',
+      weight: 'Weight(kg)',
+      shoulder: 'Shoulder(cm)'
+    },
+    // Shoe sizes
+    shoes: {
+      title: 'Shoe Sizes',
+      size: 'Size',
+      footLength: 'Length(cm)',
+      footWidth: 'Width(cm)'
+    },
+    // Kids sizes
+    kids: {
+      title: 'Kids Sizes',
+      age: 'Age',
+      height: 'Height(cm)',
+      weight: 'Weight(kg)'
+    },
+    // Ring sizes
+    ring: {
+      title: 'Ring Sizes',
+      circumference: 'Circumference(mm)',
+      diameter: 'Diameter(mm)'
+    },
+    tips: 'Tips',
+    tipContent: 'Sizes are for reference only. Different brands may vary. Please measure for best fit.'
   }
 }

@@ -88,7 +88,11 @@ export default {
     ageCalculator: '年龄计算器',
     pomodoroTimer: '番茄钟',
     ledMarquee: 'LED字幕',
-    workerClock: '打工人时钟'
+    workerClock: '打工人时钟',
+    kinshipCalculator: '亲戚称呼',
+    licensePlate: '车牌归属地',
+    todoList: '待办清单',
+    sizeChart: '尺码对照'
   },
 
   // 首页
@@ -271,10 +275,43 @@ export default {
   // 世界时钟
   worldClock: {
     title: '世界时钟',
+    subtitle: '全球时区时间',
     localTime: '本地时间',
     addTimezone: '添加时区',
     selectTimezone: '选择时区',
-    deleteConfirm: '确定删除该时区？'
+    deleteConfirm: '确定删除该时区？',
+    searchPlaceholder: '搜索城市或时区',
+    noResult: '未找到匹配的时区',
+    hourFormat: '小时制',
+    sameAsLocal: '与本地时间相同',
+    aheadOfLocal: '比本地早 {time}',
+    behindLocal: '比本地晚 {time}',
+    hours: '小时',
+    minutes: '分钟',
+    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+    cities: {
+      beijing: '北京',
+      shanghai: '上海',
+      hongkong: '香港',
+      taipei: '台北',
+      singapore: '新加坡',
+      tokyo: '东京',
+      seoul: '首尔',
+      mumbai: '孟买',
+      dubai: '迪拜',
+      london: '伦敦',
+      paris: '巴黎',
+      berlin: '柏林',
+      moscow: '莫斯科',
+      new_york: '纽约',
+      chicago: '芝加哥',
+      denver: '丹佛',
+      los_angeles: '洛杉矶',
+      sao_paulo: '圣保罗',
+      sydney: '悉尼',
+      auckland: '奥克兰',
+      utc: 'UTC'
+    }
   },
 
   // 计算器
@@ -714,10 +751,12 @@ export default {
     clearHistory: '清空历史',
     clearHistoryConfirm: '确定清空所有取色历史吗？',
     tapToPick: '点击图片任意位置获取颜色',
+    zoomTip: '双指缩放图片，单指拖动，点击取色',
     colorInfo: '颜色信息',
     colorValue: '颜色值',
     copySuccess: '颜色值已复制',
-    reselect: '重新选择'
+    reselect: '重新选择',
+    reset: '重置'
   },
 
   // LED滚动字幕
@@ -866,5 +905,153 @@ export default {
       selectTime: '选择时间',
       selectDate: '选择日期'
     }
+  },
+
+  // 亲戚称呼计算器
+  kinshipCalculator: {
+    title: '亲戚称呼计算器',
+    subtitle: '快速查询亲属称呼',
+    iAm: '我是',
+    male: '男',
+    female: '女',
+    hisHer: '的',
+    result: '称呼结果',
+    callHimHer: '我称呼TA',
+    heSheCalls: 'TA称呼我',
+    reset: '重置',
+    calculate: '查询',
+    noResult: '未找到对应称呼',
+    selectRelation: '请选择亲属关系',
+    relationChain: '关系链',
+    backspace: '退一步',
+    // 关系按钮
+    relation: {
+      father: '父亲',
+      mother: '母亲',
+      husband: '丈夫',
+      wife: '妻子',
+      son: '儿子',
+      daughter: '女儿',
+      elderBrother: '哥哥',
+      youngerBrother: '弟弟',
+      elderSister: '姐姐',
+      youngerSister: '妹妹'
+    },
+    // 类别
+    category: {
+      parent: '长辈',
+      spouse: '配偶',
+      child: '晚辈',
+      sibling: '兄弟姐妹'
+    }
+  },
+
+  // 车牌归属地
+  licensePlate: {
+    title: '车牌归属地',
+    subtitle: '查询车牌号归属省份和城市',
+    inputPlaceholder: '请输入车牌号（如：京A12345）',
+    query: '查询',
+    result: '查询结果',
+    province: '省份',
+    city: '城市',
+    plateType: '车牌类型',
+    noResult: '未找到对应归属地',
+    invalidPlate: '请输入有效的车牌号',
+    plateTypes: {
+      normal: '普通车牌',
+      newEnergy: '新能源车牌',
+      police: '警用车牌',
+      army: '军用车牌',
+      embassy: '使馆车牌',
+      hongkongMacao: '港澳车牌'
+    },
+    recentHistory: '最近查询',
+    clearHistory: '清空历史',
+    clearHistoryConfirm: '确定清空所有查询历史吗？'
+  },
+
+  // 待办清单
+  todoList: {
+    title: '待办清单',
+    createList: '创建清单',
+    listName: '清单名称',
+    listNamePlaceholder: '请输入清单名称',
+    bgColor: '背景颜色',
+    emptyList: '暂无待办清单',
+    emptyListDesc: '点击下方按钮创建您的第一个待办清单',
+    items: '项',
+    completed: '已完成',
+    deleteListConfirm: '确定删除该清单？所有待办项将一并删除',
+    addItem: '添加待办',
+    itemPlaceholder: '请输入待办内容',
+    emptyItems: '暂无待办项',
+    emptyItemsDesc: '点击下方按钮添加待办事项',
+    all: '全部',
+    todo: '待办',
+    done: '已完成',
+    clearCompleted: '清除已完成',
+    clearCompletedConfirm: '确定清除所有已完成的待办项？',
+    nameRequired: '请输入清单名称',
+    editList: '编辑清单'
+  },
+
+  // 尺码对照表
+  sizeChart: {
+    title: '尺码对照表',
+    subtitle: '服装鞋帽尺码转换查询',
+    selectCategory: '选择类别',
+    categories: {
+      clothing: '服装',
+      shoes: '鞋子',
+      kids: '童装',
+      ring: '戒指'
+    },
+    gender: {
+      male: '男士',
+      female: '女士',
+      unisex: '通用'
+    },
+    standards: {
+      cn: '中国(CN)',
+      us: '美国(US)',
+      uk: '英国(UK)',
+      eu: '欧洲(EU)',
+      jp: '日本(JP)',
+      kr: '韩国(KR)'
+    },
+    // 服装尺码
+    clothing: {
+      title: '服装尺码对照',
+      size: '尺码',
+      chest: '胸围(cm)',
+      waist: '腰围(cm)',
+      hip: '臀围(cm)',
+      height: '身高(cm)',
+      weight: '体重(kg)',
+      shoulder: '肩宽(cm)'
+    },
+    // 鞋子尺码
+    shoes: {
+      title: '鞋子尺码对照',
+      size: '尺码',
+      footLength: '脚长(cm)',
+      footWidth: '脚宽(cm)'
+    },
+    // 童装尺码
+    kids: {
+      title: '童装尺码对照',
+      age: '年龄',
+      height: '身高(cm)',
+      weight: '体重(kg)'
+    },
+    // 戒指尺码
+    ring: {
+      title: '戒指尺码对照',
+      circumference: '周长(mm)',
+      diameter: '直径(mm)'
+    },
+    tips: '温馨提示',
+    tipContent: '尺码仅供参考，不同品牌可能存在差异，建议以实际测量为准'
   }
 }
