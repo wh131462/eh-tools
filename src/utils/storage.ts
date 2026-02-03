@@ -54,5 +54,6 @@ export const STORAGE_KEYS = {
   WHEEL_CURRENT_CONFIG: 'wheel_current_config',
   WHEEL_HISTORY: 'wheel_history',
   TOOL_FAVORITES: 'tool_favorites',
-  RECENT_TOOLS: 'recent_tools'
+  RECENT_TOOLS: 'recent_tools',
+  TODO_LISTS: 'todo_lists'
 } as const

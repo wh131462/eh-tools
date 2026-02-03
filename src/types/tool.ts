@@ -55,7 +55,11 @@ export const TOOLS: Tool[] = [
   { id: 'color-picker', name: '图片取色器', nameKey: 'tool.colorPicker', icon: 'color-picker', path: '/pages/image/color-picker/index', category: 'image' },
 
   // 生活工具
-  { id: 'lucky-wheel', name: '大转盘', nameKey: 'tool.luckyWheel', icon: 'wheel', path: '/pages/life/lucky-wheel/index/index', category: 'life' }
+  { id: 'lucky-wheel', name: '大转盘', nameKey: 'tool.luckyWheel', icon: 'wheel', path: '/pages/life/lucky-wheel/index/index', category: 'life' },
+  { id: 'kinship-calculator', name: '亲戚称呼计算器', nameKey: 'tool.kinshipCalculator', icon: 'kinship', path: '/pages/life/kinship-calculator/index', category: 'life' },
+  { id: 'license-plate', name: '车牌归属地', nameKey: 'tool.licensePlate', icon: 'license-plate', path: '/pages/life/license-plate/index', category: 'life' },
+  { id: 'todo-list', name: '待办清单', nameKey: 'tool.todoList', icon: 'todo-list', path: '/pages/life/todo-list/index', category: 'life' },
+  { id: 'size-chart', name: '尺码对照表', nameKey: 'tool.sizeChart', icon: 'size-chart', path: '/pages/life/size-chart/index', category: 'life' }
 ]
 
 // 分类配置

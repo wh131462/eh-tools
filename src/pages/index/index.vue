@@ -169,6 +169,10 @@ const TOOL_ICONS: Record<string, string> = {
   'color-tool': '/static/icons/color-card.svg',
   'color-picker': '/static/icons/color-picker.svg',
   'lucky-wheel': '/static/icons/wheel.svg',
+  'kinship-calculator': '/static/icons/kinship.svg',
+  'license-plate': '/static/icons/license-plate.svg',
+  'todo-list': '/static/icons/todo-list.svg',
+  'size-chart': '/static/icons/size-chart.svg',
 }
 
 // 分类图标映射
