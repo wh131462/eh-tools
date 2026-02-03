@@ -37,6 +37,20 @@
           @touchmove="handleTouchMove"
           @touchend="handleTouchEnd"
         >
+          <!-- #ifdef MP-WEIXIN -->
+          <canvas
+            type="2d"
+            id="colorCanvas"
+            class="color-canvas"
+            :style="{
+              width: canvasWidth + 'px',
+              height: canvasHeight + 'px',
+              transform: `scale(${scale}) translate(${translateX / scale}px, ${translateY / scale}px)`,
+              transformOrigin: 'center center'
+            }"
+          />
+          <!-- #endif -->
+          <!-- #ifndef MP-WEIXIN -->
           <canvas
             canvas-id="colorCanvas"
             id="colorCanvas"
@@ -48,6 +62,7 @@
               transformOrigin: 'center center'
             }"
           />
+          <!-- #endif -->
           <!-- 取色指示器 -->
           <view
             v-if="showIndicator"
@@ -113,9 +128,6 @@
       </view>
     </view>
 
-    <!-- 底部占位 -->
-    <view class="bottom-placeholder" />
-
     <!-- 工具分享图 Canvas -->
     <share-canvas
       canvas-id="colorPickerShareCanvas"
@@ -159,6 +171,11 @@ const colorHistory = ref<string[]>([])
 const canvasWidth = ref(300)
 const canvasHeight = ref(300)
 const dpr = ref(1) // 设备像素比
+
+// Canvas 2D 上下文和节点
+let canvasNode: any = null
+let canvasCtx: any = null
+const isCanvasReady = ref(false) // 标记 canvas 是否准备就绪
 
 // 缩放和平移状态
 const scale = ref(1)
@@ -230,8 +247,11 @@ const drawImageToCanvas = (url: string) => {
   const sysInfo = uni.getSystemInfoSync()
   dpr.value = sysInfo.pixelRatio || 1
 
-  // 重置缩放状态
+  // 重置状态
   resetZoom()
+  isCanvasReady.value = false
+  canvasCtx = null
+  canvasNode = null
 
   uni.getImageInfo({
     src: url,
@@ -250,21 +270,118 @@ const drawImageToCanvas = (url: string) => {
 
       // 延迟绘制，等待 canvas 尺寸更新
       setTimeout(() => {
-        const ctx = uni.createCanvasContext('colorCanvas')
-        // 按照 CSS 尺寸绘制（canvas 内部会自动处理）
-        ctx.drawImage(url, 0, 0, canvasWidth.value, canvasHeight.value)
-        ctx.draw()
-      }, 100)
+        initCanvas2D(url)
+      }, 200)
+    },
+    fail: (err) => {
+      console.error('获取图片信息失败:', err)
+      showToast(t('common.failed'))
     }
   })
 }
 
+// 初始化 Canvas 2D 并绘制图片
+const initCanvas2D = (url: string) => {
+  // #ifdef MP-WEIXIN
+  const query = uni.createSelectorQuery()
+  query.select('#colorCanvas')
+    .fields({ node: true, size: true }, () => {})
+    .exec((res: any) => {
+      if (!res || !res[0] || !res[0].node) {
+        console.error('无法获取 canvas 节点，res:', res)
+        showToast(t('common.failed'))
+        return
+      }
+
+      canvasNode = res[0].node
+      canvasCtx = canvasNode.getContext('2d')
+
+      if (!canvasCtx) {
+        console.error('无法获取 canvas 2d 上下文')
+        showToast(t('common.failed'))
+        return
+      }
+
+      // 设置 canvas 实际像素尺寸（考虑 DPR）
+      canvasNode.width = canvasWidth.value * dpr.value
+      canvasNode.height = canvasHeight.value * dpr.value
+
+      // 创建图片对象并绘制
+      const img = canvasNode.createImage()
+      img.onload = () => {
+        // 清除画布并绘制图片
+        canvasCtx.clearRect(0, 0, canvasNode.width, canvasNode.height)
+        // 直接使用实际像素尺寸绘制，不用 scale
+        canvasCtx.drawImage(img, 0, 0, canvasNode.width, canvasNode.height)
+        isCanvasReady.value = true
+        console.log('Canvas 2D 图片绘制完成')
+      }
+      img.onerror = (err: any) => {
+        console.error('图片加载失败:', err)
+        showToast(t('common.failed'))
+      }
+      img.src = url
+    })
+  // #endif
+
+  // #ifndef MP-WEIXIN
+  // 非微信平台使用旧 API
+  const ctx = uni.createCanvasContext('colorCanvas')
+  ctx.drawImage(url, 0, 0, canvasWidth.value, canvasHeight.value)
+  ctx.draw(false, () => {
+    isCanvasReady.value = true
+    console.log('Canvas 旧 API 图片绘制完成')
+  })
+  // #endif
+}
+
 // 在指定坐标取色
 const pickColorAt = (x: number, y: number) => {
+  // 检查 canvas 是否准备就绪
+  if (!isCanvasReady.value) {
+    console.warn('Canvas 尚未准备就绪')
+    showToast(t('colorPicker.loading') || '加载中...')
+    return
+  }
+
   // 确保坐标在有效范围内
   x = Math.max(0, Math.min(x, canvasWidth.value - 1))
   y = Math.max(0, Math.min(y, canvasHeight.value - 1))
 
+  // #ifdef MP-WEIXIN
+  // 微信小程序使用 Canvas 2D API
+  if (canvasCtx && canvasNode) {
+    try {
+      // 转换为实际像素坐标
+      const pixelX = Math.floor(x * dpr.value)
+      const pixelY = Math.floor(y * dpr.value)
+      const imageData = canvasCtx.getImageData(pixelX, pixelY, 1, 1)
+      const data = imageData.data
+
+      if (data && data.length >= 3) {
+        const r = data[0]
+        const g = data[1]
+        const b = data[2]
+
+        const hex = rgbToHex(r, g, b)
+        currentColor.value = hex
+        currentRgb.value = `rgb(${r}, ${g}, ${b})`
+
+        // 添加到历史记录
+        addToHistory(hex)
+      }
+    } catch (err) {
+      console.error('Canvas 2D 取色失败:', err)
+      showToast(t('common.failed'))
+    }
+  } else {
+    console.error('Canvas 上下文不可用')
+    showToast(t('common.failed'))
+  }
+  // #endif
+
+  // #ifndef MP-WEIXIN
+  // 非微信平台使用旧 API
   uni.canvasGetImageData({
     canvasId: 'colorCanvas',
     x: Math.floor(x),
@@ -290,6 +407,7 @@ const pickColorAt = (x: number, y: number) => {
       showToast(t('common.failed'))
     }
   })
+  // #endif
 }
 
 // RGB 转 HEX
@@ -394,14 +512,14 @@ const resetZoom = () => {
 // === 触摸处理方法 ===
 
 // 计算两点之间的距离
-const getDistance = (touches: TouchList) => {
+const getDistance = (touches: any[]) => {
   const dx = touches[0].clientX - touches[1].clientX
   const dy = touches[0].clientY - touches[1].clientY
   return Math.sqrt(dx * dx + dy * dy)
 }
 
 // 计算两点的中心
-const getCenter = (touches: TouchList) => {
+const getCenter = (touches: any[]) => {
   return {
     x: (touches[0].clientX + touches[1].clientX) / 2,
     y: (touches[0].clientY + touches[1].clientY) / 2
@@ -409,31 +527,34 @@ const getCenter = (touches: TouchList) => {
 }
 
 // 触摸开始
-const handleTouchStart = (e: TouchEvent) => {
+const handleTouchStart = (e: any) => {
   touchStartTime.value = Date.now()
+  const touches = e.touches || []
 
-  if (e.touches.length === 2) {
+  if (touches.length === 2) {
     // 双指缩放开始
     isZooming.value = true
     isDragging.value = false
-    lastTouchDistance.value = getDistance(e.touches)
-    lastTouchCenter.value = getCenter(e.touches)
-  } else if (e.touches.length === 1) {
+    lastTouchDistance.value = getDistance(touches)
+    lastTouchCenter.value = getCenter(touches)
+  } else if (touches.length === 1) {
     // 单指拖动或取色
     isDragging.value = true
     isZooming.value = false
     lastTouchCenter.value = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY
+      x: touches[0].clientX,
+      y: touches[0].clientY
     }
   }
 }
 
 // 触摸移动
-const handleTouchMove = (e: TouchEvent) => {
-  if (e.touches.length === 2 && isZooming.value) {
+const handleTouchMove = (e: any) => {
+  const touches = e.touches || []
+
+  if (touches.length === 2 && isZooming.value) {
     // 双指缩放
-    const newDistance = getDistance(e.touches)
+    const newDistance = getDistance(touches)
     const delta = newDistance - lastTouchDistance.value
 
     // 根据距离变化调整缩放
@@ -442,9 +563,9 @@ const handleTouchMove = (e: TouchEvent) => {
     scale.value = newScale
 
     lastTouchDistance.value = newDistance
-  } else if (e.touches.length === 1 && isDragging.value && scale.value > 1) {
+  } else if (touches.length === 1 && isDragging.value && scale.value > 1) {
     // 单指拖动（仅在放大时）
-    const touch = e.touches[0]
+    const touch = touches[0]
     const deltaX = touch.clientX - lastTouchCenter.value.x
     const deltaY = touch.clientY - lastTouchCenter.value.y
 
@@ -461,34 +582,43 @@ const handleTouchMove = (e: TouchEvent) => {
 }
 
 // 触摸结束
-const handleTouchEnd = (e: TouchEvent) => {
+const handleTouchEnd = (e: any) => {
   const touchDuration = Date.now() - touchStartTime.value
+  const changedTouches = e.changedTouches || []
+  const touches = e.touches || []
 
   // 如果是短按且不是缩放操作，执行取色
-  if (touchDuration < 200 && !isZooming.value && e.changedTouches.length === 1) {
-    const touch = e.changedTouches[0]
+  if (touchDuration < 200 && !isZooming.value && changedTouches.length === 1) {
+    const touch = changedTouches[0]
     pickColorWithTransform(touch.clientX, touch.clientY)
   }
 
   // 重置状态
-  if (e.touches.length === 0) {
+  if (touches.length === 0) {
     isDragging.value = false
     isZooming.value = false
-  } else if (e.touches.length === 1) {
+  } else if (touches.length === 1) {
     // 从双指变为单指
     isZooming.value = false
     isDragging.value = true
     lastTouchCenter.value = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY
+      x: touches[0].clientX,
+      y: touches[0].clientY
     }
   }
 }
 
 // 带变换的取色（考虑缩放和平移）
 const pickColorWithTransform = (clientX: number, clientY: number) => {
+  // 检查是否有图片加载
+  if (!imageUrl.value) {
+    return
+  }
+
   const query = uni.createSelectorQuery()
-  query.select('.canvas-wrapper').boundingClientRect((rect: any) => {
+  query.select('.canvas-wrapper').boundingClientRect()
+  query.exec((res: any[]) => {
+    const rect = res[0]
     if (rect) {
       // 计算相对于 wrapper 的位置
       const wrapperX = clientX - rect.left
@@ -502,6 +632,11 @@ const pickColorWithTransform = (clientX: number, clientY: number) => {
       const canvasX = (wrapperX - centerX - translateX.value) / scale.value + centerX
       const canvasY = (wrapperY - centerY - translateY.value) / scale.value + centerY
 
+      // 检查坐标是否在有效范围内
+      if (canvasX < 0 || canvasX >= canvasWidth.value || canvasY < 0 || canvasY >= canvasHeight.value) {
+        return
+      }
+
       // 更新指示器位置（存储 canvas 坐标，指示器会自动跟随变换）
       canvasPickX.value = canvasX
       canvasPickY.value = canvasY
@@ -510,7 +645,7 @@ const pickColorWithTransform = (clientX: number, clientY: number) => {
       // 取色
       pickColorAt(canvasX, canvasY)
     }
-  }).exec()
+  })
 }
 
 // === 生命周期 ===

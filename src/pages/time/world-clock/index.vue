@@ -309,14 +309,21 @@ const getTimeDifference = (offset: number) => {
   const hours = Math.floor(absDiff)
   const minutes = Math.round((absDiff - hours) * 60)
 
-  let timeStr = `${hours}${t('worldClock.hours')}`
+  let timeStr = ''
+  if (hours > 0) {
+    timeStr = `${hours}${t('worldClock.hours')}`
+  }
   if (minutes > 0) {
     timeStr += `${minutes}${t('worldClock.minutes')}`
   }
+  // 如果都为0（理论上不会到这里，但作为保险）
+  if (!timeStr) {
+    timeStr = `0${t('worldClock.minutes')}`
+  }
 
   return diff > 0
-    ? t('worldClock.aheadOfLocal', { time: timeStr })
-    : t('worldClock.behindLocal', { time: timeStr })
+    ? t('worldClock.aheadOfLocal').replace('{time}', timeStr)
+    : t('worldClock.behindLocal').replace('{time}', timeStr)
 }
 
 // 切换时间格式

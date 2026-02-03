@@ -44,7 +44,8 @@
       "Bash(pnpm run build:*)",
       "Bash(pnpm run type-check:*)",
       "Bash(pnpm run build:h5:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(npx vue-tsc:*)"
     ]
   }
 }
