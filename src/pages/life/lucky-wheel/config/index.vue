@@ -65,13 +65,20 @@
         {{ t('luckyWheel.config.saveConfig') }}
       </button>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="wheelConfigShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useWheelStore, useSettingsStore } from '@/store'
 import { showToast } from '@/utils'
 import type { WheelConfig, WheelItem } from '@/types'
@@ -79,6 +86,22 @@ import type { WheelConfig, WheelItem } from '@/types'
 const { t } = useI18n()
 const wheelStore = useWheelStore()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('luckyWheel.config.title'),
+  icon: '🎯',
+  category: 'life' as const,
+  subtitle: '配置转盘选项'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 预设颜色
 const presetColors = [
@@ -211,6 +234,22 @@ onMounted(() => {
     // 新建时添加默认项目
     addItem()
     addItem()
+  }
+})
+
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('luckyWheel.config.title')}`,
+    path: '/pages/life/lucky-wheel/config/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('luckyWheel.config.title')}`
   }
 })
 

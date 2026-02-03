@@ -51,19 +51,43 @@
 
     <!-- 悬浮 TabBar -->
     <FloatTabBar />
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="favoritesShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+import type { ToolShareImageConfig } from '@/utils/shareCanvas'
 import FloatTabBar from '@/components/common/FloatTabBar.vue'
 import { useFavoritesStore, useSettingsStore } from '@/store'
 import { TOOL_CATEGORIES, type ToolCategory, type Tool } from '@/types'
-import { navigateTo, getDefaultShareConfig, showToast } from '@/utils'
+import { navigateTo, showToast } from '@/utils'
 
 const { t } = useI18n()
+
+// 工具分享图配置
+const toolShareConfig: ToolShareImageConfig = {
+  toolName: '我的收藏',
+  icon: '⭐',
+  category: 'default' as const,
+  subtitle: '常用工具快速访问'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 const favoritesStore = useFavoritesStore()
 const settingsStore = useSettingsStore()
 
@@ -159,7 +183,13 @@ onShow(() => {
 })
 
 // 分享配置
-onShareAppMessage(() => getDefaultShareConfig())
+onShareAppMessage(() => {
+  return {
+    title: 'EH Tools - 我的收藏',
+    path: '/pages/favorites/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
 onShareTimeline(() => ({
   title: 'EH Tools - ' + t('home.banner.desc1')
 }))

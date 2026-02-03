@@ -56,13 +56,20 @@
         </view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="wheelListShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useWheelStore, useSettingsStore } from '@/store'
 import { showToast } from '@/utils'
 import type { WheelConfig } from '@/types'
@@ -70,6 +77,22 @@ import type { WheelConfig } from '@/types'
 const { t } = useI18n()
 const wheelStore = useWheelStore()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('luckyWheel.list.title'),
+  icon: '🎯',
+  category: 'life' as const,
+  subtitle: '管理转盘配置'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 
 // 配置列表
 const configs = computed(() => wheelStore.configs)
@@ -111,6 +134,22 @@ const deleteConfig = (config: WheelConfig) => {
     }
   })
 }
+
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('luckyWheel.list.title')}`,
+    path: '/pages/life/lucky-wheel/list/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('luckyWheel.list.title')}`
+  }
+})
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('luckyWheel.list.title') })

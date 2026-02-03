@@ -58,13 +58,22 @@
         </button>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas - 延迟渲染避免与 LuckyWheel Canvas 冲突 -->
+    <share-canvas
+      v-if="canvasReady"
+      canvas-id="luckyWheelShareCanvas"
+      :config="toolShareConfig"
+      :delay="1000"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useWheelStore, useSettingsStore } from '@/store'
 // @ts-ignore
 import LuckyWheel from '@lucky-canvas/uni/lucky-wheel.vue'
@@ -73,6 +82,22 @@ const { t } = useI18n()
 const wheelStore = useWheelStore()
 const settingsStore = useSettingsStore()
 
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('luckyWheel.title'),
+  icon: '🎯',
+  category: 'life' as const,
+  subtitle: '随机抽奖转盘'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
+
 // refs
 const luckyWheelRef = ref()
 
@@ -80,6 +105,7 @@ const luckyWheelRef = ref()
 const isSpinning = ref(false)
 const showResult = ref(false)
 const resultItem = ref<{ name: string } | null>(null)
+const canvasReady = ref(false) // 延迟渲染 ShareCanvas，避免与 LuckyWheel Canvas 冲突
 
 // 当前配置
 const currentConfig = computed(() => wheelStore.getCurrentConfig())
@@ -105,8 +131,7 @@ const buttons = computed(() => [
   {
     radius: '15%',
     background: '#FF6F00',
-    pointer: true,
-    fonts: [{ text: t('luckyWheel.spin'), fontColor: '#FFFFFF', top: '-20rpx' }]
+    pointer: true
   },
 ])
 
@@ -186,9 +211,31 @@ const goToHistory = () => {
   })
 }
 
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('luckyWheel.title')}`,
+    path: '/pages/life/lucky-wheel/index/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('luckyWheel.title')}`
+  }
+})
+
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('luckyWheel.title') })
   settingsStore.initTheme()
+  // 延迟启用 ShareCanvas，等待 LuckyWheel Canvas 完成渲染
+  if (!canvasReady.value) {
+    setTimeout(() => {
+      canvasReady.value = true
+    }, 800)
+  }
 })
 </script>
 

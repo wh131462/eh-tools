@@ -90,6 +90,13 @@
         </view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="settingsShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
@@ -99,6 +106,7 @@ import { useI18n } from 'vue-i18n'
 import { onShow } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import type { Language, ThemeMode } from '@/store'
+import { useShare } from '@/composables/useShare'
 
 const { t, locale } = useI18n()
 const settingsStore = useSettingsStore()
@@ -134,6 +142,8 @@ const onThemeChange = (e: any) => {
   const mode: ThemeMode = e.detail.value ? 'dark' : 'light'
   settingsStore.setThemeMode(mode)
 }
+
+useShare({ title: t('settings.title'), path: '/pages/settings/index' })
 
 // 设置导航栏标题
 onShow(() => {

@@ -90,6 +90,13 @@
 
     <!-- 悬浮 TabBar -->
     <FloatTabBar />
+
+    <!-- 首页分享图 Canvas -->
+    <share-canvas
+      canvas-id="homeShareCanvas"
+      share-type="home"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
@@ -104,9 +111,17 @@ import ToolCard from '@/components/common/ToolCard.vue'
 import FloatTabBar from '@/components/common/FloatTabBar.vue'
 import { TOOL_CATEGORIES, TOOLS } from '@/types'
 import { useSettingsStore, useFavoritesStore } from '@/store'
-import { getDefaultShareConfig, navigateTo, showToast } from '@/utils'
+import { navigateTo, showToast } from '@/utils'
 
 const { t } = useI18n()
+
+// 首页分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
 const settingsStore = useSettingsStore()
 const favoritesStore = useFavoritesStore()
 
@@ -246,7 +261,13 @@ onShow(() => {
 })
 
 // 分享配置
-onShareAppMessage(() => getDefaultShareConfig())
+onShareAppMessage(() => {
+  return {
+    title: 'EH Tools - 实用工具集合',
+    path: '/pages/index/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
 onShareTimeline(() => ({
   title: 'EH Tools - ' + t('home.banner.desc1')
 }))

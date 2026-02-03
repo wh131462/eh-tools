@@ -94,6 +94,7 @@ import { useI18n } from 'vue-i18n'
 import { onShow } from '@dcloudio/uni-app'
 import { useUserStore, useSettingsStore } from '@/store'
 import { showToast, showConfirm, navigateBack } from '@/utils'
+import { useShare } from '@/composables/useShare'
 
 const { t } = useI18n()
 const userStore = useUserStore()
@@ -161,6 +162,8 @@ const handleLogout = async () => {
     navigateBack()
   }
 }
+
+useShare({ title: t('profile.title'), path: '/pages/profile/index' })
 
 // 设置导航栏标题
 onShow(() => {

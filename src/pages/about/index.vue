@@ -9,7 +9,7 @@
         <image class="app-logo" src="/static/eh-tools-logo.svg" mode="aspectFit" />
       </view>
       <text class="app-name">EH Tools</text>
-      <text class="app-version">v1.0.7</text>
+      <text class="app-version">v{{ appVersion }}</text>
       <text class="app-slogan">{{ t('about.slogan') }}</text>
     </view>
 
@@ -26,7 +26,7 @@
         </view>
         <view class="info-item">
           <text class="info-label">{{ t('about.version') }}</text>
-          <text class="info-value">1.0.7</text>
+          <text class="info-value">{{ appVersion }}</text>
         </view>
         <view class="info-item">
           <text class="info-label">{{ t('about.description') }}</text>
@@ -120,9 +120,13 @@ import { useI18n } from 'vue-i18n'
 import { onShow } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import { copyToClipboard } from '@/utils'
+import { useShare } from '@/composables/useShare'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 应用版本号
+const appVersion = __APP_VERSION__
 
 // 赞赏弹窗显示状态
 const showDonatePopup = ref(false)
@@ -148,6 +152,8 @@ const previewDonateImage = () => {
     current: 0
   })
 }
+
+useShare({ title: t('about.title'), path: '/pages/about/index' })
 
 // 设置导航栏标题
 onShow(() => {
