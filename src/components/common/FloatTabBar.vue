@@ -8,10 +8,17 @@
       @click="handleClick(item, index)"
     >
       <view class="tabbar-item-icon">
+        <!-- 双图标预渲染，避免切换时图片加载闪烁 -->
         <image
-          :src="currentIndex === index ? item.activeIcon : item.icon"
+          :src="item.icon"
           class="tab-icon"
-          :class="{ 'icon-active': currentIndex === index }"
+          :class="{ 'is-hidden': currentIndex === index }"
+          mode="aspectFit"
+        />
+        <image
+          :src="item.activeIcon"
+          class="tab-icon icon-active"
+          :class="{ 'is-visible': currentIndex === index }"
           mode="aspectFit"
         />
       </view>
@@ -176,6 +183,9 @@ const handleClick = (item: { path: string; text: string }, index: number) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  width: 44rpx;
+  height: 44rpx;
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 
   .active & {
@@ -186,17 +196,32 @@ const handleClick = (item: { path: string; text: string }, index: number) => {
 .tab-icon {
   width: 44rpx;
   height: 44rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
   opacity: 0.85;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.25s ease-out;
+  transform: translateZ(0);
 
+  // 普通图标隐藏
+  &.is-hidden {
+    opacity: 0;
+  }
+
+  // 激活图标默认隐藏
   &.icon-active {
-    opacity: 1;
+    opacity: 0;
     filter: brightness(0) invert(1);
+
+    // 激活时显示
+    &.is-visible {
+      opacity: 1;
+    }
   }
 }
 
 // 暗色主题下未激活图标
-:global(.theme-dark) .tab-icon:not(.icon-active) {
+:global(.theme-dark) .tab-icon:not(.icon-active):not(.is-hidden) {
   opacity: 0.7;
 }
 
