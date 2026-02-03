@@ -1,9 +1,13 @@
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
+import pkg from "./package.json";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [uni()],
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   css: {
     preprocessorOptions: {
       scss: {

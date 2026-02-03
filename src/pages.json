@@ -10,7 +10,11 @@
       "^empty$": "@/components/common/Empty.vue",
       "^list-cell$": "@/components/common/ListCell.vue",
       "^section-title$": "@/components/common/SectionTitle.vue",
-      "^nav-bar$": "@/components/common/NavBar.vue"
+      "^nav-bar$": "@/components/common/NavBar.vue",
+      "^share-result$": "@/components/common/ShareResult.vue",
+      "^share-canvas$": "@/components/common/ShareCanvas.vue",
+      "^date-picker-popup$": "@/components/common/DatePickerPopup.vue",
+      "^recent-tools$": "@/components/common/RecentTools.vue"
     }
   },
   "pages": [
