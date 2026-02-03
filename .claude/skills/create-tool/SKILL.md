@@ -107,7 +107,207 @@ const zodiacNames = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '�
 />
 ```
 
-### Step 5: 验证清单
+### Step 5: 配置微信系统分享
+
+每个新页面都**必须**配置微信系统分享功能，包括分享给好友和分享到朋友圈。
+
+#### 5.1 分享图组件
+
+项目使用 Canvas 2D API 动态生成分享图，相关组件和工具：
+
+| 组件/工具 | 位置 | 用途 |
+|-----------|------|------|
+| `ShareCanvas` | `src/components/common/ShareCanvas.vue` | 工具分享图组件（通过 easycom 自动注册） |
+| `ShareResult` | `src/components/common/ShareResult.vue` | 结果分享图组件（带预览弹窗） |
+| `shareCanvas.ts` | `src/utils/shareCanvas.ts` | Canvas 绘制工具函数 |
+
+**⚠️ 重要：分享图图标禁止使用 emoji**
+
+分享图中的图标必须使用 Canvas 路径绘制，**不要使用 emoji**。`shareCanvas.ts` 中的 `drawCategoryIcon()` 函数已为每个工具类别实现了几何图标：
+
+- `time`: 时钟（圆圈 + 时针分针）
+- `calc`: 计算符号（加号 + 减号 + 等号）
+- `text`: 文档图标（带折角文档 + 文字线条）
+- `image`: 图片框架（方框 + 山峰轮廓 + 太阳）
+- `life`: 目标图标（三个同心圆 + 中心点）
+
+#### 5.2 添加工具分享图
+
+在页面模板中添加 `<share-canvas>` 组件：
+
+```vue
+<template>
+  <!-- 页面内容 -->
+
+  <!-- 工具分享图 Canvas -->
+  <share-canvas
+    canvas-id="{toolId}ShareCanvas"
+    :config="toolShareConfig"
+    @generated="onToolShareGenerated"
+  />
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('{camelCaseId}.title'),
+  category: '{category}' as const,  // time | calc | text | image | life
+  subtitle: '工具描述'  // 可选
+}
+
+// 分享图 URL
+const toolShareImageUrl = ref('')
+
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
+</script>
+```
+
+**配置项说明：**
+
+| 属性 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `canvasId` | string | 是 | Canvas 元素 ID，需唯一 |
+| `config` | ToolShareImageConfig | 是 | 分享图配置 |
+| `width` | number | 否 | 宽度，默认 600 |
+| `height` | number | 否 | 高度，默认 480 |
+| `shareType` | 'tool' \| 'home' | 否 | 分享图类型，默认 'tool' |
+
+**ToolShareImageConfig 接口：**
+
+```typescript
+interface ToolShareImageConfig {
+  toolName: string          // 工具名称
+  category?: string         // 工具分类，用于图标绘制
+  subtitle?: string         // 副标题/描述
+  primaryColor?: string     // 主题色（可选，默认根据分类自动选择）
+  secondaryColor?: string   // 渐变结束色
+}
+```
+
+#### 5.3 配置分享钩子
+
+**方式一: 使用 `useShare` composable（推荐，简单页面）**
+
+```typescript
+import { useShare } from '@/composables/useShare'
+
+useShare({
+  title: t('{camelCaseId}.title'),
+  path: '/pages/{category}/{tool-id}/index'
+})
+```
+
+**方式二: 手动配置（需要动态分享图时）**
+
+```typescript
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('{camelCaseId}.title')}`,
+    path: '/pages/{category}/{tool-id}/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+onShareTimeline(() => {
+  return { title: `EH Tools - ${t('{camelCaseId}.title')}` }
+})
+```
+
+#### 5.4 需要分享计算结果的页面
+
+对于 BMI、个税计算等需要分享计算结果的工具：
+
+```vue
+<template>
+  <!-- 分享按钮 -->
+  <button @click="showShareResult = true">分享结果</button>
+
+  <!-- 工具分享图 Canvas -->
+  <share-canvas
+    canvas-id="{toolId}ShareCanvas"
+    :config="toolShareConfig"
+    @generated="onToolShareGenerated"
+  />
+
+  <!-- 结果分享图组件 -->
+  <share-result
+    v-model:visible="showShareResult"
+    :config="shareResultConfig"
+    @generated="onShareImageGenerated"
+  />
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import type { ResultShareConfig } from '@/utils/shareCanvas'
+import { getResultShareConfig } from '@/utils/share'
+
+const showShareResult = ref(false)
+const shareImageUrl = ref('')
+
+// 结果分享图配置
+const shareResultConfig = computed<ResultShareConfig>(() => ({
+  title: t('{camelCaseId}.title'),
+  resultLabel: '结果标签',
+  resultValue: '计算结果值',
+  resultUnit: '单位',  // 可选
+  statusText: '状态文本',  // 可选
+  statusColor: '#667eea',  // 可选
+  subResults: [  // 可选，副结果列表
+    { label: '身高', value: '170 cm' },
+    { label: '体重', value: '60 kg' }
+  ]
+}))
+
+function onShareImageGenerated(url: string) {
+  shareImageUrl.value = url
+}
+
+// 分享时优先使用结果图
+onShareAppMessage(() => {
+  if (hasResult && shareImageUrl.value) {
+    return getResultShareConfig(
+      t('{camelCaseId}.title'),
+      '结果描述',
+      '/pages/{category}/{tool-id}/index',
+      shareImageUrl.value
+    )
+  }
+  return {
+    title: `EH Tools - ${t('{camelCaseId}.title')}`,
+    path: '/pages/{category}/{tool-id}/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+</script>
+```
+
+**ResultShareConfig 接口：**
+
+```typescript
+interface ResultShareConfig {
+  title: string                    // 标题
+  resultLabel: string              // 结果标签
+  resultValue: string              // 结果值
+  resultUnit?: string              // 单位
+  statusText?: string              // 状态文本（如"正常"、"偏高"）
+  statusColor?: string             // 状态颜色
+  subResults?: Array<{             // 副结果
+    label: string
+    value: string
+  }>
+}
+```
+
+参考实现: `src/pages/calc/bmi/index.vue`
+
+### Step 6: 验证清单
 
 创建完成后逐项检查:
 
@@ -122,3 +322,6 @@ const zodiacNames = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '�
 - [ ] 页面组件已创建，包含暗黑模式适配
 - [ ] 页面使用 `<nav-bar>` 自定义导航栏组件
 - [ ] 页面所有文本使用 i18n `t()` 函数
+- [ ] 页面已添加 `<share-canvas>` 组件生成工具分享图
+- [ ] 页面已配置 `onShareAppMessage` 和 `onShareTimeline` 分享钩子
+- [ ] 分享图使用 Canvas 绘制图标，未使用 emoji
