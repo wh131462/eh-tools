@@ -86,7 +86,9 @@ export default {
     luckyWheel: '大转盘',
     timestampConverter: '时间戳转换',
     ageCalculator: '年龄计算器',
-    pomodoroTimer: '番茄钟'
+    pomodoroTimer: '番茄钟',
+    ledMarquee: 'LED字幕',
+    workerClock: '打工人时钟'
   },
 
   // 首页
@@ -716,5 +718,137 @@ export default {
     colorValue: '颜色值',
     copySuccess: '颜色值已复制',
     reselect: '重新选择'
+  },
+
+  // LED滚动字幕
+  ledMarquee: {
+    title: 'LED滚动字幕',
+    inputPlaceholder: '请输入要显示的文字...',
+    textColor: '文字颜色',
+    bgColor: '背景颜色',
+    speed: '滚动速度',
+    fontSize: '字体大小',
+    slow: '慢',
+    fast: '快',
+    small: '小',
+    large: '大',
+    startScroll: '开始滚动',
+    stopScroll: '停止滚动',
+    fullscreen: '全屏显示',
+    exitFullscreen: '退出全屏',
+    tapToExit: '点击屏幕退出全屏',
+    presetColors: '预设颜色',
+    customColor: '自定义颜色',
+    direction: '滚动方向',
+    leftToRight: '从左到右',
+    rightToLeft: '从右到左',
+    textEmpty: '请输入文字内容'
+  },
+
+  // 打工人时钟
+  workerClock: {
+    title: '打工人时钟',
+    subtitle: '让打工更有盼头',
+    // 倒计时相关
+    countdown: {
+      offWork: '距离下班',
+      weekend: '距离周末',
+      holiday: '距离假期',
+      payday: '距离发薪',
+      lunchBreak: '距离午休',
+      retirement: '距离退休'
+    },
+    // 进度相关
+    progress: {
+      today: '今日进度',
+      week: '本周进度',
+      month: '本月进度',
+      year: '年度进度'
+    },
+    // 收入相关
+    income: {
+      today: '今日已赚',
+      month: '本月累计',
+      overtime: '加班收入'
+    },
+    // 状态
+    status: {
+      working: '努力搬砖中',
+      lunchBreak: '午休时间',
+      offWork: '已下班',
+      weekend: '周末愉快',
+      holiday: '假期愉快',
+      overtime: '加班中'
+    },
+    // 设置
+    settings: {
+      title: '设置',
+      workTime: '工作时间',
+      startTime: '上班时间',
+      endTime: '下班时间',
+      lunchBreak: '午休时段',
+      lunchStart: '午休开始',
+      lunchEnd: '午休结束',
+      restMode: '休息模式',
+      doubleWeekend: '双休',
+      singleWeekend: '单休',
+      alternateWeekend: '大小周',
+      payday: '发薪日',
+      salary: '薪资设置',
+      monthlySalary: '月薪',
+      hourlySalary: '时薪',
+      birthYear: '出生年份',
+      retirementAge: '退休年龄',
+      showRetirement: '显示退休倒计时',
+      overtimeRate: '加班倍率',
+      weekdayRate: '工作日加班',
+      weekendRate: '周末加班',
+      holidayRate: '节假日加班'
+    },
+    // 节假日
+    holidays: {
+      title: '节假日',
+      upcoming: '即将到来',
+      adjustWork: '需调休',
+      springFestival: '春节',
+      qingming: '清明节',
+      laborDay: '劳动节',
+      dragonBoat: '端午节',
+      midAutumn: '中秋节',
+      nationalDay: '国庆节',
+      newYear: '元旦'
+    },
+    // 打工人语录
+    quotes: {
+      title: '打工人语录'
+    },
+    // 单位
+    unit: {
+      hour: '时',
+      minute: '分',
+      second: '秒',
+      day: '天',
+      dayOfMonth: '号',
+      yuan: '元',
+      year: '年',
+      month: '月',
+      week: '周'
+    },
+    // 操作
+    action: {
+      startOvertime: '开始加班',
+      endOvertime: '结束加班',
+      refresh: '刷新',
+      celebrate: '庆祝下班'
+    },
+    // 提示
+    tip: {
+      notWorkTime: '还没到上班时间',
+      alreadyOffWork: '已经下班啦',
+      enjoyWeekend: '享受周末吧',
+      configFirst: '请先完成设置',
+      selectTime: '选择时间',
+      selectDate: '选择日期'
+    }
   }
 }

@@ -31,6 +31,7 @@ export const TOOLS: Tool[] = [
   { id: 'timestamp-converter', name: '时间戳转换', nameKey: 'tool.timestampConverter', icon: 'timestamp', path: '/pages/time/timestamp-converter/index', category: 'time' },
   { id: 'age-calculator', name: '年龄计算器', nameKey: 'tool.ageCalculator', icon: 'age', path: '/pages/time/age-calculator/index', category: 'time' },
   { id: 'pomodoro-timer', name: '番茄钟', nameKey: 'tool.pomodoroTimer', icon: 'pomodoro', path: '/pages/time/pomodoro-timer/index', category: 'time' },
+  { id: 'worker-clock', name: '打工人时钟', nameKey: 'tool.workerClock', icon: 'worker-clock', path: '/pages/time/worker-clock/index', category: 'time' },
 
   // 计算工具
   { id: 'calculator', name: '计算器', nameKey: 'tool.calculator', icon: 'calculator', path: '/pages/calc/calculator/index', category: 'calc' },
@@ -46,6 +47,7 @@ export const TOOLS: Tool[] = [
   { id: 'json-formatter', name: 'JSON格式化', nameKey: 'tool.jsonFormatter', icon: 'json-format', path: '/pages/text/json-formatter/index', category: 'text' },
   { id: 'word-counter', name: '字数统计', nameKey: 'tool.wordCounter', icon: 'word-counter', path: '/pages/text/word-counter/index', category: 'text' },
   { id: 'regex-tester', name: '正则测试器', nameKey: 'tool.regexTester', icon: 'regex', path: '/pages/text/regex-tester/index', category: 'text' },
+  { id: 'led-marquee', name: 'LED字幕', nameKey: 'tool.ledMarquee', icon: 'led-marquee', path: '/pages/text/led-marquee/index', category: 'text' },
 
   // 图片工具
   { id: 'compress', name: '图片压缩', nameKey: 'tool.compress', icon: 'compress', path: '/pages/image/compress/index', category: 'image' },

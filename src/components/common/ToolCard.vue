@@ -31,6 +31,7 @@ const TOOL_ICONS: Record<string, string> = {
   'timestamp-converter': '/static/icons/timestamp.svg',
   'age-calculator': '/static/icons/age.svg',
   'pomodoro-timer': '/static/icons/pomodoro.svg',
+  'worker-clock': '/static/icons/worker-clock.svg',
   // 计算工具
   'calculator': '/static/icons/calculator.svg',
   'salary': '/static/icons/money.svg',
@@ -44,6 +45,7 @@ const TOOL_ICONS: Record<string, string> = {
   'json-formatter': '/static/icons/json-format.svg',
   'word-counter': '/static/icons/word-counter.svg',
   'regex-tester': '/static/icons/regex.svg',
+  'led-marquee': '/static/icons/led-marquee.svg',
   // 图片工具
   'compress': '/static/icons/compress.svg',
   'color-tool': '/static/icons/color-card.svg',
@@ -61,6 +63,7 @@ const TOOL_GRADIENTS: Record<string, string> = {
   'timestamp-converter': 'var(--gradient-timestamp)',
   'age-calculator': 'var(--gradient-age)',
   'pomodoro-timer': 'var(--gradient-pomodoro)',
+  'worker-clock': 'var(--gradient-worker-clock)',
   'calculator': 'var(--gradient-calculator)',
   'salary': 'var(--gradient-money)',
   'bmi': 'var(--gradient-scale)',
@@ -72,6 +75,7 @@ const TOOL_GRADIENTS: Record<string, string> = {
   'json-formatter': 'var(--gradient-json-format)',
   'word-counter': 'var(--gradient-word-counter)',
   'regex-tester': 'var(--gradient-regex)',
+  'led-marquee': 'var(--gradient-led-marquee)',
   'compress': 'var(--gradient-compress)',
   'color-tool': 'var(--gradient-color-tool)',
   'color-picker': 'var(--gradient-color-picker)',

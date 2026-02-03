@@ -86,7 +86,9 @@ export default {
     luckyWheel: 'Lucky Wheel',
     timestampConverter: 'Timestamp',
     ageCalculator: 'Age Calc',
-    pomodoroTimer: 'Pomodoro'
+    pomodoroTimer: 'Pomodoro',
+    ledMarquee: 'Marquee',
+    workerClock: 'Work Clock'
   },
 
   // Home
@@ -716,5 +718,137 @@ export default {
     colorValue: 'Color Value',
     copySuccess: 'Color copied',
     reselect: 'Reselect'
+  },
+
+  // LED Marquee
+  ledMarquee: {
+    title: 'LED Marquee',
+    inputPlaceholder: 'Enter text to display...',
+    textColor: 'Text Color',
+    bgColor: 'Background',
+    speed: 'Speed',
+    fontSize: 'Font Size',
+    slow: 'Slow',
+    fast: 'Fast',
+    small: 'Small',
+    large: 'Large',
+    startScroll: 'Start',
+    stopScroll: 'Stop',
+    fullscreen: 'Fullscreen',
+    exitFullscreen: 'Exit',
+    tapToExit: 'Tap to exit fullscreen',
+    presetColors: 'Preset Colors',
+    customColor: 'Custom Color',
+    direction: 'Direction',
+    leftToRight: 'Left to Right',
+    rightToLeft: 'Right to Left',
+    textEmpty: 'Please enter text'
+  },
+
+  // Worker Clock
+  workerClock: {
+    title: 'Worker Clock',
+    subtitle: 'Make work more hopeful',
+    // Countdown
+    countdown: {
+      offWork: 'Until Off Work',
+      weekend: 'Until Weekend',
+      holiday: 'Until Holiday',
+      payday: 'Until Payday',
+      lunchBreak: 'Until Lunch',
+      retirement: 'Until Retire'
+    },
+    // Progress
+    progress: {
+      today: 'Today',
+      week: 'This Week',
+      month: 'This Month',
+      year: 'This Year'
+    },
+    // Income
+    income: {
+      today: 'Earned Today',
+      month: 'This Month',
+      overtime: 'Overtime Pay'
+    },
+    // Status
+    status: {
+      working: 'Working Hard',
+      lunchBreak: 'Lunch Break',
+      offWork: 'Off Work',
+      weekend: 'Happy Weekend',
+      holiday: 'Happy Holiday',
+      overtime: 'Overtime'
+    },
+    // Settings
+    settings: {
+      title: 'Settings',
+      workTime: 'Work Hours',
+      startTime: 'Start Time',
+      endTime: 'End Time',
+      lunchBreak: 'Lunch Break',
+      lunchStart: 'Lunch Start',
+      lunchEnd: 'Lunch End',
+      restMode: 'Rest Mode',
+      doubleWeekend: '2-Day Weekend',
+      singleWeekend: '1-Day Weekend',
+      alternateWeekend: 'Alternate',
+      payday: 'Payday',
+      salary: 'Salary',
+      monthlySalary: 'Monthly',
+      hourlySalary: 'Hourly',
+      birthYear: 'Birth Year',
+      retirementAge: 'Retire Age',
+      showRetirement: 'Show Retirement',
+      overtimeRate: 'OT Rate',
+      weekdayRate: 'Weekday OT',
+      weekendRate: 'Weekend OT',
+      holidayRate: 'Holiday OT'
+    },
+    // Holidays
+    holidays: {
+      title: 'Holidays',
+      upcoming: 'Upcoming',
+      adjustWork: 'Make-up Day',
+      springFestival: 'Spring Festival',
+      qingming: 'Qingming',
+      laborDay: 'Labor Day',
+      dragonBoat: 'Dragon Boat',
+      midAutumn: 'Mid-Autumn',
+      nationalDay: 'National Day',
+      newYear: 'New Year'
+    },
+    // Quotes
+    quotes: {
+      title: 'Worker Quotes'
+    },
+    // Units
+    unit: {
+      hour: 'h',
+      minute: 'm',
+      second: 's',
+      day: 'days',
+      dayOfMonth: 'th',
+      yuan: 'CNY',
+      year: 'years',
+      month: 'months',
+      week: 'weeks'
+    },
+    // Actions
+    action: {
+      startOvertime: 'Start OT',
+      endOvertime: 'End OT',
+      refresh: 'Refresh',
+      celebrate: 'Celebrate'
+    },
+    // Tips
+    tip: {
+      notWorkTime: 'Not work time yet',
+      alreadyOffWork: 'Already off work',
+      enjoyWeekend: 'Enjoy weekend',
+      configFirst: 'Please configure first',
+      selectTime: 'Select time',
+      selectDate: 'Select date'
+    }
   }
 }

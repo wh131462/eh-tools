@@ -163,6 +163,13 @@
       }
     },
     {
+      "path": "pages/text/led-marquee/index",
+      "style": {
+        "navigationBarTitleText": "LED滚动字幕",
+        "pageOrientation": "auto"
+      }
+    },
+    {
       "path": "pages/image/compress/index",
       "style": {
         "navigationBarTitleText": "图片压缩"
@@ -202,6 +209,12 @@
       "path": "pages/life/lucky-wheel/history/index",
       "style": {
         "navigationBarTitleText": "历史记录"
+      }
+    },
+    {
+      "path": "pages/time/worker-clock/index",
+      "style": {
+        "navigationBarTitleText": "打工人时钟"
       }
     }
   ],
