@@ -9,7 +9,23 @@
         <text class="local-label">{{ t('worldClock.localTime') }}</text>
         <text class="local-date">{{ localDate }}</text>
       </view>
+      <!-- 模拟时钟 -->
+      <view class="analog-clock">
+        <view class="clock-face">
+          <view v-for="i in 12" :key="i" class="clock-mark" :style="{ transform: `rotate(${i * 30}deg)` }">
+            <view :class="i % 3 === 0 ? 'mark-major' : 'mark-minor'" />
+          </view>
+          <view class="clock-hand hour-hand" :style="{ transform: `rotate(${hourDeg}deg)` }" />
+          <view class="clock-hand minute-hand" :style="{ transform: `rotate(${minuteDeg}deg)` }" />
+          <view class="clock-hand second-hand" :style="{ transform: `rotate(${secondDeg}deg)` }" />
+          <view class="clock-center" />
+        </view>
+      </view>
       <view class="local-time">{{ localTime }}</view>
+      <!-- 12/24小时制切换 -->
+      <view class="time-format-toggle" @click="toggleTimeFormat">
+        <text>{{ is24Hour ? '24' : '12' }}{{ t('worldClock.hourFormat') }}</text>
+      </view>
     </view>
 
     <!-- 时区列表 -->
@@ -18,10 +34,17 @@
         v-for="(tz, index) in timezones"
         :key="tz.id"
         class="timezone-item"
+        :class="{ 'tz-dragging': dragIndex === index }"
+        @longpress="onDragStart(index, $event)"
+        @touchmove.prevent="onDragMove($event)"
+        @touchend="onDragEnd"
       >
         <view class="tz-info">
-          <view class="tz-city">{{ tz.city }}</view>
-          <view class="tz-diff">{{ tz.diff }}</view>
+          <view class="tz-city">
+            <text class="tz-icon">{{ getDayNightIcon(tz.offset) }}</text>
+            {{ t(`worldClock.cities.${tz.id}`) }}
+          </view>
+          <view class="tz-diff">{{ getTimeDifference(tz.offset) }}</view>
         </view>
         <view class="tz-time">
           <text class="tz-hour">{{ getTimezoneTime(tz.offset) }}</text>
@@ -42,19 +65,29 @@
     </view>
 
     <!-- 时区选择器 -->
-    <view v-if="showAddPicker" class="picker-mask" @click="showAddPicker = false">
+    <view v-if="showAddPicker" class="picker-mask" @click="showAddPicker = false; searchKeyword = ''">
       <view class="picker-content" @click.stop>
         <view class="picker-header">
           <text class="picker-title">{{ t('worldClock.selectTimezone') }}</text>
         </view>
+        <view class="picker-search">
+          <input
+            class="picker-search-input"
+            :placeholder="t('worldClock.searchPlaceholder')"
+            v-model="searchKeyword"
+          />
+        </view>
         <scroll-view class="picker-list" scroll-y>
+          <view v-if="availableTimezones.length === 0" class="picker-empty">
+            <text>{{ t('worldClock.noResult') }}</text>
+          </view>
           <view
             v-for="tz in availableTimezones"
             :key="tz.id"
             class="picker-item"
             @click="addTimezone(tz)"
           >
-            <view class="picker-city">{{ tz.city }}</view>
+            <view class="picker-city">{{ t(`worldClock.cities.${tz.id}`) }}</view>
             <view class="picker-diff">{{ tz.diff }}</view>
           </view>
         </scroll-view>
@@ -85,7 +118,7 @@ const toolShareConfig = {
   toolName: t('worldClock.title'),
   icon: '🌍',
   category: 'time' as const,
-  subtitle: '全球时区时间'
+  subtitle: t('worldClock.subtitle')
 }
 
 // 工具分享图 URL
@@ -105,29 +138,42 @@ interface Timezone {
 
 // 预设时区
 const allTimezones: Timezone[] = [
-  { id: 'utc', city: 'UTC', offset: 0, diff: 'UTC+0' },
+  // 亚洲
+  { id: 'beijing', city: 'Beijing', offset: 8, diff: 'UTC+8' },
+  { id: 'shanghai', city: 'Shanghai', offset: 8, diff: 'UTC+8' },
+  { id: 'hongkong', city: 'Hong Kong', offset: 8, diff: 'UTC+8' },
+  { id: 'taipei', city: 'Taipei', offset: 8, diff: 'UTC+8' },
+  { id: 'singapore', city: 'Singapore', offset: 8, diff: 'UTC+8' },
+  { id: 'tokyo', city: 'Tokyo', offset: 9, diff: 'UTC+9' },
+  { id: 'seoul', city: 'Seoul', offset: 9, diff: 'UTC+9' },
+  { id: 'mumbai', city: 'Mumbai', offset: 5.5, diff: 'UTC+5:30' },
+  { id: 'dubai', city: 'Dubai', offset: 4, diff: 'UTC+4' },
+  // 欧洲
   { id: 'london', city: 'London', offset: 0, diff: 'UTC+0' },
   { id: 'paris', city: 'Paris', offset: 1, diff: 'UTC+1' },
   { id: 'berlin', city: 'Berlin', offset: 1, diff: 'UTC+1' },
   { id: 'moscow', city: 'Moscow', offset: 3, diff: 'UTC+3' },
-  { id: 'dubai', city: 'Dubai', offset: 4, diff: 'UTC+4' },
-  { id: 'mumbai', city: 'Mumbai', offset: 5.5, diff: 'UTC+5:30' },
-  { id: 'singapore', city: 'Singapore', offset: 8, diff: 'UTC+8' },
-  { id: 'hongkong', city: 'Hong Kong', offset: 8, diff: 'UTC+8' },
-  { id: 'tokyo', city: 'Tokyo', offset: 9, diff: 'UTC+9' },
-  { id: 'seoul', city: 'Seoul', offset: 9, diff: 'UTC+9' },
+  // 美洲
+  { id: 'new_york', city: 'New York', offset: -5, diff: 'UTC-5' },
+  { id: 'chicago', city: 'Chicago', offset: -6, diff: 'UTC-6' },
+  { id: 'denver', city: 'Denver', offset: -7, diff: 'UTC-7' },
+  { id: 'los_angeles', city: 'Los Angeles', offset: -8, diff: 'UTC-8' },
+  { id: 'sao_paulo', city: 'Sao Paulo', offset: -3, diff: 'UTC-3' },
+  // 大洋洲
   { id: 'sydney', city: 'Sydney', offset: 10, diff: 'UTC+10' },
   { id: 'auckland', city: 'Auckland', offset: 12, diff: 'UTC+12' },
-  { id: 'los_angeles', city: 'Los Angeles', offset: -8, diff: 'UTC-8' },
-  { id: 'denver', city: 'Denver', offset: -7, diff: 'UTC-7' },
-  { id: 'chicago', city: 'Chicago', offset: -6, diff: 'UTC-6' },
-  { id: 'new_york', city: 'New York', offset: -5, diff: 'UTC-5' },
-  { id: 'sao_paulo', city: 'Sao Paulo', offset: -3, diff: 'UTC-3' }
+  // 其他
+  { id: 'utc', city: 'UTC', offset: 0, diff: 'UTC+0' }
 ]
 
 // 状态
 const currentTime = ref(new Date())
 const showAddPicker = ref(false)
+const is24Hour = ref(uni.getStorageSync('world_clock_24hour') ?? true)
+const searchKeyword = ref('')
+const dragIndex = ref(-1)
+const dragStartY = ref(0)
+const itemHeight = 100 // 大约每个item的高度(rpx转px约50px)
 const timezones = ref<Timezone[]>(
   uni.getStorageSync('world_clocks') || [
     { id: 'new_york', city: 'New York', offset: -5, diff: 'UTC-5' },
@@ -148,26 +194,65 @@ const localDate = computed(() => {
   return formatDate(date)
 })
 
-// 可添加的时区（排除已添加的）
+// 模拟时钟指针角度
+const hourDeg = computed(() => {
+  const date = currentTime.value
+  return (date.getHours() % 12) * 30 + date.getMinutes() * 0.5
+})
+
+const minuteDeg = computed(() => {
+  const date = currentTime.value
+  return date.getMinutes() * 6 + date.getSeconds() * 0.1
+})
+
+const secondDeg = computed(() => {
+  return currentTime.value.getSeconds() * 6
+})
+
+// 可添加的时区（排除已添加的，支持搜索）
 const availableTimezones = computed(() => {
   const addedIds = timezones.value.map(tz => tz.id)
-  return allTimezones.filter(tz => !addedIds.includes(tz.id))
+  let list = allTimezones.filter(tz => !addedIds.includes(tz.id))
+
+  if (searchKeyword.value.trim()) {
+    const keyword = searchKeyword.value.toLowerCase().trim()
+    list = list.filter(tz => {
+      const cityName = t(`worldClock.cities.${tz.id}`).toLowerCase()
+      return cityName.includes(keyword) || tz.city.toLowerCase().includes(keyword) || tz.diff.toLowerCase().includes(keyword)
+    })
+  }
+
+  return list
 })
 
 // 格式化时间
 const formatTime = (date: Date) => {
-  const hours = String(date.getHours()).padStart(2, '0')
+  let hours = date.getHours()
   const minutes = String(date.getMinutes()).padStart(2, '0')
   const seconds = String(date.getSeconds()).padStart(2, '0')
-  return `${hours}:${minutes}:${seconds}`
+
+  if (!is24Hour.value) {
+    const period = hours >= 12 ? 'PM' : 'AM'
+    hours = hours % 12 || 12
+    return `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${period}`
+  }
+
+  return `${String(hours).padStart(2, '0')}:${minutes}:${seconds}`
 }
+
+// 星期几数组
+const weekdays = computed(() => {
+  const locale = settingsStore.language || 'zh'
+  return locale === 'zh'
+    ? ['日', '一', '二', '三', '四', '五', '六']
+    : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+})
 
 // 格式化日期
 const formatDate = (date: Date) => {
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
-  const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  return `${month}/${day} ${weekdays[date.getDay()]}`
+  return `${month}/${day} ${weekdays.value[date.getDay()]}`
 }
 
 // 获取时区时间
@@ -175,9 +260,16 @@ const getTimezoneTime = (offset: number) => {
   const now = currentTime.value
   const utc = now.getTime() + now.getTimezoneOffset() * 60000
   const tzTime = new Date(utc + offset * 3600000)
-  const hours = String(tzTime.getHours()).padStart(2, '0')
+  let hours = tzTime.getHours()
   const minutes = String(tzTime.getMinutes()).padStart(2, '0')
-  return `${hours}:${minutes}`
+
+  if (!is24Hour.value) {
+    const period = hours >= 12 ? 'PM' : 'AM'
+    hours = hours % 12 || 12
+    return `${String(hours).padStart(2, '0')}:${minutes} ${period}`
+  }
+
+  return `${String(hours).padStart(2, '0')}:${minutes}`
 }
 
 // 获取时区日期
@@ -190,11 +282,86 @@ const getTimezoneDate = (offset: number) => {
   return `${month}/${day}`
 }
 
+// 判断是否是白天 (6:00-18:00)
+const isDaytime = (offset: number) => {
+  const now = currentTime.value
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000
+  const tzTime = new Date(utc + offset * 3600000)
+  const hour = tzTime.getHours()
+  return hour >= 6 && hour < 18
+}
+
+// 获取白天/黑夜图标
+const getDayNightIcon = (offset: number) => {
+  return isDaytime(offset) ? '☀️' : '🌙'
+}
+
+// 获取与本地时间的时差
+const getTimeDifference = (offset: number) => {
+  const localOffset = -new Date().getTimezoneOffset() / 60
+  const diff = offset - localOffset
+
+  if (diff === 0) {
+    return t('worldClock.sameAsLocal')
+  }
+
+  const absDiff = Math.abs(diff)
+  const hours = Math.floor(absDiff)
+  const minutes = Math.round((absDiff - hours) * 60)
+
+  let timeStr = `${hours}${t('worldClock.hours')}`
+  if (minutes > 0) {
+    timeStr += `${minutes}${t('worldClock.minutes')}`
+  }
+
+  return diff > 0
+    ? t('worldClock.aheadOfLocal', { time: timeStr })
+    : t('worldClock.behindLocal', { time: timeStr })
+}
+
+// 切换时间格式
+const toggleTimeFormat = () => {
+  is24Hour.value = !is24Hour.value
+  uni.setStorageSync('world_clock_24hour', is24Hour.value)
+}
+
+// 拖拽排序
+const onDragStart = (index: number, e: TouchEvent) => {
+  dragIndex.value = index
+  dragStartY.value = e.touches[0].clientY
+  uni.vibrateShort({ type: 'light' })
+}
+
+const onDragMove = (e: TouchEvent) => {
+  if (dragIndex.value < 0) return
+  const currentY = e.touches[0].clientY
+  const diff = currentY - dragStartY.value
+  const moveCount = Math.round(diff / itemHeight)
+
+  if (moveCount !== 0) {
+    const newIndex = Math.max(0, Math.min(timezones.value.length - 1, dragIndex.value + moveCount))
+    if (newIndex !== dragIndex.value) {
+      const item = timezones.value.splice(dragIndex.value, 1)[0]
+      timezones.value.splice(newIndex, 0, item)
+      dragIndex.value = newIndex
+      dragStartY.value = currentY
+    }
+  }
+}
+
+const onDragEnd = () => {
+  if (dragIndex.value >= 0) {
+    dragIndex.value = -1
+    saveTimezones()
+  }
+}
+
 // 添加时区
 const addTimezone = (tz: Timezone) => {
   timezones.value.push(tz)
   saveTimezones()
   showAddPicker.value = false
+  searchKeyword.value = ''
   showToast(t('common.success'))
 }
 
@@ -304,6 +471,102 @@ onUnmounted(() => {
   font-family: monospace;
 }
 
+// 模拟时钟
+.analog-clock {
+  display: flex;
+  justify-content: center;
+  margin-bottom: $spacing-md;
+}
+
+.clock-face {
+  width: 300rpx;
+  height: 300rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--text-secondary);
+  position: relative;
+  background-color: var(--bg-card);
+}
+
+.clock-mark {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2rpx;
+  height: 100%;
+  transform-origin: center center;
+}
+
+.mark-major {
+  width: 6rpx;
+  height: 24rpx;
+  background-color: var(--text-primary);
+  border-radius: 3rpx;
+  margin-left: -3rpx;
+}
+
+.mark-minor {
+  width: 4rpx;
+  height: 12rpx;
+  background-color: var(--text-secondary);
+  border-radius: 2rpx;
+  margin-left: -2rpx;
+}
+
+.clock-hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  border-radius: 4rpx;
+}
+
+.hour-hand {
+  width: 6rpx;
+  height: 80rpx;
+  margin-left: -3rpx;
+  background-color: var(--text-primary);
+}
+
+.minute-hand {
+  width: 4rpx;
+  height: 105rpx;
+  margin-left: -2rpx;
+  background-color: var(--text-primary);
+}
+
+.second-hand {
+  width: 2rpx;
+  height: 120rpx;
+  margin-left: -1rpx;
+  background-color: var(--primary);
+}
+
+.clock-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16rpx;
+  height: 16rpx;
+  margin: -8rpx 0 0 -8rpx;
+  border-radius: 50%;
+  background-color: var(--primary);
+}
+
+.time-format-toggle {
+  margin-top: $spacing-sm;
+  padding: 8rpx 24rpx;
+  background-color: var(--bg-hover);
+  border-radius: $radius-sm;
+  display: inline-block;
+  font-size: $font-size-sm;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
 // 时区列表
 .timezone-list {
   margin-bottom: $spacing-md;
@@ -316,9 +579,18 @@ onUnmounted(() => {
   border-radius: $radius-md;
   padding: $spacing-md;
   margin-bottom: $spacing-sm;
+  transition: transform 0.15s, box-shadow 0.15s;
 
   &:last-child {
     margin-bottom: 0;
+  }
+
+  &.tz-dragging {
+    transform: scale(1.02);
+    box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+    opacity: 0.9;
+    z-index: 10;
+    position: relative;
   }
 }
 
@@ -327,10 +599,17 @@ onUnmounted(() => {
 }
 
 .tz-city {
+  display: flex;
+  align-items: center;
   font-size: $font-size-md;
   font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 4rpx;
+}
+
+.tz-icon {
+  margin-right: 8rpx;
+  font-size: $font-size-md;
 }
 
 .tz-diff {
@@ -436,6 +715,29 @@ onUnmounted(() => {
   font-size: $font-size-lg;
   font-weight: 500;
   color: var(--text-primary);
+}
+
+.picker-search {
+  padding: $spacing-sm $spacing-md;
+  border-bottom: 1rpx solid var(--border-light);
+}
+
+.picker-search-input {
+  width: 100%;
+  height: 72rpx;
+  padding: 0 $spacing-md;
+  background-color: var(--bg-hover);
+  border-radius: $radius-md;
+  font-size: $font-size-md;
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.picker-empty {
+  padding: $spacing-xl;
+  text-align: center;
+  font-size: $font-size-md;
+  color: var(--text-secondary);
 }
 
 .picker-list {
