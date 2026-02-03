@@ -130,6 +130,12 @@
       </view>
     </view>
 
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="taxCalculatorShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
@@ -138,7 +144,7 @@ import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
-import { getDefaultShareConfig, showToast } from '@/utils'
+import { showToast } from '@/utils'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
@@ -238,12 +244,37 @@ const calculate = () => {
   showResult.value = true
 }
 
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('taxCalculator.title'),
+  icon: '📊',
+  category: 'calc' as const,
+  subtitle: '个人所得税计算'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
+
 // === 生命周期 ===
 onShow(() => {
   settingsStore.initTheme()
 })
 
-onShareAppMessage(() => getDefaultShareConfig())
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('taxCalculator.title')}`,
+    path: '/pages/calc/tax-calculator/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
 onShareTimeline(() => ({
   title: 'EH Tools - ' + t('taxCalculator.title')
 }))

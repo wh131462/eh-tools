@@ -59,6 +59,14 @@
           <text>32</text>
         </view>
       </view>
+
+      <!-- 分享按钮 -->
+      <view class="share-actions">
+        <button class="share-btn" @click="showShareResult = true">
+          <text class="share-icon">📤</text>
+          <text>{{ t('bmi.shareResult') }}</text>
+        </button>
+      </view>
     </view>
 
     <!-- 参考标准 -->
@@ -82,17 +90,51 @@
         </view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas（用于系统分享） -->
+    <share-canvas
+      canvas-id="bmiShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
+
+    <!-- 分享结果图组件（用于用户主动分享结果） -->
+    <share-result
+      v-model:visible="showShareResult"
+      :config="shareResultConfig"
+      @generated="onShareImageGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
+import { getResultShareConfig } from '@/utils/share'
+import type { ResultShareConfig } from '@/utils/shareCanvas'
+// ShareResult, ShareCanvas 组件通过 easycom 自动注册
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('bmi.title'),
+  icon: '⚖️',
+  category: 'calc' as const,
+  subtitle: '健康体重管理'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+  console.log('BMI 工具分享图生成完成:', url)
+}
 
 // 输入值
 const height = ref('')
@@ -199,8 +241,76 @@ const bmiResult = computed(() => {
   }
 })
 
+// 分享结果图相关
+const showShareResult = ref(false)
+const shareImageUrl = ref('')
+
+// 分享结果图配置
+const shareResultConfig = computed<ResultShareConfig>(() => {
+  if (!bmiResult.value) {
+    return {
+      title: t('bmi.title'),
+      resultLabel: 'BMI',
+      resultValue: '0',
+      statusText: '',
+      statusColor: '#667eea'
+    }
+  }
+
+  return {
+    title: t('bmi.title'),
+    resultLabel: 'BMI',
+    resultValue: bmiResult.value.value.toString(),
+    statusText: bmiResult.value.category,
+    statusColor: bmiResult.value.color,
+    subResults: [
+      {
+        label: t('bmi.height'),
+        value: `${height.value} ${t('bmi.unit.cm')}`
+      },
+      {
+        label: t('bmi.weight'),
+        value: `${weight.value} ${t('bmi.unit.kg')}`
+      }
+    ]
+  }
+})
+
+// 分享图生成完成
+function onShareImageGenerated(url: string) {
+  shareImageUrl.value = url
+}
+
+// 分享给好友
+onShareAppMessage(() => {
+  const result = bmiResult.value
+
+  // 如果有计算结果且生成了结果分享图，使用结果分享
+  if (result && shareImageUrl.value) {
+    return getResultShareConfig(
+      t('bmi.title'),
+      `BMI ${result.value} - ${result.category}`,
+      '/pages/calc/bmi/index',
+      shareImageUrl.value
+    )
+  }
+
+  // 否则使用工具分享图
+  return {
+    title: `EH Tools - ${t('bmi.title')}`,
+    path: '/pages/calc/bmi/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('bmi.title')}`
+  }
+})
+
 onShow(() => {
-  uni.setNavigationBarTitle({ title: t('bmi.title') })
   settingsStore.initTheme()
 })
 </script>
@@ -383,5 +493,35 @@ onShow(() => {
 .col-suggestion {
   flex: 1;
   color: var(--text-secondary);
+}
+
+// 分享按钮
+.share-actions {
+  margin-top: $spacing-lg;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid var(--border-light);
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  width: 100%;
+  height: 80rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: $font-size-md;
+  font-weight: 500;
+  border: none;
+  border-radius: $radius-md;
+
+  &::after {
+    border: none;
+  }
+}
+
+.share-icon {
+  font-size: 32rpx;
 }
 </style>

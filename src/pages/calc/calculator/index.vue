@@ -74,13 +74,20 @@
         <view class="key equal" @click="calculate">=</view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="calculatorShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { Parser } from 'expr-eval'
 import { useSettingsStore } from '@/store'
 
@@ -244,6 +251,38 @@ const calculate = () => {
     }, 2000)
   }
 }
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('calculator.title'),
+  icon: '🧮',
+  category: 'calc' as const,
+  subtitle: '科学计算器'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
+
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('calculator.title')}`,
+    path: '/pages/calc/calculator/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('calculator.title')}`
+  }
+})
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('calculator.title') })

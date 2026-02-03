@@ -125,13 +125,20 @@
         </view>
       </scroll-view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="mortgageShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import { showToast } from '@/utils'
 
@@ -257,6 +264,38 @@ const calculate = () => {
 
   showAllSchedule.value = false
 }
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('mortgage.title'),
+  icon: '🏠',
+  category: 'calc' as const,
+  subtitle: '房贷还款计算'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
+
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('mortgage.title')}`,
+    path: '/pages/calc/mortgage/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('mortgage.title')}`
+  }
+})
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('mortgage.title') })

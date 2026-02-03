@@ -104,13 +104,20 @@
         </scroll-view>
       </view>
     </view>
+
+    <!-- 工具分享图 Canvas -->
+    <share-canvas
+      canvas-id="unitConverterShareCanvas"
+      :config="toolShareConfig"
+      @generated="onToolShareGenerated"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 
 const { t } = useI18n()
@@ -219,6 +226,38 @@ const swapUnits = () => {
   fromUnit.value = toUnit.value
   toUnit.value = temp
 }
+
+// 工具分享图配置
+const toolShareConfig = {
+  toolName: t('unitConverter.title'),
+  icon: '📐',
+  category: 'calc' as const,
+  subtitle: '长度/面积/体积换算'
+}
+
+// 工具分享图 URL
+const toolShareImageUrl = ref('')
+
+// 工具分享图生成完成
+function onToolShareGenerated(url: string) {
+  toolShareImageUrl.value = url
+}
+
+// 分享给好友
+onShareAppMessage(() => {
+  return {
+    title: `EH Tools - ${t('unitConverter.title')}`,
+    path: '/pages/calc/unit-converter/index',
+    imageUrl: toolShareImageUrl.value || '/static/eh-tools-logo.png'
+  }
+})
+
+// 分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: `EH Tools - ${t('unitConverter.title')}`
+  }
+})
 
 onShow(() => {
   uni.setNavigationBarTitle({ title: t('unitConverter.title') })
