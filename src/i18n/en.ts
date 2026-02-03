@@ -841,6 +841,22 @@ export default {
       refresh: 'Refresh',
       celebrate: 'Celebrate'
     },
+    // Overtime
+    overtime: {
+      selectType: 'Select Overtime Type',
+      free: 'Free Overtime',
+      freeDesc: 'No extra pay',
+      hourly: 'Paid OT (Hourly)',
+      hourlyDesc: 'Enter hourly rate',
+      multiplier: 'Paid OT (Multiplier)',
+      inputRate: 'Enter Hourly Rate',
+      inputRatePlaceholder: 'Hourly rate (CNY/h)',
+      summary: 'Overtime Ended',
+      type: 'Type',
+      duration: 'Duration',
+      earned: 'Overtime Pay',
+      ended: 'OT Ended'
+    },
     // Tips
     tip: {
       notWorkTime: 'Not work time yet',

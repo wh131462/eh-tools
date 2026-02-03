@@ -14,6 +14,39 @@
       </view>
     </view>
 
+    <!-- 加班卡片（下班后显示） -->
+    <view class="overtime-card" v-if="showOvertimeCard">
+      <view class="overtime-header">
+        <text class="overtime-title">{{ hasEndedOvertime ? t('workerClock.overtime.ended') : t('workerClock.status.overtime') }}</text>
+        <text class="overtime-type-tag" v-if="hasEndedOvertime">{{ lastOvertimeTypeText }}</text>
+      </view>
+      <view class="overtime-time">
+        <view class="time-block">
+          <text class="time-value">{{ hasEndedOvertime ? formattedLastOvertimeTimeStr.hours : overtimeTimeStr.hours }}</text>
+          <text class="time-unit">{{ t('workerClock.unit.hour') }}</text>
+        </view>
+        <text class="time-separator">:</text>
+        <view class="time-block">
+          <text class="time-value">{{ hasEndedOvertime ? formattedLastOvertimeTimeStr.minutes : overtimeTimeStr.minutes }}</text>
+          <text class="time-unit">{{ t('workerClock.unit.minute') }}</text>
+        </view>
+        <text class="time-separator">:</text>
+        <view class="time-block">
+          <text class="time-value">{{ hasEndedOvertime ? formattedLastOvertimeTimeStr.seconds : overtimeTimeStr.seconds }}</text>
+          <text class="time-unit">{{ t('workerClock.unit.second') }}</text>
+        </view>
+      </view>
+      <!-- 已结束时显示收入 -->
+      <view class="overtime-earned" v-if="hasEndedOvertime && lastOvertimeType !== 'free'">
+        <text class="earned-label">{{ t('workerClock.overtime.earned') }}</text>
+        <text class="earned-value">¥{{ lastOvertimeEarned.toFixed(2) }}</text>
+      </view>
+      <!-- 未结束时显示结束按钮 -->
+      <view class="overtime-end-btn" v-if="!hasEndedOvertime" @click="endOvertime">
+        <text>{{ t('workerClock.action.endOvertime') }}</text>
+      </view>
+    </view>
+
     <!-- 主要倒计时卡片 -->
     <view class="countdown-card main-countdown" v-if="showMainCountdown">
       <view class="countdown-label">{{ mainCountdownLabel }}</view>
@@ -266,6 +299,75 @@
       </view>
     </view>
 
+    <!-- 结束加班 - 类型选择弹窗 -->
+    <view class="overtime-popup" v-if="showOvertimeTypeSelect">
+      <view class="popup-mask" @click="showOvertimeTypeSelect = false"></view>
+      <view class="popup-content" @click.stop>
+        <view class="popup-header">
+          <text class="popup-title">{{ t('workerClock.overtime.selectType') }}</text>
+          <view class="popup-close" @click="showOvertimeTypeSelect = false">
+            <text>×</text>
+          </view>
+        </view>
+
+        <view class="overtime-option" @click="selectOvertimeType('free')">
+          <view class="option-info">
+            <text class="option-title">{{ t('workerClock.overtime.free') }}</text>
+            <text class="option-desc">{{ t('workerClock.overtime.freeDesc') }}</text>
+          </view>
+          <text class="option-arrow">›</text>
+        </view>
+
+        <view class="overtime-option" @click="selectHourlyOvertime">
+          <view class="option-info">
+            <text class="option-title">{{ t('workerClock.overtime.hourly') }}</text>
+            <text class="option-desc">{{ t('workerClock.overtime.hourlyDesc') }}</text>
+          </view>
+          <text class="option-arrow">›</text>
+        </view>
+
+        <view class="overtime-option multiplier-option">
+          <view class="option-info">
+            <text class="option-title">{{ t('workerClock.overtime.multiplier') }}</text>
+          </view>
+          <view class="multiplier-btns">
+            <view class="multiplier-btn" @click="selectOvertimeType('multiplier', 1.5)">1.5x</view>
+            <view class="multiplier-btn" @click="selectOvertimeType('multiplier', 2)">2x</view>
+            <view class="multiplier-btn" @click="selectOvertimeType('multiplier', 3)">3x</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 结束加班汇总弹窗 -->
+    <view class="overtime-popup" v-if="showOvertimeSummary">
+      <view class="popup-mask" @click="showOvertimeSummary = false"></view>
+      <view class="popup-content summary-content" @click.stop>
+        <view class="popup-header">
+          <text class="popup-title">{{ t('workerClock.overtime.summary') }}</text>
+        </view>
+
+        <view class="summary-item">
+          <text class="summary-label">{{ t('workerClock.overtime.type') }}</text>
+          <text class="summary-value">{{ lastOvertimeTypeText }}</text>
+        </view>
+
+        <view class="summary-item">
+          <text class="summary-label">{{ t('workerClock.overtime.duration') }}</text>
+          <text class="summary-value">{{ formattedLastOvertimeDuration }}</text>
+        </view>
+
+        <view class="summary-item" v-if="lastOvertimeType !== 'free'">
+          <text class="summary-label">{{ t('workerClock.overtime.earned') }}</text>
+          <text class="summary-value highlight">¥{{ lastOvertimeEarned.toFixed(2) }}</text>
+        </view>
+
+        <view class="summary-btn" @click="confirmEndOvertime">
+          <text>{{ t('common.confirm') }}</text>
+        </view>
+      </view>
+    </view>
+
     <!-- 底部占位 -->
     <view class="bottom-placeholder" />
 
@@ -361,6 +463,17 @@ const showSettings = ref(false)
 const showCelebrate = ref(false)
 const currentQuoteIndex = ref(0)
 const toolShareImageUrl = ref('')
+
+// 加班状态
+const hasEndedOvertime = ref(false) // 今天是否已结束加班
+const overtimeType = ref<'free' | 'hourly' | 'multiplier'>('free')
+const overtimeHourlyRate = ref(0)
+const overtimeMultiplier = ref(1.5)
+const showOvertimeTypeSelect = ref(false) // 结束时选择类型弹窗
+const showOvertimeSummary = ref(false) // 汇总弹窗
+const lastOvertimeDuration = ref(0)
+const lastOvertimeEarned = ref(0)
+const lastOvertimeType = ref<'free' | 'hourly' | 'multiplier'>('free')
 
 // 设置
 const settings = ref({
@@ -678,6 +791,91 @@ const nextHoliday = computed(() => {
 // 当前语录
 const currentQuote = computed(() => WORKER_QUOTES[currentQuoteIndex.value])
 
+// === 加班相关计算属性 ===
+
+// 是否在加班时段（下班后、非周末）- 不考虑是否已结束
+const isAfterWorkTime = computed(() => {
+  if (isWeekend.value) return false
+  const [endH, endM] = settings.value.endTime.split(':').map(Number)
+  const currentMinutes = currentTime.value.getHours() * 60 + currentTime.value.getMinutes()
+  return currentMinutes >= endH * 60 + endM
+})
+
+// 是否在加班中（下班后、非周末、今天未结束加班）
+const isOvertimeTime = computed(() => {
+  return isAfterWorkTime.value && !hasEndedOvertime.value
+})
+
+// 是否显示加班卡片（加班中 或 已结束但仍在下班后时段）
+const showOvertimeCard = computed(() => {
+  return isAfterWorkTime.value
+})
+
+// 加班时长（秒）- 从下班时间开始计算
+const overtimeDuration = computed(() => {
+  if (!isOvertimeTime.value) return 0
+  const [endH, endM] = settings.value.endTime.split(':').map(Number)
+  const now = currentTime.value
+  const endTimeToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endH, endM, 0)
+  return Math.floor((now.getTime() - endTimeToday.getTime()) / 1000)
+})
+
+// 格式化加班时长
+const overtimeTimeStr = computed(() => {
+  const total = overtimeDuration.value
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const seconds = total % 60
+  return {
+    hours: hours.toString().padStart(2, '0'),
+    minutes: minutes.toString().padStart(2, '0'),
+    seconds: seconds.toString().padStart(2, '0')
+  }
+})
+
+// 根据类型计算加班收入
+const calculateOvertimeEarned = (duration: number, type: 'free' | 'hourly' | 'multiplier') => {
+  if (type === 'free') return 0
+  const hours = duration / 3600
+
+  if (type === 'hourly') {
+    return hours * overtimeHourlyRate.value
+  } else {
+    // 按倍数：基于日薪/8小时计算时薪
+    const hourlyBase = settings.value.monthlySalary / 21.75 / 8
+    return hours * hourlyBase * overtimeMultiplier.value
+  }
+}
+
+// 结束加班时的类型文本
+const lastOvertimeTypeText = computed(() => {
+  if (lastOvertimeType.value === 'free') return t('workerClock.overtime.free')
+  if (lastOvertimeType.value === 'hourly') return `${t('workerClock.overtime.hourly')} (¥${overtimeHourlyRate.value}/h)`
+  return `${t('workerClock.overtime.multiplier')} (${overtimeMultiplier.value}x)`
+})
+
+// 格式化结束时的加班时长
+const formattedLastOvertimeDuration = computed(() => {
+  const total = lastOvertimeDuration.value
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const seconds = total % 60
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+})
+
+// 格式化结束时的加班时长（对象格式，用于卡片显示）
+const formattedLastOvertimeTimeStr = computed(() => {
+  const total = lastOvertimeDuration.value
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const seconds = total % 60
+  return {
+    hours: hours.toString().padStart(2, '0'),
+    minutes: minutes.toString().padStart(2, '0'),
+    seconds: seconds.toString().padStart(2, '0')
+  }
+})
+
 // 分享配置
 const toolShareConfig = {
   toolName: t('workerClock.title'),
@@ -695,6 +893,61 @@ const updateTime = () => {
 // 刷新语录
 const refreshQuote = () => {
   currentQuoteIndex.value = Math.floor(Math.random() * WORKER_QUOTES.length)
+}
+
+// === 加班方法 ===
+
+// 点击结束加班 - 显示类型选择
+const endOvertime = () => {
+  // 保存当前加班时长
+  lastOvertimeDuration.value = overtimeDuration.value
+  // 显示类型选择弹窗
+  showOvertimeTypeSelect.value = true
+}
+
+// 选择加班类型
+const selectOvertimeType = (type: 'free' | 'hourly' | 'multiplier', value?: number) => {
+  overtimeType.value = type
+  if (type === 'multiplier' && value) {
+    overtimeMultiplier.value = value
+  }
+  lastOvertimeType.value = type
+  // 计算收入
+  lastOvertimeEarned.value = calculateOvertimeEarned(lastOvertimeDuration.value, type)
+  // 关闭类型选择，显示汇总
+  showOvertimeTypeSelect.value = false
+  showOvertimeSummary.value = true
+}
+
+// 选择按时薪加班
+const selectHourlyOvertime = () => {
+  showOvertimeTypeSelect.value = false
+  uni.showModal({
+    title: t('workerClock.overtime.inputRate'),
+    editable: true,
+    placeholderText: t('workerClock.overtime.inputRatePlaceholder'),
+    success: (res) => {
+      if (res.confirm && res.content) {
+        const rate = parseFloat(res.content)
+        if (!isNaN(rate) && rate > 0) {
+          overtimeHourlyRate.value = rate
+          selectOvertimeType('hourly')
+        } else {
+          // 输入无效，重新显示选择
+          showOvertimeTypeSelect.value = true
+        }
+      } else {
+        // 取消了，重新显示选择
+        showOvertimeTypeSelect.value = true
+      }
+    }
+  })
+}
+
+// 确认结束加班
+const confirmEndOvertime = () => {
+  showOvertimeSummary.value = false
+  hasEndedOvertime.value = true
 }
 
 // 打开时间选择器
@@ -1383,6 +1636,272 @@ onShareTimeline(() => ({
 @keyframes bounce {
   from { transform: scale(1); }
   to { transform: scale(1.2); }
+}
+
+// 加班相关样式
+.overtime-card {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+}
+
+.overtime-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.overtime-title {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+.overtime-type-tag {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4rpx 12rpx;
+  border-radius: $radius-sm;
+}
+
+.overtime-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+
+  .time-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .time-value {
+    font-size: 64rpx;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'SF Mono', Monaco, monospace;
+    min-width: 100rpx;
+    text-align: center;
+  }
+
+  .time-unit {
+    font-size: 22rpx;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .time-separator {
+    font-size: 48rpx;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: -20rpx;
+  }
+}
+
+.overtime-earned {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-md;
+  margin-bottom: $spacing-md;
+}
+
+.earned-label {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.earned-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.overtime-end-btn {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-lg;
+  text-align: center;
+
+  text {
+    color: #fff;
+    font-size: 28rpx;
+    font-weight: 500;
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.4);
+  }
+}
+
+// 加班弹窗
+.overtime-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.popup-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-card);
+  border-radius: $radius-xl $radius-xl 0 0;
+  padding: $spacing-lg;
+  padding-bottom: calc($spacing-lg + $safe-bottom);
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.popup-close {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  color: var(--text-secondary);
+}
+
+.overtime-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md;
+  background: var(--bg-elevated);
+  border-radius: $radius-md;
+  margin-bottom: $spacing-sm;
+
+  &:active {
+    background: var(--bg-hover);
+  }
+
+  &.multiplier-option {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.option-info {
+  flex: 1;
+}
+
+.option-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4rpx;
+}
+
+.option-desc {
+  display: block;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.option-arrow {
+  font-size: 32rpx;
+  color: var(--text-placeholder);
+}
+
+.multiplier-btns {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+}
+
+.multiplier-btn {
+  flex: 1;
+  padding: $spacing-sm;
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  border-radius: $radius-md;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #fff;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+// 汇总弹窗
+.summary-content {
+  text-align: center;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md 0;
+  border-bottom: 1rpx solid var(--border-light);
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.summary-label {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+}
+
+.summary-value {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+
+  &.highlight {
+    font-size: 36rpx;
+    font-weight: 700;
+    color: #f5576c;
+  }
+}
+
+.summary-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  margin-top: $spacing-lg;
+
+  text {
+    color: #fff;
+    font-size: 32rpx;
+    font-weight: 600;
+  }
 }
 
 .bottom-placeholder {

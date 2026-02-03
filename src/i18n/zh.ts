@@ -778,7 +778,7 @@ export default {
       offWork: '已下班',
       weekend: '周末愉快',
       holiday: '假期愉快',
-      overtime: '加班中'
+      overtime: '已下班'
     },
     // 设置
     settings: {
@@ -840,6 +840,22 @@ export default {
       endOvertime: '结束加班',
       refresh: '刷新',
       celebrate: '庆祝下班'
+    },
+    // 加班
+    overtime: {
+      selectType: '选择加班类型',
+      free: '免费加班',
+      freeDesc: '不计入收入',
+      hourly: '带薪加班（按时薪）',
+      hourlyDesc: '输入加班时薪',
+      multiplier: '带薪加班（按倍数）',
+      inputRate: '输入加班时薪',
+      inputRatePlaceholder: '请输入时薪（元/小时）',
+      summary: '加班结束',
+      type: '加班类型',
+      duration: '加班时长',
+      earned: '加班收入',
+      ended: '加班已结束'
     },
     // 提示
     tip: {

@@ -40,7 +40,10 @@
       "WebFetch(domain:developers.weixin.qq.com)",
       "WebFetch(domain:blog.csdn.net)",
       "mcp__chrome-devtools__evaluate_script",
-      "Bash(pnpm vue-tsc:*)"
+      "Bash(pnpm vue-tsc:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(pnpm run type-check:*)",
+      "Bash(pnpm run build:h5:*)"
     ]
   }
 }
