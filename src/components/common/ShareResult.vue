@@ -137,13 +137,15 @@ watch(
   () => props.visible,
   async (newVal) => {
     if (newVal) {
-      // 等待 Canvas 挂载
       await nextTick()
       setTimeout(async () => {
         if (!previewUrl.value) {
           await generateImage()
         }
       }, 300)
+    } else {
+      // 关闭时清空，下次打开重新生成
+      previewUrl.value = ''
     }
   }
 )

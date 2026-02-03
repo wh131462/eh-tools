@@ -52,6 +52,10 @@ const TOOL_ICONS: Record<string, string> = {
   'color-picker': '/static/icons/color-picker.svg',
   // 生活工具
   'lucky-wheel': '/static/icons/wheel.svg',
+  'kinship-calculator': '/static/icons/kinship.svg',
+  'license-plate': '/static/icons/license-plate.svg',
+  'todo-list': '/static/icons/todo-list.svg',
+  'size-chart': '/static/icons/size-chart.svg',
 }
 
 // 工具渐变色映射
@@ -80,6 +84,10 @@ const TOOL_GRADIENTS: Record<string, string> = {
   'color-tool': 'var(--gradient-color-tool)',
   'color-picker': 'var(--gradient-color-picker)',
   'lucky-wheel': 'var(--gradient-wheel)',
+  'kinship-calculator': 'var(--gradient-kinship)',
+  'license-plate': 'var(--gradient-license-plate)',
+  'todo-list': 'var(--gradient-todo-list)',
+  'size-chart': 'var(--gradient-size-chart)',
 }
 
 const props = defineProps<{
