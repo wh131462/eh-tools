@@ -93,6 +93,7 @@ import { ref, computed } from 'vue'
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/store'
+import { SolarDay } from 'tyme4ts'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
@@ -123,115 +124,36 @@ const selectedDate = ref(new Date())
 // 星期标题
 const weekdays = ['日', '一', '二', '三', '四', '五', '六']
 
-// 农历月份名称
-const lunarMonths = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊']
-const lunarDays = ['初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
-  '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
-  '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十']
+// 获取某天的 tyme4ts 信息
+function getDayInfo(date: Date) {
+  const solarDay = SolarDay.fromYmd(date.getFullYear(), date.getMonth() + 1, date.getDate())
+  const lunarDay = solarDay.getLunarDay()
+  const lunarMonth = lunarDay.getLunarMonth()
+  const termDay = solarDay.getTermDay()
 
-// 天干地支
-const tianGan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
-const diZhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
-const zodiacNames = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪']
+  // 节气：只有当天是节气日才显示
+  const solarTerm = termDay.getDayIndex() === 0 ? termDay.getSolarTerm().getName() : ''
 
-// 节气
-const solarTerms = ['小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨',
-  '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑',
-  '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪', '冬至']
+  // 节日：优先公历节日 > 农历节日
+  const solarFestival = solarDay.getFestival()
+  const lunarFestival = lunarDay.getFestival()
+  const festival = solarFestival?.getName() || lunarFestival?.getName() || ''
 
-// 公历节日
-const getSolarFestivals = (): Record<string, string> => {
-  return {
-    '1-1': '元旦', '2-14': '情人节', '3-8': '妇女节', '3-12': '植树节',
-    '4-1': '愚人节', '5-1': '劳动节', '5-4': '青年节', '6-1': '儿童节',
-    '7-1': '建党节', '8-1': '建军节', '9-10': '教师节', '10-1': '国庆节',
-    '12-24': '平安夜', '12-25': '圣诞节'
-  }
-}
-
-// 农历节日
-const getLunarFestivals = (): Record<string, string> => {
-  return {
-    '1-1': '春节', '1-15': '元宵节', '5-5': '端午节', '7-7': '七夕',
-    '7-15': '中元节', '8-15': '中秋节', '9-9': '重阳节', '12-30': '除夕'
-  }
-}
-
-// 简化的农历计算
-function getLunarDate(date: Date) {
-  const baseDate = new Date(1900, 0, 31)
-  const offset = Math.floor((date.getTime() - baseDate.getTime()) / 86400000)
-
-  // 简化计算，使用近似值
-  let lunarYear = 1900
-  let lunarMonth = 1
-  let lunarDay = 1
-  let daysCount = offset
-
-  // 简化：每年约354天
-  while (daysCount >= 354) {
-    daysCount -= 354
-    lunarYear++
-  }
-
-  // 简化：每月约29.5天
-  while (daysCount >= 30) {
-    daysCount -= 30
-    lunarMonth++
-    if (lunarMonth > 12) {
-      lunarMonth = 1
-      lunarYear++
-    }
-  }
-
-  lunarDay = daysCount + 1
+  // 农历日名
+  const lunarDayName = lunarDay.getName()
+  // 农历月名（初一时显示月名）
+  const lunarMonthName = lunarMonth.getName()
 
   return {
-    year: lunarYear,
-    month: lunarMonth,
-    day: lunarDay,
-    monthName: lunarMonths[lunarMonth - 1] + t('calendar.monthSuffix'),
-    dayName: lunarDays[Math.min(lunarDay - 1, 29)]
+    solarDay,
+    lunarDay,
+    lunarMonth,
+    solarTerm,
+    festival,
+    lunarDayName,
+    lunarMonthName,
+    lunarText: festival || solarTerm || (lunarDayName === '初一' ? lunarMonthName : lunarDayName)
   }
-}
-
-// 获取干支年
-function getGanZhiYear(year: number) {
-  const ganIndex = (year - 4) % 10
-  const zhiIndex = (year - 4) % 12
-  return tianGan[ganIndex] + diZhi[zhiIndex]
-}
-
-// 获取生肖
-function getZodiac(year: number) {
-  return zodiacNames[(year - 4) % 12]
-}
-
-// 获取节气（简化版）
-function getSolarTerm(date: Date): string {
-  const month = date.getMonth()
-  const day = date.getDate()
-
-  // 简化的节气日期（大约）
-  const termDays = [6, 20, 4, 19, 6, 21, 5, 20, 6, 21, 6, 22, 7, 23, 8, 23, 8, 23, 9, 24, 8, 22, 7, 22]
-
-  const termIndex = month * 2
-  if (day === termDays[termIndex]) {
-    return solarTerms[termIndex]
-  } else if (day === termDays[termIndex + 1]) {
-    return solarTerms[termIndex + 1]
-  }
-  return ''
-}
-
-// 获取节日
-function getFestival(date: Date, lunar: { month: number; day: number }): string {
-  const solarKey = `${date.getMonth() + 1}-${date.getDate()}`
-  const lunarKey = `${lunar.month}-${lunar.day}`
-
-  const sf = getSolarFestivals()
-  const lf = getLunarFestivals()
-  return sf[solarKey] || lf[lunarKey] || ''
 }
 
 // 生成日历数据
@@ -261,8 +183,7 @@ const calendarDays = computed(() => {
   for (let i = firstDayWeek - 1; i >= 0; i--) {
     const day = prevMonthDays - i
     const date = new Date(year, month - 2, day)
-    const lunar = getLunarDate(date)
-    const festival = getFestival(date, lunar)
+    const info = getDayInfo(date)
 
     days.push({
       day,
@@ -271,8 +192,7 @@ const calendarDays = computed(() => {
       isToday: false,
       isSelected: false,
       isWeekend: date.getDay() === 0 || date.getDay() === 6,
-      lunarText: festival || (lunar.day === 1 ? lunar.monthName : lunar.dayName),
-      lunar
+      ...info
     })
   }
 
@@ -280,9 +200,7 @@ const calendarDays = computed(() => {
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month - 1, day)
     const dateStr = `${year}-${month}-${day}`
-    const lunar = getLunarDate(date)
-    const festival = getFestival(date, lunar)
-    const solarTerm = getSolarTerm(date)
+    const info = getDayInfo(date)
 
     days.push({
       day,
@@ -291,10 +209,7 @@ const calendarDays = computed(() => {
       isToday: dateStr === todayStr,
       isSelected: dateStr === selectedStr,
       isWeekend: date.getDay() === 0 || date.getDay() === 6,
-      lunarText: festival || solarTerm || (lunar.day === 1 ? lunar.monthName : lunar.dayName),
-      lunar,
-      solarTerm,
-      festival
+      ...info
     })
   }
 
@@ -302,8 +217,7 @@ const calendarDays = computed(() => {
   const remainingDays = 42 - days.length
   for (let day = 1; day <= remainingDays; day++) {
     const date = new Date(year, month, day)
-    const lunar = getLunarDate(date)
-    const festival = getFestival(date, lunar)
+    const info = getDayInfo(date)
 
     days.push({
       day,
@@ -312,8 +226,7 @@ const calendarDays = computed(() => {
       isToday: false,
       isSelected: false,
       isWeekend: date.getDay() === 0 || date.getDay() === 6,
-      lunarText: festival || (lunar.day === 1 ? lunar.monthName : lunar.dayName),
-      lunar
+      ...info
     })
   }
 
@@ -323,17 +236,31 @@ const calendarDays = computed(() => {
 // 选中日期的农历信息
 const selectedLunarInfo = computed(() => {
   const date = selectedDate.value
-  const lunar = getLunarDate(date)
-  const year = date.getFullYear()
+  const info = getDayInfo(date)
+  const lunarDay = info.lunarDay
+  const lunarMonth = info.lunarMonth
+  const lunarYear = lunarMonth.getLunarYear()
+
+  // 干支：年月日
+  const yearSixtyCycle = lunarYear.getSixtyCycle()
+  const monthSixtyCycle = lunarMonth.getSixtyCycle()
+  const daySixtyCycle = lunarDay.getSixtyCycle()
+
+  // 生肖
+  const zodiac = yearSixtyCycle.getEarthBranch().getZodiac().getName()
+
+  // 宜忌
+  const recommends = lunarDay.getRecommends()
+  const avoids = lunarDay.getAvoids()
 
   return {
-    lunarDate: `${t('calendar.lunarPrefix')}${lunar.monthName}${lunar.dayName}`,
-    ganzhi: `${getGanZhiYear(year)}${t('calendar.year')} 【${getZodiac(year)}${t('calendar.year')}】`,
-    zodiac: getZodiac(year),
-    solarTerm: getSolarTerm(date),
-    festival: getFestival(date, lunar),
-    yi: t('calendar.defaultYi'),
-    ji: t('calendar.defaultJi')
+    lunarDate: `${t('calendar.lunarPrefix')}${info.lunarMonthName}${info.lunarDayName}`,
+    ganzhi: `${yearSixtyCycle.getName()}${t('calendar.year')} ${monthSixtyCycle.getName()}${t('calendar.month')} ${daySixtyCycle.getName()}${t('calendar.day')}`,
+    zodiac: zodiac,
+    solarTerm: info.solarTerm,
+    festival: info.festival,
+    yi: recommends.length > 0 ? recommends.map(r => r.getName()).join(' ') : t('calendar.allSuitable'),
+    ji: avoids.length > 0 ? avoids.map(a => a.getName()).join(' ') : t('calendar.allAvoid')
   }
 })
 

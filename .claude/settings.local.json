@@ -38,7 +38,9 @@
       "Bash(git push:*)",
       "Bash(git branch:*)",
       "WebFetch(domain:developers.weixin.qq.com)",
-      "WebFetch(domain:blog.csdn.net)"
+      "WebFetch(domain:blog.csdn.net)",
+      "mcp__chrome-devtools__evaluate_script",
+      "Bash(pnpm vue-tsc:*)"
     ]
   }
 }

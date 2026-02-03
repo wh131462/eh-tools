@@ -119,6 +119,9 @@ importers:
       qrcode-generator:
         specifier: ^2.0.4
         version: 2.0.4
+      tyme4ts:
+        specifier: ^1.4.1
+        version: 1.4.1
       vue:
         specifier: ^3.4.21
         version: 3.5.27(typescript@4.9.5)
@@ -3619,6 +3622,9 @@ packages:
   tr46@2.1.0:
     resolution: {integrity: sha512-15Ih7phfcdP5YxqiB+iDtLoaTz4Nd35+IiAv0kQ5FNKHzXgdWqPoTIqEDDJmXceQt4JZk6lVPT8lnDlPpGDppw==}
     engines: {node: '>=8'}
+
+  tyme4ts@1.4.1:
+    resolution: {integrity: sha512-3iyHYVRUR3v2lPkM15mkfkhHS+sNWMPh4j7WS7yP/cx637fQvpLa2DkEvW0F+vuz/unxg5iw9l4VJ/J9j8XLCQ==}
 
   type-detect@4.0.8:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
@@ -8407,6 +8413,8 @@ snapshots:
   tr46@2.1.0:
     dependencies:
       punycode: 2.3.1
+
+  tyme4ts@1.4.1: {}
 
   type-detect@4.0.8: {}
 

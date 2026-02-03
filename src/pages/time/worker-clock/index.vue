@@ -324,6 +324,7 @@ import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 import { useSettingsStore } from '@/store'
 import TimePickerPopup from '@/components/common/TimePickerPopup.vue'
 import SelectorPickerPopup from '@/components/common/SelectorPickerPopup.vue'
+import { SolarDay, LegalHoliday } from 'tyme4ts'
 
 const { t } = useI18n()
 const settingsStore = useSettingsStore()
@@ -650,30 +651,27 @@ const paydayCountdown = computed(() => {
   return daysInMonth - currentDay + payday
 })
 
-// 下一个节假日
+// 下一个节假日（使用 tyme4ts 计算准确的法定假日）
 const nextHoliday = computed(() => {
   const now = currentTime.value
   const year = now.getFullYear()
 
-  // 简化的节假日列表
-  const holidays = [
-    { name: t('workerClock.holidays.newYear'), date: new Date(year, 0, 1) },
-    { name: t('workerClock.holidays.springFestival'), date: new Date(year, 1, 10) },
-    { name: t('workerClock.holidays.qingming'), date: new Date(year, 3, 5) },
-    { name: t('workerClock.holidays.laborDay'), date: new Date(year, 4, 1) },
-    { name: t('workerClock.holidays.dragonBoat'), date: new Date(year, 5, 10) },
-    { name: t('workerClock.holidays.midAutumn'), date: new Date(year, 8, 15) },
-    { name: t('workerClock.holidays.nationalDay'), date: new Date(year, 9, 1) },
-    { name: t('workerClock.holidays.newYear'), date: new Date(year + 1, 0, 1) }
-  ]
+  // 使用 tyme4ts 获取今天的公历日
+  const today = SolarDay.fromYmd(year, now.getMonth() + 1, now.getDate())
 
-  for (const holiday of holidays) {
-    if (holiday.date > now) {
-      const days = Math.ceil((holiday.date.getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
-      return { name: holiday.name, days }
+  // 从元旦开始遍历法定假日
+  let holiday = LegalHoliday.fromYmd(year, 1, 1)
+
+  while (holiday) {
+    // 找到下一个休息日（非调休上班日）且在今天之后
+    if (!holiday.isWork() && holiday.getDay().isAfter(today)) {
+      const days = holiday.getDay().subtract(today)
+      return { name: holiday.getName(), days }
     }
+    holiday = holiday.next(1)
   }
 
+  // 如果当年没找到，返回明年元旦
   return { name: t('workerClock.holidays.newYear'), days: 365 }
 })
 
