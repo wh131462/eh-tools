@@ -89,7 +89,7 @@
             <image class="scan-icon" src="/static/icons/image-white.svg" mode="aspectFit" />
           </view>
           <text class="scan-text">{{ t('qrcode.scanAlbum') }}</text>
-          <text class="scan-desc">支持多码识别</text>
+          <text class="scan-desc">从相册选择图片</text>
         </view>
       </view>
 
@@ -98,49 +98,22 @@
         <text>正在识别二维码...</text>
       </view>
 
-      <!-- 多个扫描结果 -->
-      <view v-if="scanResults.length > 0" class="results-container">
-        <view class="results-header">
-          <view class="results-title-wrap">
-            <image class="results-icon" src="/static/icons/check.svg" mode="aspectFit" />
-            <text class="results-title">{{ t('qrcode.scanResult') }}</text>
-          </view>
-          <view class="results-badge">{{ scanResults.length }}</view>
+      <!-- 扫描结果 -->
+      <view v-if="scanResult" class="result-section">
+        <view class="result-header">
+          <text class="result-label">{{ t('qrcode.scanResult') }}</text>
         </view>
-
-        <view class="results-list">
-          <view
-            v-for="(result, index) in scanResults"
-            :key="index"
-            class="result-card"
-          >
-            <view class="result-card-header">
-              <view class="result-index">
-                <text class="index-text">{{ index + 1 }}</text>
-              </view>
-              <view class="result-type">二维码</view>
-            </view>
-            <view class="result-card-body">
-              <text class="result-text" selectable>{{ result }}</text>
-            </view>
-            <view class="result-card-footer">
-              <button class="result-action copy" @click="copyOneResult(result)">
-                <image class="action-icon" src="/static/icons/copy.svg" mode="aspectFit" />
-                <text>复制内容</text>
-              </button>
-              <button class="result-action generate" @click="generateFromResult(result)">
-                <image class="action-icon" src="/static/icons/qrcode.svg" mode="aspectFit" />
-                <text>生成二维码</text>
-              </button>
-            </view>
-          </view>
+        <view class="result-content">{{ scanResult }}</view>
+        <view class="result-actions">
+          <button class="result-btn copy" @click="copyScanResult">
+            <image class="btn-icon" src="/static/icons/copy.svg" mode="aspectFit" />
+            {{ t('common.copy') }}
+          </button>
+          <button class="result-btn generate" @click="generateFromResult(scanResult)">
+            <image class="btn-icon" src="/static/icons/qrcode.svg" mode="aspectFit" />
+            生成二维码
+          </button>
         </view>
-
-        <!-- 复制全部按钮 -->
-        <button v-if="scanResults.length > 1" class="copy-all-btn" @click="copyAllResults">
-          <image class="btn-icon" src="/static/icons/copy.svg" mode="aspectFit" />
-          复制全部结果
-        </button>
       </view>
 
       <!-- 隐藏的 canvas 用于图片处理 -->
@@ -196,7 +169,7 @@ const showQRCode = ref(false)
 const resultText = ref('')
 
 // 扫描相关状态
-const scanResults = ref<string[]>([])
+const scanResult = ref('')
 const isScanning = ref(false)
 const canvasWidth = ref(300)
 const canvasHeight = ref(300)
@@ -237,7 +210,10 @@ const drawQRCode = (canvasId: string, text: string) => {
 
   const moduleCount = qr.getModuleCount()
   const size = 210
-  const cellSize = size / moduleCount
+  // QR 码标准要求四周至少有 4 个模块的静默区（白边）
+  const margin = 4
+  const totalModules = moduleCount + margin * 2
+  const cellSize = size / totalModules
 
   const ctx = uni.createCanvasContext(canvasId)
 
@@ -245,14 +221,14 @@ const drawQRCode = (canvasId: string, text: string) => {
   ctx.setFillStyle('#FFFFFF')
   ctx.fillRect(0, 0, size, size)
 
-  // 绘制二维码模块
+  // 绘制二维码模块（带白边偏移）
   ctx.setFillStyle('#000000')
   for (let row = 0; row < moduleCount; row++) {
     for (let col = 0; col < moduleCount; col++) {
       if (qr.isDark(row, col)) {
         ctx.fillRect(
-          col * cellSize,
-          row * cellSize,
+          (col + margin) * cellSize,
+          (row + margin) * cellSize,
           cellSize,
           cellSize
         )
@@ -307,7 +283,7 @@ const scanFromCamera = () => {
   uni.scanCode({
     scanType: ['qrCode'],
     success: (res) => {
-      scanResults.value = [res.result]
+      scanResult.value = res.result
     },
     fail: () => {
       showToast(t('qrcode.scanFailed'))
@@ -315,7 +291,7 @@ const scanFromCamera = () => {
   })
 }
 
-// 相册扫描 - 使用 jsQR 支持多码识别，失败时回退系统 API（支持小程序码）
+// 相册扫描
 const scanFromAlbum = () => {
   uni.chooseImage({
     count: 1,
@@ -331,36 +307,10 @@ const scanFromAlbum = () => {
   })
 }
 
-// 尝试使用系统 API 扫描（支持小程序码）
-const trySystemScan = () => {
-  uni.showModal({
-    title: '未识别到二维码',
-    content: '是否使用系统扫码？（支持小程序码）',
-    confirmText: '使用系统',
-    cancelText: '取消',
-    success: (res) => {
-      if (res.confirm) {
-        // 使用系统 API，支持小程序码
-        uni.scanCode({
-          onlyFromCamera: false,
-          scanType: ['qrCode', 'barCode'],
-          success: (result) => {
-            scanResults.value = [result.result]
-            showToast('识别成功', 'success')
-          },
-          fail: () => {
-            showToast(t('qrcode.scanFailed'))
-          }
-        })
-      }
-    }
-  })
-}
-
-// 使用 jsQR 处理图片识别多个二维码
+// 使用 jsQR 处理图片识别二维码
 const processImageWithJsQR = async (imagePath: string) => {
   isScanning.value = true
-  scanResults.value = []
+  scanResult.value = ''
 
   try {
     // 获取图片信息
@@ -411,19 +361,16 @@ const processImageWithJsQR = async (imagePath: string) => {
       })
     })
 
-    // 使用 jsQR 识别多个二维码
-    const results = await scanMultipleQRCodes(
-      new Uint8ClampedArray(pixelData.data),
-      width,
-      height
-    )
+    // 使用 jsQR 识别二维码
+    const code = jsQR(new Uint8ClampedArray(pixelData.data), width, height, {
+      inversionAttempts: 'attemptBoth'
+    })
 
-    if (results.length > 0) {
-      scanResults.value = results
-      showToast(`识别到 ${results.length} 个二维码`, 'success')
+    if (code) {
+      scanResult.value = code.data
+      showToast('识别成功', 'success')
     } else {
-      // jsQR 识别失败，尝试使用系统 API（支持小程序码）
-      trySystemScan()
+      showToast('未识别到二维码')
     }
   } catch (e) {
     console.error('QR scan error:', e)
@@ -433,61 +380,9 @@ const processImageWithJsQR = async (imagePath: string) => {
   }
 }
 
-// 扫描多个二维码
-const scanMultipleQRCodes = async (
-  imageData: Uint8ClampedArray,
-  width: number,
-  height: number
-): Promise<string[]> => {
-  const results: string[] = []
-  const data = new Uint8ClampedArray(imageData) // 复制数据以便修改
-  const maxIterations = 10 // 最多识别 10 个二维码
-
-  for (let i = 0; i < maxIterations; i++) {
-    const code = jsQR(data, width, height, {
-      inversionAttempts: 'attemptBoth'
-    })
-
-    if (!code) break
-
-    // 避免重复
-    if (!results.includes(code.data)) {
-      results.push(code.data)
-    }
-
-    // 将已识别的二维码区域涂白，以便识别下一个
-    const { topLeftCorner, bottomRightCorner } = code.location
-    const padding = 10 // 增加一些边距
-
-    const startX = Math.max(0, Math.floor(topLeftCorner.x) - padding)
-    const startY = Math.max(0, Math.floor(topLeftCorner.y) - padding)
-    const endX = Math.min(width, Math.ceil(bottomRightCorner.x) + padding)
-    const endY = Math.min(height, Math.ceil(bottomRightCorner.y) + padding)
-
-    // 涂白该区域
-    for (let y = startY; y < endY; y++) {
-      for (let x = startX; x < endX; x++) {
-        const idx = (y * width + x) * 4
-        data[idx] = 255     // R
-        data[idx + 1] = 255 // G
-        data[idx + 2] = 255 // B
-        // data[idx + 3] 保持 Alpha 不变
-      }
-    }
-  }
-
-  return results
-}
-
-// 复制单个结果
-const copyOneResult = (result: string) => {
-  copyToClipboard(result)
-}
-
-// 复制全部结果
-const copyAllResults = () => {
-  copyToClipboard(scanResults.value.join('\n'))
-  showToast('已复制全部结果', 'success')
+// 复制扫描结果
+const copyScanResult = () => {
+  copyToClipboard(scanResult.value)
 }
 
 // 从扫描结果生成二维码
@@ -812,198 +707,46 @@ onShow(() => {
   font-size: $font-size-sm;
 }
 
-// 多结果容器
-.results-container {
-  background-color: var(--bg-card);
-  border-radius: $radius-lg;
-  padding: $spacing-lg;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .theme-dark & {
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
-  }
-}
-
-.results-header {
+// 扫描结果操作按钮
+.result-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: $spacing-lg;
-  padding-bottom: $spacing-md;
-  border-bottom: 1rpx solid var(--border-light);
-}
-
-.results-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: $spacing-xs;
-}
-
-.results-icon {
-  width: 40rpx;
-  height: 40rpx;
-}
-
-.results-title {
-  font-size: $font-size-lg;
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.results-badge {
-  min-width: 48rpx;
-  height: 48rpx;
-  padding: 0 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light, #6366f1));
-  color: #FFFFFF;
-  font-size: $font-size-md;
-  font-weight: 600;
-  border-radius: 24rpx;
-}
-
-.results-list {
-  display: flex;
-  flex-direction: column;
   gap: $spacing-md;
+  margin-top: $spacing-md;
 }
 
-// 结果卡片
-.result-card {
-  background-color: var(--bg-page);
-  border-radius: $radius-md;
-  overflow: hidden;
-  border: 1rpx solid var(--border-light);
-
-  .theme-dark & {
-    border-color: transparent;
-  }
-}
-
-.result-card-header {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-md $spacing-md 0;
-}
-
-.result-index {
-  width: 44rpx;
-  height: 44rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light, #6366f1));
-  border-radius: $radius-sm;
-
-  .index-text {
-    color: #FFFFFF;
-    font-size: $font-size-sm;
-    font-weight: 600;
-  }
-}
-
-.result-type {
-  font-size: $font-size-xs;
-  color: var(--text-placeholder);
-  background-color: var(--bg-card);
-  padding: 4rpx 12rpx;
-  border-radius: 4rpx;
-}
-
-.result-card-body {
-  padding: $spacing-md;
-}
-
-.result-text {
-  font-size: $font-size-md;
-  color: var(--text-primary);
-  word-break: break-all;
-  line-height: 1.7;
-  display: block;
-}
-
-.result-card-footer {
-  display: flex;
-  border-top: 1rpx solid var(--border-light);
-
-  .theme-dark & {
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-}
-
-.result-action {
+.result-btn {
   flex: 1;
+  height: 72rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: $spacing-xs;
-  height: 88rpx;
   font-size: $font-size-sm;
-  background-color: transparent;
+  border-radius: $radius-sm;
   border: none;
-  border-radius: 0;
-  position: relative;
 
   &::after {
     border: none;
   }
 
   &:active {
-    background-color: var(--bg-hover);
+    opacity: 0.8;
   }
 
-  .action-icon {
+  .btn-icon {
     width: 32rpx;
     height: 32rpx;
   }
 
   &.copy {
-    color: var(--text-secondary);
-    border-right: 1rpx solid var(--border-light);
-
-    .theme-dark & {
-      border-color: rgba(255, 255, 255, 0.1);
-    }
+    background-color: var(--bg-page);
+    color: var(--primary);
+    border: 1rpx solid var(--primary);
   }
 
   &.generate {
-    color: var(--primary);
-    font-weight: 500;
-  }
-}
-
-.copy-all-btn {
-  width: 100%;
-  height: 88rpx;
-  margin-top: $spacing-lg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: $spacing-xs;
-  background: linear-gradient(135deg, var(--primary), var(--primary-light, #6366f1));
-  color: #FFFFFF;
-  font-size: $font-size-md;
-  font-weight: 500;
-  border-radius: $radius-md;
-  border: none;
-  box-shadow: 0 4rpx 16rpx rgba(99, 102, 241, 0.3);
-
-  .btn-icon {
-    width: 36rpx;
-    height: 36rpx;
-    filter: brightness(0) invert(1);
-  }
-
-  &::after {
-    border: none;
-  }
-
-  &:active {
-    opacity: 0.9;
-    transform: scale(0.99);
+    background-color: var(--primary);
+    color: #FFFFFF;
   }
 }
 
