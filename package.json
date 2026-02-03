@@ -1,6 +1,6 @@
 {
   "name": "eh-tools",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "scripts": {
     "dev:custom": "uni -p",
     "dev:h5": "uni",
