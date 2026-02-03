@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="moon-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#11998e"/>
+      <stop offset="100%" style="stop-color:#38ef7d"/>
+    </linearGradient>
+  </defs>
+  <path d="M36 24C36 32.8366 28.8366 40 20 40C15.1911 40 10.8779 37.8289 8 34.3911C10.0294 35.4222 12.3424 36 14.8 36C23.4604 36 30.4 29.0604 30.4 20.4C30.4 15.7847 28.3824 11.6391 25.1472 8.82861C31.4162 10.5533 36 16.7362 36 24Z" fill="url(#moon-grad)"/>
+  <circle cx="12" cy="12" r="1.5" fill="url(#moon-grad)" fill-opacity="0.6"/>
+  <circle cx="38" cy="16" r="2" fill="url(#moon-grad)" fill-opacity="0.5"/>
+  <circle cx="40" cy="32" r="1.5" fill="url(#moon-grad)" fill-opacity="0.4"/>
+  <circle cx="8" cy="28" r="1" fill="url(#moon-grad)" fill-opacity="0.5"/>
+  <circle cx="32" cy="8" r="1" fill="url(#moon-grad)" fill-opacity="0.6"/>
+</svg>

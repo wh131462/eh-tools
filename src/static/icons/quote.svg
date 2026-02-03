@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="quote-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 12C8 9.79086 9.79086 8 12 8H36C38.2091 8 40 9.79086 40 12V28C40 30.2091 38.2091 32 36 32H20L12 40V32H12C9.79086 32 8 30.2091 8 28V12Z" fill="url(#quote-grad)"/>
+  <path d="M16 17C16 15.8954 16.8954 15 18 15H18.5C19.6046 15 20.5 15.8954 20.5 17V19C20.5 20.1046 19.6046 21 18.5 21H18C17.4477 21 17 21.4477 17 22V23C17 23.5523 17.4477 24 18 24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <path d="M27 17C27 15.8954 27.8954 15 29 15H29.5C30.6046 15 31.5 15.8954 31.5 17V19C31.5 20.1046 30.6046 21 29.5 21H29C28.4477 21 28 21.4477 28 22V23C28 23.5523 28.4477 24 29 24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg>

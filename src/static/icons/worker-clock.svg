@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- 时钟外圈 -->
+  <circle cx="12" cy="12" r="9" stroke="#667eea" stroke-width="2"/>
+  <!-- 时钟刻度 -->
+  <line x1="12" y1="5" x2="12" y2="6.5" stroke="#667eea" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="12" y1="17.5" x2="12" y2="19" stroke="#667eea" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="5" y1="12" x2="6.5" y2="12" stroke="#667eea" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="17.5" y1="12" x2="19" y2="12" stroke="#667eea" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- 时针 - 指向下班方向 (6点方向) -->
+  <line x1="12" y1="12" x2="12" y2="15" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+  <!-- 分针 - 强调快速流逝 -->
+  <line x1="12" y1="12" x2="15.5" y2="8.5" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+  <!-- 中心圆点 -->
+  <circle cx="12" cy="12" r="1.5" fill="#667eea"/>
+  <!-- 咖啡杯把手 - 右下角小装饰 -->
+  <path d="M17 16.5 C18.5 16.5 19 17.5 19 18.5 C19 19.5 18.5 20 17.5 20" stroke="#667eea" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- 咖啡杯杯身 -->
+  <path d="M14 17 L14 20.5 C14 21 14.5 21.5 15.5 21.5 L17 21.5 C18 21.5 18.5 21 18.5 20.5 L18.5 17 Z" stroke="#667eea" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+  <!-- 咖啡热气 -->
+  <path d="M15 15 Q15.5 14 15 13" stroke="#667eea" stroke-width="1" stroke-linecap="round" fill="none"/>
+  <path d="M17 15 Q17.5 14 17 13" stroke="#667eea" stroke-width="1" stroke-linecap="round" fill="none"/>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="celebrate-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb"/>
+      <stop offset="100%" style="stop-color:#f5576c"/>
+    </linearGradient>
+    <linearGradient id="ribbon1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="ribbon2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f7971e"/>
+      <stop offset="100%" style="stop-color:#ffd200"/>
+    </linearGradient>
+    <linearGradient id="ribbon3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#11998e"/>
+      <stop offset="100%" style="stop-color:#38ef7d"/>
+    </linearGradient>
+  </defs>
+  <!-- Party popper cone -->
+  <path d="M10 38L22 14L28 20L10 38Z" fill="url(#celebrate-grad)"/>
+  <path d="M10 38L14 34L16 36L10 38Z" fill="white" fill-opacity="0.3"/>
+
+  <!-- Confetti ribbons -->
+  <path d="M26 12C28 8 32 6 36 8C34 12 30 14 26 12Z" fill="url(#ribbon1)"/>
+  <path d="M32 18C36 16 40 18 42 22C38 24 34 22 32 18Z" fill="url(#ribbon2)"/>
+  <path d="M24 22C26 18 30 16 32 18C30 22 26 24 24 22Z" fill="url(#ribbon3)"/>
+
+  <!-- Confetti dots -->
+  <circle cx="38" cy="10" r="2.5" fill="url(#ribbon2)"/>
+  <circle cx="42" cy="28" r="2" fill="url(#ribbon1)"/>
+  <circle cx="30" cy="8" r="1.5" fill="url(#ribbon3)"/>
+  <circle cx="36" cy="32" r="2" fill="url(#celebrate-grad)"/>
+
+  <!-- Star sparkles -->
+  <path d="M18 6L19 9L22 10L19 11L18 14L17 11L14 10L17 9L18 6Z" fill="url(#ribbon2)"/>
+  <path d="M40 16L41 18L43 19L41 20L40 22L39 20L37 19L39 18L40 16Z" fill="url(#ribbon1)"/>
+
+  <!-- Small rectangles -->
+  <rect x="28" y="26" width="4" height="2" rx="1" fill="url(#ribbon1)" transform="rotate(30 28 26)"/>
+  <rect x="34" y="6" width="3" height="6" rx="1.5" fill="url(#celebrate-grad)" transform="rotate(-20 34 6)"/>
+</svg>
