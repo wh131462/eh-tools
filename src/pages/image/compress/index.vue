@@ -4,10 +4,10 @@
     <nav-bar :title="t('compress.title')" />
 
     <!-- 选择图片按钮 -->
-    <view class="select-section">
-      <view class="select-btn" @click="selectImage">
-        <text class="select-icon">+</text>
-        <text class="select-text">{{ t('compress.selectImage') }}</text>
+    <view class="main-card">
+      <view class="image-placeholder" @click="selectImage">
+        <image src="/static/icons/image.svg" class="placeholder-icon" mode="aspectFit" />
+        <text class="placeholder-text">{{ t('compress.selectImage') }}</text>
       </view>
     </view>
 
@@ -348,32 +348,37 @@ onShow(() => {
 }
 
 // 选择图片
-.select-section {
+.main-card {
+  background-color: var(--bg-card);
+  border-radius: $radius-lg;
+  box-shadow: var(--shadow-neumorphic);
+  padding: $spacing-lg;
   margin-bottom: $spacing-md;
 }
 
-.select-btn {
+.image-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 200rpx;
-  background-color: var(--bg-card);
+  height: 400rpx;
+  border: 2rpx dashed var(--border-color);
   border-radius: $radius-md;
-  border: 2rpx dashed var(--border-light);
+  cursor: pointer;
 
   &:active {
-    background-color: var(--bg-hover);
+    opacity: 0.8;
   }
 }
 
-.select-icon {
-  font-size: 64rpx;
-  color: var(--primary);
-  margin-bottom: $spacing-xs;
+.placeholder-icon {
+  width: 96rpx;
+  height: 96rpx;
+  opacity: 0.5;
+  margin-bottom: $spacing-md;
 }
 
-.select-text {
+.placeholder-text {
   font-size: $font-size-md;
   color: var(--text-secondary);
 }
@@ -541,6 +546,7 @@ onShow(() => {
 .save-all-btn {
   flex: 1;
   height: 88rpx;
+  line-height: 88rpx;
   font-size: $font-size-md;
   border-radius: $radius-sm;
   border: none;
