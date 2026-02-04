@@ -334,6 +334,10 @@ onShow(() => {
   width: 32rpx;
   height: 32rpx;
   opacity: 0.6;
+
+  .theme-dark & {
+    filter: brightness(0) invert(1);
+  }
 }
 
 .picker-options {
