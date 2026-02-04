@@ -246,6 +246,12 @@
       "style": {
         "navigationBarTitleText": "尺码对照表"
       }
+    },
+    {
+      "path": "pages/time/stopwatch/index",
+      "style": {
+        "navigationBarTitleText": "秒表"
+      }
     }
   ],
   "globalStyle": {

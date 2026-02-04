@@ -9,9 +9,6 @@
     <view v-if="false" class="result-card">
       <!-- 计算/处理结果 -->
     </view>
-
-    <!-- 底部占位 -->
-    <view class="bottom-placeholder" />
   </view>
 </template>
 
@@ -66,9 +63,5 @@ onShareTimeline(() => ({
   box-shadow: var(--shadow-neumorphic);
   padding: $spacing-lg;
   margin-bottom: $spacing-md;
-}
-
-.bottom-placeholder {
-  height: calc($tabbar-height + $safe-bottom + $spacing-md);
 }
 </style>

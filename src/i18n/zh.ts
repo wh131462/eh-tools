@@ -89,6 +89,7 @@ export default {
     pomodoroTimer: '番茄钟',
     ledMarquee: 'LED字幕',
     workerClock: '打工人时钟',
+    stopwatch: '秒表',
     kinshipCalculator: '亲戚称呼',
     licensePlate: '车牌归属地',
     todoList: '待办清单',
@@ -1053,5 +1054,20 @@ export default {
     },
     tips: '温馨提示',
     tipContent: '尺码仅供参考，不同品牌可能存在差异，建议以实际测量为准'
+  },
+
+  // 秒表
+  stopwatch: {
+    title: '秒表',
+    elapsed: '已计时',
+    lap: '计次',
+    lapTime: '单圈',
+    totalTime: '总计',
+    laps: '计次记录',
+    noLaps: '暂无计次记录',
+    bestLap: '最快',
+    worstLap: '最慢',
+    clear: '清除',
+    clearConfirm: '确定清除所有计次记录吗？'
   }
 }

@@ -32,6 +32,7 @@ export const TOOLS: Tool[] = [
   { id: 'age-calculator', name: '年龄计算器', nameKey: 'tool.ageCalculator', icon: 'age', path: '/pages/time/age-calculator/index', category: 'time' },
   { id: 'pomodoro-timer', name: '番茄钟', nameKey: 'tool.pomodoroTimer', icon: 'pomodoro', path: '/pages/time/pomodoro-timer/index', category: 'time' },
   { id: 'worker-clock', name: '打工人时钟', nameKey: 'tool.workerClock', icon: 'worker-clock', path: '/pages/time/worker-clock/index', category: 'time' },
+  { id: 'stopwatch', name: '秒表', nameKey: 'tool.stopwatch', icon: 'stopwatch', path: '/pages/time/stopwatch/index', category: 'time' },
 
   // 计算工具
   { id: 'calculator', name: '计算器', nameKey: 'tool.calculator', icon: 'calculator', path: '/pages/calc/calculator/index', category: 'calc' },

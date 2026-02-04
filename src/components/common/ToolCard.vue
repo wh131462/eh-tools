@@ -32,6 +32,7 @@ const TOOL_ICONS: Record<string, string> = {
   'age-calculator': '/static/icons/age.svg',
   'pomodoro-timer': '/static/icons/pomodoro.svg',
   'worker-clock': '/static/icons/worker-clock.svg',
+  'stopwatch': '/static/icons/stopwatch.svg',
   // 计算工具
   'calculator': '/static/icons/calculator.svg',
   'salary': '/static/icons/money.svg',
@@ -68,6 +69,7 @@ const TOOL_GRADIENTS: Record<string, string> = {
   'age-calculator': 'var(--gradient-age)',
   'pomodoro-timer': 'var(--gradient-pomodoro)',
   'worker-clock': 'var(--gradient-worker-clock)',
+  'stopwatch': 'var(--gradient-stopwatch)',
   'calculator': 'var(--gradient-calculator)',
   'salary': 'var(--gradient-money)',
   'bmi': 'var(--gradient-scale)',

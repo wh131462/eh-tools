@@ -89,6 +89,7 @@ export default {
     pomodoroTimer: 'Pomodoro',
     ledMarquee: 'Marquee',
     workerClock: 'Work Clock',
+    stopwatch: 'Stopwatch',
     kinshipCalculator: 'Kinship',
     licensePlate: 'Plate',
     todoList: 'Todo',
@@ -1051,5 +1052,20 @@ export default {
     },
     tips: 'Tips',
     tipContent: 'Sizes are for reference only. Different brands may vary. Please measure for best fit.'
+  },
+
+  // Stopwatch
+  stopwatch: {
+    title: 'Stopwatch',
+    elapsed: 'Elapsed',
+    lap: 'Lap',
+    lapTime: 'Lap Time',
+    totalTime: 'Total',
+    laps: 'Laps',
+    noLaps: 'No laps recorded',
+    bestLap: 'Best',
+    worstLap: 'Worst',
+    clear: 'Clear',
+    clearConfirm: 'Clear all lap records?'
   }
 }
