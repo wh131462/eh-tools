@@ -967,7 +967,4 @@ onShareTimeline(() => {
   color: var(--text-placeholder);
 }
 
-.bottom-placeholder {
-  height: calc($tabbar-height + $safe-bottom + $spacing-md);
-}
 </style>

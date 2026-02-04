@@ -15,8 +15,6 @@
 ```vue
 <template>
   <view class="page {tool-id}-page" :class="{ 'theme-dark': settingsStore.isDark }">
-    <!-- 页面内容 -->
-    <view class="bottom-placeholder" />
   </view>
 </template>
 
@@ -43,9 +41,6 @@ onShow(() => {
   padding-bottom: 0;
   box-sizing: border-box;
   background-color: var(--bg-page);
-}
-.bottom-placeholder {
-  height: calc($tabbar-height + $safe-bottom + $spacing-md);
 }
 </style>
 ```

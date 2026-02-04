@@ -120,9 +120,6 @@
         </view>
       </view>
     </view>
-
-    <!-- 底部占位 -->
-    <view class="bottom-placeholder" />
   </view>
 </template>
 
@@ -605,7 +602,4 @@ watch([pattern, testText, flagsString], () => {
   }
 }
 
-.bottom-placeholder {
-  height: calc($tabbar-height + $safe-bottom + $spacing-md);
-}
 </style>

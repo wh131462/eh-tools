@@ -89,10 +89,6 @@
         </view>
       </view>
     </view>
-
-    <!-- 底部占位 -->
-    <view class="bottom-placeholder" />
-
     <!-- 工具分享图 Canvas -->
     <share-canvas
       canvas-id="licensePlateShareCanvas"
@@ -908,7 +904,4 @@ onShareTimeline(() => ({
   color: var(--text-primary);
 }
 
-.bottom-placeholder {
-  height: calc($tabbar-height + $safe-bottom + $spacing-md);
-}
 </style>

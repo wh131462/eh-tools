@@ -493,9 +493,6 @@ onShareTimeline(() => ({
   line-height: 1.6;
 }
 
-.bottom-placeholder {
-  height: calc($tabbar-height + $safe-bottom + $spacing-md);
-}
 
 // 暗黑模式适配
 .theme-dark {

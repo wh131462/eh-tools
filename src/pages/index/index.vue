@@ -153,6 +153,7 @@ const TOOL_ICONS: Record<string, string> = {
   'age-calculator': '/static/icons/age.svg',
   'pomodoro-timer': '/static/icons/pomodoro.svg',
   'worker-clock': '/static/icons/worker-clock.svg',
+  'stopwatch': '/static/icons/stopwatch.svg',
   'calculator': '/static/icons/calculator.svg',
   'salary': '/static/icons/money.svg',
   'bmi': '/static/icons/scale.svg',

@@ -157,9 +157,6 @@
           <text class="slider-label">{{ t('ledMarquee.large') }}</text>
         </view>
       </view>
-
-      <!-- 底部占位 -->
-      <view class="bottom-placeholder" />
     </view>
 
     <!-- 工具分享图 Canvas -->
@@ -550,7 +547,4 @@ slider {
   flex: 1;
 }
 
-.bottom-placeholder {
-  height: calc($tabbar-height + $safe-bottom + $spacing-md);
-}
 </style>
