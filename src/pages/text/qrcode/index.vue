@@ -34,27 +34,33 @@
         <view class="char-count">{{ inputText.length }}/500</view>
       </view>
 
-      <!-- 生成按钮 -->
-      <button class="primary-btn" @click="generateQRCode">
-        {{ t('qrcode.generateBtn') }}
-      </button>
-
-      <!-- 二维码显示 -->
-      <view v-if="showQRCode" class="qrcode-wrapper">
+      <!-- 二维码显示 - 始终显示 -->
+      <view class="qrcode-wrapper">
         <view class="qrcode-container">
           <canvas
             canvas-id="qrcode-canvas"
             id="qrcode-canvas"
             class="qrcode-canvas"
           />
+          <!-- 生成按钮 - 覆盖在容器中央 -->
+          <view v-if="!isGenerated" class="generate-overlay">
+            <button class="generate-btn" @click="generateQRCode">
+              {{ t('qrcode.generateBtn') }}
+            </button>
+          </view>
+          <!-- 刷新按钮 - 内容变化后显示 -->
+          <view v-if="isGenerated && needRefresh" class="refresh-overlay" @click="generateQRCode">
+            <image class="refresh-icon" src="/static/icons/refresh.svg" mode="aspectFit" />
+          </view>
         </view>
 
-        <view class="action-buttons">
+        <!-- 操作按钮 - 生成后显示 -->
+        <view v-if="isGenerated" class="action-buttons">
           <button class="action-btn primary" @click="saveToAlbum">
             <image class="btn-icon" src="/static/icons/save-white.svg" mode="aspectFit" />
             {{ t('qrcode.saveToAlbum') }}
           </button>
-          <button class="action-btn secondary" @click="verifyQRCode">
+          <button class="action-btn secondary bordered" @click="verifyQRCode">
             <image class="btn-icon" src="/static/icons/check-gray.svg" mode="aspectFit" />
             {{ t('qrcode.verify') }}
           </button>
@@ -165,7 +171,9 @@ function onToolShareGenerated(url: string) {
 // 状态
 const mode = ref<'generate' | 'scan'>('generate')
 const inputText = ref('')
-const showQRCode = ref(false)
+const isGenerated = ref(false) // 是否已生成二维码
+const needRefresh = ref(false) // 内容变化后需要刷新
+const generatedText = ref('') // 当前生成的二维码对应的文本
 const resultText = ref('')
 
 // 扫描相关状态
@@ -181,17 +189,23 @@ const generateQRCode = async () => {
     return
   }
 
-  showQRCode.value = true
   resultText.value = ''
 
   await nextTick()
 
   try {
     drawQRCode('qrcode-canvas', inputText.value)
+    generatedText.value = inputText.value
+    isGenerated.value = true
+    needRefresh.value = false
   } catch (e) {
     showToast(t('qrcode.generateFailed'))
-    showQRCode.value = false
   }
+}
+
+// 初始化显示 hello world 模拟二维码
+const initPreviewQRCode = () => {
+  drawQRCode('qrcode-canvas', 'Hello World')
 }
 
 // 将字符串转换为 UTF-8 字节字符串
@@ -394,13 +408,26 @@ const generateFromResult = (result: string) => {
   })
 }
 
+// 监听输入内容变化
+watch(inputText, (newVal) => {
+  if (isGenerated.value && newVal !== generatedText.value) {
+    needRefresh.value = true
+  } else if (newVal === generatedText.value) {
+    needRefresh.value = false
+  }
+})
+
 // 监听模式切换，重新绘制二维码
 watch(mode, async (newMode) => {
-  if (newMode === 'generate' && showQRCode.value && inputText.value) {
+  if (newMode === 'generate') {
     await nextTick()
     // 延迟确保 canvas 已渲染
     setTimeout(() => {
-      drawQRCode('qrcode-canvas', inputText.value)
+      if (isGenerated.value && generatedText.value) {
+        drawQRCode('qrcode-canvas', generatedText.value)
+      } else {
+        initPreviewQRCode()
+      }
     }, 50)
   }
 })
@@ -421,11 +448,15 @@ onShow(() => {
   uni.setNavigationBarTitle({ title: t('qrcode.title') })
   settingsStore.initTheme()
 
-  // 页面显示时，如果有已生成的二维码，重新绘制
-  if (mode.value === 'generate' && showQRCode.value && inputText.value) {
+  // 页面显示时，重新绘制二维码
+  if (mode.value === 'generate') {
     nextTick(() => {
       setTimeout(() => {
-        drawQRCode('qrcode-canvas', inputText.value)
+        if (isGenerated.value && generatedText.value) {
+          drawQRCode('qrcode-canvas', generatedText.value)
+        } else {
+          initPreviewQRCode()
+        }
       }, 50)
     })
   }
@@ -504,7 +535,7 @@ onShow(() => {
   font-size: $font-size-md;
   border-radius: $radius-sm;
   border: none;
-
+  line-height: 88rpx;
   &::after {
     border: none;
   }
@@ -525,6 +556,7 @@ onShow(() => {
 }
 
 .qrcode-container {
+  position: relative;
   width: 440rpx;
   height: 440rpx;
   display: flex;
@@ -539,6 +571,68 @@ onShow(() => {
   .theme-dark & {
     box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.3);
   }
+}
+
+// 生成按钮覆盖层
+.generate-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: $radius-md;
+  z-index: 10;
+}
+
+.generate-btn {
+  min-width: 200rpx;
+  height: 80rpx;
+  background-color: var(--primary);
+  color: #FFFFFF;
+  font-size: $font-size-md;
+  font-weight: 500;
+  border-radius: $radius-sm;
+  border: none;
+  line-height: 80rpx;
+
+  &::after {
+    border: none;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+// 刷新按钮覆盖层
+.refresh-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: $radius-md;
+  z-index: 10;
+  cursor: pointer;
+
+  &:active {
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+.refresh-icon {
+  width: 80rpx;
+  height: 80rpx;
+  // 使用主色调
+  filter: brightness(0) saturate(100%) invert(45%) sepia(85%) saturate(1000%) hue-rotate(210deg) brightness(95%) contrast(95%);
 }
 
 .qrcode-canvas {
@@ -579,6 +673,16 @@ onShow(() => {
     background-color: var(--bg-page);
     color: var(--text-primary);
     border: 1rpx solid var(--border-light);
+
+    &.bordered {
+      border: 2rpx solid var(--primary);
+      color: var(--primary);
+
+      .btn-icon {
+        // 图标也使用主色调
+        filter: brightness(0) saturate(100%) invert(45%) sepia(85%) saturate(1000%) hue-rotate(210deg) brightness(95%) contrast(95%);
+      }
+    }
   }
 
   .btn-icon {
