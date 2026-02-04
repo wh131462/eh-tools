@@ -30,6 +30,14 @@
 - 填充点/小面积: `fill="#667eea"`
 - 不使用其他颜色
 
+**⚠️ 禁止使用 `currentColor`**
+
+微信小程序不支持 SVG 的 `currentColor` 属性，图标颜色无法通过 CSS `color` 属性继承。必须在 SVG 中硬编码具体颜色值。
+
+如需适配不同场景的颜色：
+- 使用 CSS `filter` 调整图标颜色（如 `brightness(0) invert(1)` 变白）
+- 或准备多个颜色版本的图标（如 `icon.svg` 和 `icon-white.svg`）
+
 图标在 ToolCard 中通过 CSS `filter: brightness(0) invert(1)` 变为白色，叠加在渐变色背景上显示。因此图标本身的颜色不影响最终展示效果，但统一为 `#667eea` 保持代码一致性。
 
 ## 文件命名

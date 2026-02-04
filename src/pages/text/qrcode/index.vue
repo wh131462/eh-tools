@@ -79,14 +79,14 @@
       <view class="scan-buttons">
         <view class="scan-btn" @click="scanFromCamera">
           <view class="scan-icon-wrapper">
-            <image class="scan-icon" src="/static/icons/camera-white.svg" mode="aspectFit" />
+            <image class="scan-icon" src="/static/icons/camera.svg" mode="aspectFit" />
           </view>
           <text class="scan-text">{{ t('qrcode.scanCamera') }}</text>
           <text class="scan-desc">使用摄像头扫描</text>
         </view>
         <view class="scan-btn" @click="scanFromAlbum">
           <view class="scan-icon-wrapper">
-            <image class="scan-icon" src="/static/icons/image-white.svg" mode="aspectFit" />
+            <image class="scan-icon" src="/static/icons/image.svg" mode="aspectFit" />
           </view>
           <text class="scan-text">{{ t('qrcode.scanAlbum') }}</text>
           <text class="scan-desc">从相册选择图片</text>
@@ -681,6 +681,8 @@ onShow(() => {
 .scan-icon {
   width: 48rpx;
   height: 48rpx;
+  // 将 #667eea 图标转为白色，适配渐变背景
+  filter: brightness(0) invert(1);
 }
 
 .scan-text {
@@ -742,11 +744,17 @@ onShow(() => {
     background-color: var(--bg-page);
     color: var(--primary);
     border: 1rpx solid var(--primary);
+    // 图标保持原色 #667eea，与文字 var(--primary) 一致
   }
 
   &.generate {
     background-color: var(--primary);
     color: #FFFFFF;
+
+    .btn-icon {
+      // 图标变白，与文字颜色一致
+      filter: brightness(0) invert(1);
+    }
   }
 }
 
