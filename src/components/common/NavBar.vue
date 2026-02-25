@@ -63,10 +63,13 @@ const isDark = computed(() => settingsStore.isDark)
 const handleBack = () => {
   if (!props.showBack) return
   emit('back')
-  // 默认返回上一页
   const pages = getCurrentPages()
   if (pages.length > 1) {
+    // 有上一页，正常返回
     uni.navigateBack({})
+  } else {
+    // 没有上一页（分享进入），跳转到首页
+    uni.switchTab({ url: '/pages/index/index' })
   }
 }
 
