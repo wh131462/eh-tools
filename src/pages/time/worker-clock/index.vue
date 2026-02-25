@@ -124,16 +124,18 @@
       <view class="income-cards">
         <view class="income-card main-income">
           <text class="income-label">{{ t('workerClock.income.today') }}</text>
-          <view class="income-value">
+          <view class="income-value income-dynamic">
             <text class="income-currency">¥</text>
-            <text class="income-amount">{{ todayEarned }}</text>
+            <text class="income-amount">{{ todayEarnedInt }}</text>
+            <text class="income-decimal">.{{ todayEarnedDec }}</text>
           </view>
         </view>
         <view class="income-card">
           <text class="income-label">{{ t('workerClock.income.month') }}</text>
-          <view class="income-value small">
+          <view class="income-value small income-dynamic-month">
             <text class="income-currency">¥</text>
-            <text class="income-amount">{{ monthEarned }}</text>
+            <text class="income-amount">{{ monthEarnedInt }}</text>
+            <text class="income-decimal">.{{ monthEarnedDec }}</text>
           </view>
         </view>
       </view>
@@ -437,6 +439,7 @@ const paydayPickerRef = ref<InstanceType<typeof SelectorPickerPopup> | null>(nul
 
 // === 打工人语录 ===
 const WORKER_QUOTES = [
+  // 经典打工宣言
   '打工人，打工魂，打工都是人上人！',
   '今天搬砖不狠，明天地位不稳。',
   '没有困难的工作，只有勇敢的打工人。',
@@ -451,7 +454,64 @@ const WORKER_QUOTES = [
   '愿你的工资配得上你的辛苦。',
   '今天又是为资本家奋斗的一天。',
   '我不是在上班，我是在用时间换生存。',
-  '只有脚踏实地的人，才能说地不好走。'
+  '只有脚踏实地的人，才能说地不好走。',
+  // 自我调侃
+  '上班的心情比上坟还沉重。',
+  '我的工作就是把咖啡变成代码。',
+  '每天叫醒我的不是梦想，是穷。',
+  '别人上班是赚钱，我上班是还钱。',
+  '工作使我快乐——我说谎的时候眼睛都不眨。',
+  '上班就是每天演一出假装很忙的戏。',
+  '如果工作不累，那一定是摸鱼摸到位了。',
+  '我对钱没有兴趣，我对挣钱有兴趣。',
+  '世上无难事，只要肯放弃。',
+  '人生就像打工，你不干就有别人干。',
+  // 励志向
+  '今天不想上班，明天不想上班，后天不想上班——总结：这辈子都不想上班。',
+  '你不努力，怎么知道努力也没用？',
+  '有人相爱，有人夜里看海，有人第八节课还在等下班。',
+  '钱虽然不是万能的，但没钱是万万不能的。',
+  '我要悄悄打工，然后惊艳所有人的银行卡余额。',
+  '熬过这一阵，就能迎来下一阵。',
+  '成年人的世界没有容易二字，只有加班二字。',
+  '只要我跑得够快，悲伤就追不上我。',
+  '加油，打工人！你离发工资又近了一天！',
+  '梦想还是要有的，万一工资涨了呢？',
+  // 摸鱼哲学
+  '该摸的鱼一条也不能少，该划的水一滴也不能漏。',
+  '工位上坐着的不是我，是一尊佛。',
+  '假装在工作是每个打工人的基本修养。',
+  '摸鱼一时爽，一直摸鱼一直爽。',
+  '上班最大的意义就是下班。',
+  '没有什么事是一杯奶茶解决不了的，如果有，那就两杯。',
+  '今天的咖啡格外好喝，因为是用绝望冲泡的。',
+  '上班如果不迟到，跟咸鱼有什么区别？',
+  '我不是在摸鱼，我是在思考人生。',
+  '工作再忙也要记得喝水，毕竟水分是摸鱼的基础。',
+  // 下班期待
+  '距离下班还有亿点点时间。',
+  '下班铃声是世界上最动听的音乐。',
+  '人这一辈子，就是在等下班。',
+  '全世界最远的距离是从上班到下班。',
+  '为了那一刻的下班自由，我能忍受一整天。',
+  '下班以后的我才是真正的我。',
+  '如果一天有25个小时，希望多出的那个小时是下班后。',
+  '今天也是在倒计时下班的一天呢。',
+  // 工资感悟
+  '工资就像大姨妈，一个月来一次，一周就没了。',
+  '月初富翁，月中平民，月末乞丐。',
+  '发工资那天是每个月唯一的好日子。',
+  '我的理想是不上班也有钱拿。',
+  '这个月的工资已经规划好了：房租、吃饭、还花呗。完。',
+  '钱不是省出来的，但确实不够花。',
+  '工资涨了多少不重要，重要的是物价涨了多少。',
+  '每月一号和十五，是打工人的精神支柱。',
+  // 周末渴望
+  '周一到周五是为了活着，周末才是为了生活。',
+  '这辈子最期待的事：周五下午六点。',
+  '周末的快乐建立在周五的倒计时之上。',
+  '一周最幸福的时刻是周五下班那一秒。',
+  '周末两天的快乐，不足以治愈周一的痛苦。'
 ]
 
 // === 状态 ===
@@ -647,7 +707,7 @@ const mainCountdown = computed(() => {
   }
 })
 
-// 今日进度
+// 今日进度（秒级精度）
 const todayProgress = computed(() => {
   if (isWeekend.value) return 100
 
@@ -657,25 +717,24 @@ const todayProgress = computed(() => {
   const [lunchStartH, lunchStartM] = settings.value.lunchStart.split(':').map(Number)
   const [lunchEndH, lunchEndM] = settings.value.lunchEnd.split(':').map(Number)
 
-  const startMinutes = startH * 60 + startM
-  const endMinutes = endH * 60 + endM
-  const lunchDuration = (lunchEndH * 60 + lunchEndM) - (lunchStartH * 60 + lunchStartM)
-  const totalWorkMinutes = endMinutes - startMinutes - lunchDuration
+  const currentSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
+  const startSec = startH * 3600 + startM * 60
+  const endSec = endH * 3600 + endM * 60
+  const lunchStartSec = lunchStartH * 3600 + lunchStartM * 60
+  const lunchEndSec = lunchEndH * 3600 + lunchEndM * 60
+  const lunchDuration = lunchEndSec - lunchStartSec
+  const totalWorkSec = endSec - startSec - lunchDuration
 
-  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+  if (currentSec <= startSec) return 0
+  if (currentSec >= endSec) return 100
 
-  if (currentMinutes <= startMinutes) return 0
-  if (currentMinutes >= endMinutes) return 100
-
-  let workedMinutes = currentMinutes - startMinutes
-  // 扣除午休时间
-  if (currentMinutes > lunchStartH * 60 + lunchStartM) {
-    const lunchPassed = Math.min(currentMinutes - (lunchStartH * 60 + lunchStartM), lunchDuration)
-    workedMinutes -= lunchPassed
+  let workedSec = currentSec - startSec
+  if (currentSec > lunchStartSec) {
+    workedSec -= Math.min(currentSec - lunchStartSec, lunchDuration)
   }
 
-  const progress = Math.min(100, Math.max(0, (workedMinutes / totalWorkMinutes) * 100))
-  return Math.round(progress)
+  const progress = Math.min(100, Math.max(0, (workedSec / totalWorkSec) * 100))
+  return Math.round(progress * 10) / 10
 })
 
 // 本周进度
@@ -688,20 +747,21 @@ const weekProgress = computed(() => {
   const todayFraction = isWeekend.value ? 0 : todayProgress.value / 100
   const progress = ((passedDays - 1 + todayFraction) / workDays) * 100
 
-  return Math.min(100, Math.max(0, Math.round(progress)))
+  return Math.min(100, Math.max(0, Math.round(progress * 10) / 10))
 })
 
-// 本月进度
+// 本月进度（秒级精度）
 const monthProgress = computed(() => {
   const now = currentTime.value
   const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
-  const currentDay = now.getDate()
+  const passedDays = now.getDate() - 1
+  const dayFraction = (now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()) / 86400
 
-  const progress = (currentDay / daysInMonth) * 100
-  return Math.round(progress)
+  const progress = ((passedDays + dayFraction) / daysInMonth) * 100
+  return Math.round(progress * 10) / 10
 })
 
-// 年度进度
+// 年度进度（秒级精度）
 const yearProgress = computed(() => {
   const now = currentTime.value
   const start = new Date(now.getFullYear(), 0, 1)
@@ -710,30 +770,96 @@ const yearProgress = computed(() => {
   const passed = now.getTime() - start.getTime()
 
   const progress = (passed / total) * 100
-  return Math.round(progress * 10) / 10
+  return Math.round(progress * 1000) / 1000
 })
 
-// 今日已赚
+// 今日已赚（秒级精度，实时跳动）
 const todayEarned = computed(() => {
-  if (settings.value.monthlySalary <= 0) return '0.00'
-  if (isWeekend.value) return '0.00'
+  if (settings.value.monthlySalary <= 0) return '0.0000'
+  if (isWeekend.value) return '0.0000'
+
+  const now = currentTime.value
+  const [startH, startM] = settings.value.startTime.split(':').map(Number)
+  const [endH, endM] = settings.value.endTime.split(':').map(Number)
+  const [lunchStartH, lunchStartM] = settings.value.lunchStart.split(':').map(Number)
+  const [lunchEndH, lunchEndM] = settings.value.lunchEnd.split(':').map(Number)
+
+  const currentSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
+  const startSec = startH * 3600 + startM * 60
+  const endSec = endH * 3600 + endM * 60
+  const lunchStartSec = lunchStartH * 3600 + lunchStartM * 60
+  const lunchEndSec = lunchEndH * 3600 + lunchEndM * 60
+  const lunchDuration = lunchEndSec - lunchStartSec
+  const totalWorkSec = endSec - startSec - lunchDuration
+
+  if (currentSec <= startSec) return '0.0000'
 
   const dailySalary = settings.value.monthlySalary / 21.75
-  const earned = dailySalary * (todayProgress.value / 100)
+  if (currentSec >= endSec) return dailySalary.toFixed(2)
 
-  return earned.toFixed(2)
+  let workedSec = currentSec - startSec
+  if (currentSec > lunchStartSec) {
+    workedSec -= Math.min(currentSec - lunchStartSec, lunchDuration)
+  }
+
+  const earned = dailySalary * (workedSec / totalWorkSec)
+  return earned.toFixed(4)
 })
 
-// 本月累计
+// 今日已赚 - 整数部分
+const todayEarnedInt = computed(() => {
+  return todayEarned.value.split('.')[0]
+})
+
+// 今日已赚 - 小数部分
+const todayEarnedDec = computed(() => {
+  return todayEarned.value.split('.')[1] || '0000'
+})
+
+// 本月累计（包含今日实时收入）
 const monthEarned = computed(() => {
   if (settings.value.monthlySalary <= 0) return '0.00'
 
   const now = currentTime.value
-  const currentDay = now.getDate()
-  const workDaysRatio = currentDay / 30 // 简化计算
-  const earned = settings.value.monthlySalary * workDaysRatio
+  const dailySalary = settings.value.monthlySalary / 21.75
 
-  return earned.toFixed(0)
+  // 已过去的工作日收入（不含今天）
+  let passedWorkDays = 0
+  for (let d = 1; d < now.getDate(); d++) {
+    const day = new Date(now.getFullYear(), now.getMonth(), d).getDay()
+    if (settings.value.restMode === 'double') {
+      if (day !== 0 && day !== 6) passedWorkDays++
+    } else if (settings.value.restMode === 'single') {
+      if (day !== 0) passedWorkDays++
+    } else {
+      // 大小周简化：周日休，偶数周六也休
+      if (day !== 0) {
+        if (day === 6) {
+          const weekNum = Math.floor((new Date(now.getFullYear(), now.getMonth(), d).getTime() - new Date(now.getFullYear(), 0, 1).getTime()) / (7 * 86400000))
+          if (weekNum % 2 !== 0) passedWorkDays++
+        } else {
+          passedWorkDays++
+        }
+      }
+    }
+  }
+
+  const pastEarned = passedWorkDays * dailySalary
+  // 加上今日实时收入
+  const todayReal = isWeekend.value ? 0 : parseFloat(todayEarned.value)
+  const earned = pastEarned + todayReal
+
+  return earned.toFixed(2)
+})
+
+// 本月累计 - 整数部分
+const monthEarnedInt = computed(() => {
+  return monthEarned.value.split('.')[0]
+})
+
+// 本月累计 - 小数部分
+const monthEarnedDec = computed(() => {
+  return monthEarned.value.split('.')[1] || '00'
 })
 
 // 周末倒计时
@@ -1269,6 +1395,37 @@ onShareTimeline(() => ({
   font-weight: 700;
   color: var(--text-primary);
   font-family: 'SF Mono', Monaco, monospace;
+}
+
+// 动态收入效果
+.income-dynamic {
+  .income-amount {
+    font-size: 56rpx;
+  }
+
+  .income-decimal {
+    font-size: 36rpx;
+    font-weight: 600;
+    color: #fff;
+    opacity: 0.8;
+    font-family: 'SF Mono', Monaco, monospace;
+    animation: tickPulse 1s ease-in-out infinite;
+  }
+}
+
+.income-dynamic-month {
+  .income-decimal {
+    font-size: 24rpx;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-family: 'SF Mono', Monaco, monospace;
+    animation: tickPulse 1s ease-in-out infinite;
+  }
+}
+
+@keyframes tickPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.5; }
 }
 
 // 倒计时网格
