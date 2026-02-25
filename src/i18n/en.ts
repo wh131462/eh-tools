@@ -965,6 +965,15 @@ export default {
       embassy: 'Embassy Plate',
       hongkongMacao: 'HK/Macao Plate'
     },
+    specialLabels: {
+      branch: 'Branch',
+      unit: 'Unit',
+      affiliation: 'Affiliation',
+      region: 'Region',
+      wjForce: "People's Armed Police",
+      wjUnknown: 'Armed Police',
+      embassyOrg: 'Foreign Embassy in China'
+    },
     recentHistory: 'Recent Queries',
     clearHistory: 'Clear History',
     clearHistoryConfirm: 'Clear all query history?'

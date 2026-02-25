@@ -967,6 +967,15 @@ export default {
       embassy: '使馆车牌',
       hongkongMacao: '港澳车牌'
     },
+    specialLabels: {
+      branch: '军种',
+      unit: '所属单位',
+      affiliation: '所属',
+      region: '地区',
+      wjForce: '中国人民武装警察部队',
+      wjUnknown: '武警部队',
+      embassyOrg: '外国驻华使领馆'
+    },
     recentHistory: '最近查询',
     clearHistory: '清空历史',
     clearHistoryConfirm: '确定清空所有查询历史吗？'

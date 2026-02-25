@@ -49,7 +49,24 @@
           <text class="plate-preview-text">{{ queryResult.plateNumber }}</text>
         </view>
 
-        <view class="result-items">
+        <!-- 特殊车牌展示 -->
+        <view v-if="queryResult.isSpecial" class="result-items">
+          <view class="result-item">
+            <text class="result-label">{{ t('licensePlate.plateType') }}</text>
+            <text class="result-value">{{ queryResult.plateTypeText }}</text>
+          </view>
+          <view
+            v-for="(info, idx) in queryResult.specialInfoList"
+            :key="idx"
+            class="result-item"
+          >
+            <text class="result-label">{{ info.label }}</text>
+            <text class="result-value">{{ info.value }}</text>
+          </view>
+        </view>
+
+        <!-- 普通车牌展示 -->
+        <view v-else class="result-items">
           <view class="result-item">
             <text class="result-label">{{ t('licensePlate.province') }}</text>
             <text class="result-value">{{ queryResult.province }}</text>
@@ -84,7 +101,7 @@
             {{ item.plateNumber }}
           </view>
           <view class="history-info">
-            <text class="history-location">{{ item.province }} · {{ item.city }}</text>
+            <text class="history-location">{{ item.province || item.plateType }}{{ item.city ? ` · ${item.city}` : '' }}</text>
           </view>
         </view>
       </view>
@@ -112,12 +129,19 @@ const settingsStore = useSettingsStore()
 const plateNumber = ref('')
 
 // 查询结果
+interface SpecialInfo {
+  label: string
+  value: string
+}
+
 interface QueryResult {
   plateNumber: string
   province: string
   city: string
   plateType: 'normal' | 'newEnergy' | 'police' | 'army' | 'embassy' | 'hongkongMacao'
   plateTypeText: string
+  isSpecial?: boolean
+  specialInfoList?: SpecialInfo[]
 }
 
 const queryResult = ref<QueryResult | null>(null)
@@ -164,10 +188,10 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
   '沪': {
     name: '上海市',
     cities: {
-      'A': '上海市区', 'B': '上海市区', 'C': '上海市区', 'D': '上海市区',
+      'A': '上海市区', 'B': '上海市区', 'C': '远郊区域(松江/青浦/奉贤/金山等)', 'D': '上海市区',
       'E': '上海市区', 'F': '上海市区', 'G': '上海市区', 'H': '上海市区',
       'J': '上海市区', 'K': '上海市区', 'L': '上海市区', 'M': '上海市区',
-      'N': '上海市区', 'R': '崇明区'
+      'N': '上海市区', 'R': '崇明/长兴/横沙三岛'
     }
   },
   '津': {
@@ -182,8 +206,11 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
   '渝': {
     name: '重庆市',
     cities: {
-      'A': '渝中区/江北区等', 'B': '渝中区/江北区等', 'C': '永川区',
-      'D': '渝中区/江北区等', 'F': '万州区', 'G': '涪陵区', 'H': '黔江区'
+      'A': '渝中区/江北区/九龙坡区/大渡口区', 'B': '南岸区/沙坪坝区/北碚区/渝北区/巴南区等',
+      'C': '永川区/江津区/合川区/潼南区/铜梁区/璧山区/大足区',
+      'D': '主城增补', 'F': '万州区/梁平区/巫山县/奉节县/云阳县等',
+      'G': '涪陵区/南川区/垫江县/丰都县/武隆区', 'H': '黔江区/石柱县/秀山县/酉阳县/彭水县',
+      'N': '市级机关'
     }
   },
   '冀': {
@@ -201,13 +228,13 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
       'E': '安阳市', 'F': '鹤壁市', 'G': '新乡市', 'H': '焦作市',
       'J': '濮阳市', 'K': '许昌市', 'L': '漯河市', 'M': '三门峡市',
       'N': '商丘市', 'P': '周口市', 'Q': '驻马店市', 'R': '南阳市',
-      'S': '信阳市', 'U': '济源市'
+      'S': '信阳市', 'U': '济源市', 'V': '郑州市增补'
     }
   },
   '云': {
     name: '云南省',
     cities: {
-      'A': '昆明市', 'B': '东川区', 'C': '昭通市', 'D': '曲靖市',
+      'A': '昆明市', 'C': '昭通市', 'D': '曲靖市',
       'E': '楚雄州', 'F': '玉溪市', 'G': '红河州', 'H': '文山州',
       'J': '普洱市', 'K': '西双版纳州', 'L': '大理州', 'M': '保山市',
       'N': '德宏州', 'P': '丽江市', 'Q': '怒江州', 'R': '迪庆州',
@@ -228,8 +255,8 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
     cities: {
       'A': '哈尔滨市', 'B': '齐齐哈尔市', 'C': '牡丹江市', 'D': '佳木斯市',
       'E': '大庆市', 'F': '伊春市', 'G': '鸡西市', 'H': '鹤岗市',
-      'J': '双鸭山市', 'K': '七台河市', 'L': '黑河市', 'M': '绥化市',
-      'N': '大兴安岭地区', 'P': '大兴安岭地区', 'R': '农垦系统'
+      'J': '双鸭山市', 'K': '七台河市', 'L': '松花江地区(现属哈尔滨)',
+      'M': '绥化市', 'N': '黑河市', 'P': '大兴安岭地区', 'R': '农垦系统'
     }
   },
   '湘': {
@@ -256,9 +283,10 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
     cities: {
       'A': '济南市', 'B': '青岛市', 'C': '淄博市', 'D': '枣庄市',
       'E': '东营市', 'F': '烟台市', 'G': '潍坊市', 'H': '济宁市',
-      'J': '泰安市', 'K': '威海市', 'L': '日照市', 'M': '莱芜市',
+      'J': '泰安市', 'K': '威海市', 'L': '日照市', 'M': '滨州市',
       'N': '德州市', 'P': '聊城市', 'Q': '临沂市', 'R': '菏泽市',
-      'S': '滨州市', 'U': '青岛市增补', 'V': '潍坊市增补', 'Y': '烟台市增补'
+      'S': '济南市增补(原莱芜)', 'U': '青岛市增补', 'V': '潍坊市增补',
+      'W': '临沂市增补', 'Y': '烟台市增补'
     }
   },
   '新': {
@@ -284,7 +312,7 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
     cities: {
       'A': '杭州市', 'B': '宁波市', 'C': '温州市', 'D': '绍兴市',
       'E': '湖州市', 'F': '嘉兴市', 'G': '金华市', 'H': '衢州市',
-      'J': '台州市', 'K': '丽水市', 'L': '舟山市'
+      'J': '台州市', 'K': '丽水市', 'L': '舟山市', 'M': '杭州市增补'
     }
   },
   '赣': {
@@ -292,7 +320,7 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
     cities: {
       'A': '南昌市', 'B': '赣州市', 'C': '宜春市', 'D': '吉安市',
       'E': '上饶市', 'F': '抚州市', 'G': '九江市', 'H': '景德镇市',
-      'J': '萍乡市', 'K': '新余市', 'L': '鹰潭市', 'M': '南昌市增补'
+      'J': '萍乡市', 'K': '新余市', 'L': '鹰潭市', 'M': '南昌市增补/省直系统'
     }
   },
   '鄂': {
@@ -327,8 +355,8 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
     name: '山西省',
     cities: {
       'A': '太原市', 'B': '大同市', 'C': '阳泉市', 'D': '长治市',
-      'E': '晋城市', 'F': '朔州市', 'G': '晋中市', 'H': '运城市',
-      'J': '忻州市', 'K': '临汾市', 'L': '吕梁市', 'M': '晋中市增补'
+      'E': '晋城市', 'F': '朔州市', 'H': '忻州市', 'J': '吕梁市',
+      'K': '晋中市', 'L': '临汾市', 'M': '运城市'
     }
   },
   '蒙': {
@@ -344,7 +372,7 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
     cities: {
       'A': '西安市', 'B': '铜川市', 'C': '宝鸡市', 'D': '咸阳市',
       'E': '渭南市', 'F': '汉中市', 'G': '安康市', 'H': '商洛市',
-      'J': '延安市', 'K': '榆林市', 'U': '省直机关', 'V': '杨凌区'
+      'J': '延安市', 'K': '榆林市', 'U': '西安市增补', 'V': '杨凌区'
     }
   },
   '吉': {
@@ -400,11 +428,11 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
     name: '四川省',
     cities: {
       'A': '成都市', 'B': '绵阳市', 'C': '自贡市', 'D': '攀枝花市',
-      'E': '泸州市', 'F': '德阳市', 'G': '广元市', 'H': '遂宁市',
-      'J': '内江市', 'K': '乐山市', 'L': '南充市', 'M': '宜宾市',
-      'N': '广安市', 'P': '达州市', 'Q': '巴中市', 'R': '眉山市',
-      'S': '雅安市', 'T': '资阳市', 'U': '阿坝州', 'V': '甘孜州',
-      'W': '凉山州', 'X': '广安市增补', 'Y': '成都市增补', 'Z': '眉山市增补'
+      'E': '泸州市', 'F': '德阳市', 'G': '成都市增补', 'H': '广元市',
+      'J': '遂宁市', 'K': '内江市', 'L': '乐山市', 'M': '资阳市',
+      'Q': '宜宾市', 'R': '南充市', 'S': '达州市', 'T': '雅安市',
+      'U': '阿坝州', 'V': '甘孜州', 'W': '凉山州',
+      'X': '广安市', 'Y': '巴中市', 'Z': '眉山市'
     }
   },
   '宁': {
@@ -417,8 +445,8 @@ const PROVINCE_DATA: Record<string, { name: string; cities: Record<string, strin
   '琼': {
     name: '海南省',
     cities: {
-      'A': '海口市', 'B': '三亚市', 'C': '海南省直辖县级行政区划',
-      'D': '三沙市', 'E': '洋浦经济开发区', 'F': '儋州市'
+      'A': '海口市', 'B': '三亚市', 'C': '琼北地区(琼海/文昌/三沙/万宁等)',
+      'D': '琼南地区(五指山/东方/白沙/昌江等)', 'E': '洋浦经济开发区', 'F': '儋州市'
     }
   }
 }
@@ -429,8 +457,182 @@ const SPECIAL_PREFIXES: Record<string, { name: string; type: QueryResult['plateT
   '警': { name: '公安警车', type: 'police' }
 }
 
-// 军牌前缀
-const ARMY_PREFIXES = ['军', 'BA', 'BB', 'BC', 'BD', 'BG', 'BH', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BR', 'BS', 'BT', 'BV']
+// 军牌前缀（含2012式新军牌和旧式军牌）
+const ARMY_PREFIXES = [
+  '军',
+  // 2012式军牌
+  'VA', 'VB', 'VC', 'VD', 'VE', 'VF', 'VG', 'VH', 'VJ', 'VK', 'VL', 'VM', 'VN', 'VO', 'VP', 'VQ', 'VR',
+  'KA', 'KB', 'KC', 'KD', 'KE', 'KF', 'KG', 'KH', 'KJ', 'KK', 'KL', 'KM', 'KN', 'KO', 'KP', 'KQ', 'KR',
+  'HA', 'HB', 'HC', 'HD', 'HE', 'HF', 'HG', 'HH', 'HJ', 'HK', 'HL', 'HM', 'HN', 'HO', 'HP', 'HQ', 'HR',
+  'RA', 'RB', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RJ', 'RK', 'RL', 'RM', 'RN', 'RO', 'RP', 'RQ', 'RR',
+  'NA', 'NB', 'NC', 'ND', 'NE', 'NF', 'NG', 'NH', 'NJ', 'NK', 'NL', 'NM', 'NN', 'NO', 'NP', 'NQ', 'NR',
+  'SA', 'SB', 'SC', 'SD', 'SE', 'SF', 'SG', 'SH', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SP', 'SQ', 'SR',
+  'GA', 'GB', 'GC', 'GD', 'GE', 'GF', 'GG', 'GH', 'GJ', 'GK', 'GL', 'GM', 'GN', 'GO', 'GP', 'GQ', 'GR',
+  // 旧式军牌
+  'BA', 'BB', 'BC', 'BD', 'BG', 'BH', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BR', 'BS', 'BT', 'BV'
+]
+
+// 军牌归属地映射
+const ARMY_DATA: Record<string, { branch: string; unit: string }> = {
+  '军': { branch: '中国人民解放军', unit: '军用车辆' },
+  // 2012式 - 中央军委及直属
+  'VA': { branch: '中央军委', unit: '军委机关' },
+  'VB': { branch: '中央军委', unit: '军委办公厅' },
+  'VC': { branch: '中央军委', unit: '军委联合参谋部' },
+  'VD': { branch: '中央军委', unit: '军委政治工作部' },
+  'VE': { branch: '中央军委', unit: '军委后勤保障部' },
+  'VF': { branch: '中央军委', unit: '军委装备发展部' },
+  'VG': { branch: '中央军委', unit: '军委训练管理部' },
+  'VH': { branch: '中央军委', unit: '军委国防动员部' },
+  'VJ': { branch: '中央军委', unit: '军委纪检监察委' },
+  'VK': { branch: '中央军委', unit: '军委政法委' },
+  'VL': { branch: '中央军委', unit: '军委科技委' },
+  'VM': { branch: '中央军委', unit: '军委战略规划办' },
+  'VN': { branch: '中央军委', unit: '军委改革编制办' },
+  'VO': { branch: '中央军委', unit: '军委国际合作办' },
+  'VP': { branch: '中央军委', unit: '军委审计署' },
+  'VQ': { branch: '中央军委', unit: '军委机关事务管理总局' },
+  'VR': { branch: '中央军委', unit: '军委直属单位' },
+  // 陆军
+  'KA': { branch: '陆军', unit: '陆军机关' },
+  'KB': { branch: '陆军', unit: '东部战区陆军' },
+  'KC': { branch: '陆军', unit: '南部战区陆军' },
+  'KD': { branch: '陆军', unit: '西部战区陆军' },
+  'KE': { branch: '陆军', unit: '北部战区陆军' },
+  'KF': { branch: '陆军', unit: '中部战区陆军' },
+  'KG': { branch: '陆军', unit: '陆军单位' },
+  'KH': { branch: '陆军', unit: '陆军单位' },
+  'KJ': { branch: '陆军', unit: '陆军单位' },
+  'KK': { branch: '陆军', unit: '陆军单位' },
+  'KL': { branch: '陆军', unit: '陆军单位' },
+  'KM': { branch: '陆军', unit: '陆军单位' },
+  'KN': { branch: '陆军', unit: '陆军单位' },
+  'KO': { branch: '陆军', unit: '陆军单位' },
+  'KP': { branch: '陆军', unit: '陆军单位' },
+  'KQ': { branch: '陆军', unit: '陆军单位' },
+  'KR': { branch: '陆军', unit: '陆军单位' },
+  // 海军
+  'HA': { branch: '海军', unit: '海军机关' },
+  'HB': { branch: '海军', unit: '北海舰队' },
+  'HC': { branch: '海军', unit: '东海舰队' },
+  'HD': { branch: '海军', unit: '南海舰队' },
+  'HE': { branch: '海军', unit: '海军单位' },
+  'HF': { branch: '海军', unit: '海军单位' },
+  'HG': { branch: '海军', unit: '海军单位' },
+  'HH': { branch: '海军', unit: '海军单位' },
+  'HJ': { branch: '海军', unit: '海军单位' },
+  'HK': { branch: '海军', unit: '海军单位' },
+  'HL': { branch: '海军', unit: '海军单位' },
+  'HM': { branch: '海军', unit: '海军单位' },
+  'HN': { branch: '海军', unit: '海军单位' },
+  'HO': { branch: '海军', unit: '海军单位' },
+  'HP': { branch: '海军', unit: '海军单位' },
+  'HQ': { branch: '海军', unit: '海军单位' },
+  'HR': { branch: '海军', unit: '海军单位' },
+  // 空军
+  'RA': { branch: '空军', unit: '空军机关' },
+  'RB': { branch: '空军', unit: '东部战区空军' },
+  'RC': { branch: '空军', unit: '南部战区空军' },
+  'RD': { branch: '空军', unit: '西部战区空军' },
+  'RE': { branch: '空军', unit: '北部战区空军' },
+  'RF': { branch: '空军', unit: '中部战区空军' },
+  'RG': { branch: '空军', unit: '空军单位' },
+  'RH': { branch: '空军', unit: '空军单位' },
+  'RJ': { branch: '空军', unit: '空军单位' },
+  'RK': { branch: '空军', unit: '空军单位' },
+  'RL': { branch: '空军', unit: '空军单位' },
+  'RM': { branch: '空军', unit: '空军单位' },
+  'RN': { branch: '空军', unit: '空军单位' },
+  'RO': { branch: '空军', unit: '空军单位' },
+  'RP': { branch: '空军', unit: '空军单位' },
+  'RQ': { branch: '空军', unit: '空军单位' },
+  'RR': { branch: '空军', unit: '空军单位' },
+  // 火箭军
+  'NA': { branch: '火箭军', unit: '火箭军机关' },
+  'NB': { branch: '火箭军', unit: '火箭军单位' },
+  'NC': { branch: '火箭军', unit: '火箭军单位' },
+  'ND': { branch: '火箭军', unit: '火箭军单位' },
+  'NE': { branch: '火箭军', unit: '火箭军单位' },
+  'NF': { branch: '火箭军', unit: '火箭军单位' },
+  'NG': { branch: '火箭军', unit: '火箭军单位' },
+  'NH': { branch: '火箭军', unit: '火箭军单位' },
+  'NJ': { branch: '火箭军', unit: '火箭军单位' },
+  'NK': { branch: '火箭军', unit: '火箭军单位' },
+  'NL': { branch: '火箭军', unit: '火箭军单位' },
+  'NM': { branch: '火箭军', unit: '火箭军单位' },
+  'NN': { branch: '火箭军', unit: '火箭军单位' },
+  'NO': { branch: '火箭军', unit: '火箭军单位' },
+  'NP': { branch: '火箭军', unit: '火箭军单位' },
+  'NQ': { branch: '火箭军', unit: '火箭军单位' },
+  'NR': { branch: '火箭军', unit: '火箭军单位' },
+  // 战略支援部队
+  'SA': { branch: '战略支援部队', unit: '战略支援部队机关' },
+  'SB': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SC': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SD': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SE': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SF': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SG': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SH': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SJ': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SK': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SL': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SM': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SN': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SO': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SP': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SQ': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  'SR': { branch: '战略支援部队', unit: '战略支援部队单位' },
+  // 联勤保障部队
+  'GA': { branch: '联勤保障部队', unit: '联勤保障部队机关' },
+  'GB': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GC': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GD': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GE': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GF': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GG': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GH': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GJ': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GK': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GL': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GM': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GN': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GO': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GP': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GQ': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  'GR': { branch: '联勤保障部队', unit: '联勤保障部队单位' },
+  // 旧式军牌（七大军区时期）
+  'BA': { branch: '原北京军区', unit: '北京军区单位' },
+  'BB': { branch: '原沈阳军区', unit: '沈阳军区单位' },
+  'BC': { branch: '原兰州军区', unit: '兰州军区单位' },
+  'BD': { branch: '原济南军区', unit: '济南军区单位' },
+  'BG': { branch: '原南京军区', unit: '南京军区单位' },
+  'BH': { branch: '原广州军区', unit: '广州军区单位' },
+  'BJ': { branch: '原成都军区', unit: '成都军区单位' },
+  'BK': { branch: '原总参谋部', unit: '总参单位' },
+  'BL': { branch: '原总政治部', unit: '总政单位' },
+  'BM': { branch: '原总后勤部', unit: '总后单位' },
+  'BN': { branch: '原总装备部', unit: '总装单位' },
+  'BO': { branch: '原军事科学院', unit: '军科院' },
+  'BP': { branch: '原国防大学', unit: '国防大学' },
+  'BR': { branch: '原国防科工委', unit: '国防科工委' },
+  'BS': { branch: '原二炮', unit: '第二炮兵' },
+  'BT': { branch: '原武警总部', unit: '武警总部' },
+  'BV': { branch: '原四总部', unit: '四总部直属' }
+}
+
+// 武警地区代码映射
+const WJ_REGION_DATA: Record<string, string> = {
+  '01': '北京总队', '02': '天津总队', '03': '河北总队', '04': '山西总队',
+  '05': '内蒙古总队', '06': '辽宁总队', '07': '吉林总队', '08': '黑龙江总队',
+  '09': '上海总队', '10': '江苏总队', '11': '浙江总队', '12': '安徽总队',
+  '13': '福建总队', '14': '江西总队', '15': '山东总队', '16': '河南总队',
+  '17': '湖北总队', '18': '湖南总队', '19': '广东总队', '20': '广西总队',
+  '21': '海南总队', '22': '四川总队', '23': '贵州总队', '24': '云南总队',
+  '25': '西藏总队', '26': '陕西总队', '27': '甘肃总队', '28': '青海总队',
+  '29': '宁夏总队', '30': '新疆总队', '31': '重庆总队',
+  'WJ': '武警总部', 'WD': '武警总部直属'
+}
 
 // 使馆车牌
 const EMBASSY_PREFIX = '使'
@@ -500,6 +702,78 @@ function getPlateTypeClass(type: string): string {
   return `plate-${type}`
 }
 
+// 识别特殊车牌并返回结果
+function getSpecialPlateResult(plate: string): QueryResult | null {
+  // 军牌检测：先尝试匹配两字符前缀（VA、BA等），再匹配单字符（军）
+  const twoCharPrefix = plate.substring(0, 2)
+  if (ARMY_DATA[twoCharPrefix]) {
+    const info = ARMY_DATA[twoCharPrefix]
+    return {
+      plateNumber: plate,
+      province: '',
+      city: '',
+      plateType: 'army',
+      plateTypeText: getPlateTypeText('army'),
+      isSpecial: true,
+      specialInfoList: [
+        { label: t('licensePlate.specialLabels.branch'), value: info.branch },
+        { label: t('licensePlate.specialLabels.unit'), value: info.unit }
+      ]
+    }
+  }
+  const oneCharPrefix = plate.charAt(0)
+  if (ARMY_DATA[oneCharPrefix]) {
+    const info = ARMY_DATA[oneCharPrefix]
+    return {
+      plateNumber: plate,
+      province: '',
+      city: '',
+      plateType: 'army',
+      plateTypeText: getPlateTypeText('army'),
+      isSpecial: true,
+      specialInfoList: [
+        { label: t('licensePlate.specialLabels.branch'), value: info.branch },
+        { label: t('licensePlate.specialLabels.unit'), value: info.unit }
+      ]
+    }
+  }
+
+  // 武警车牌检测：WJ + 2位地区代码
+  if (plate.startsWith('WJ')) {
+    const regionCode = plate.substring(2, 4)
+    const region = WJ_REGION_DATA[regionCode] || t('licensePlate.specialLabels.wjUnknown')
+    return {
+      plateNumber: plate,
+      province: '',
+      city: '',
+      plateType: 'police',
+      plateTypeText: getPlateTypeText('police'),
+      isSpecial: true,
+      specialInfoList: [
+        { label: t('licensePlate.specialLabels.affiliation'), value: t('licensePlate.specialLabels.wjForce') },
+        { label: t('licensePlate.specialLabels.region'), value: region }
+      ]
+    }
+  }
+
+  // 使馆车牌检测
+  if (plate.startsWith(EMBASSY_PREFIX)) {
+    return {
+      plateNumber: plate,
+      province: '',
+      city: '',
+      plateType: 'embassy',
+      plateTypeText: getPlateTypeText('embassy'),
+      isSpecial: true,
+      specialInfoList: [
+        { label: t('licensePlate.specialLabels.affiliation'), value: t('licensePlate.specialLabels.embassyOrg') }
+      ]
+    }
+  }
+
+  return null
+}
+
 // 查询车牌
 function handleQuery() {
   const plate = plateNumber.value.trim().toUpperCase()
@@ -509,7 +783,21 @@ function handleQuery() {
     return
   }
 
-  // 获取省份简称
+  // 优先检测特殊车牌
+  const specialResult = getSpecialPlateResult(plate)
+  if (specialResult) {
+    queryResult.value = specialResult
+    addToHistory({
+      plateNumber: plate,
+      province: specialResult.specialInfoList?.[0]?.value || '',
+      city: specialResult.specialInfoList?.[1]?.value || '',
+      plateType: specialResult.plateType,
+      timestamp: Date.now()
+    })
+    return
+  }
+
+  // 普通车牌：获取省份简称
   const provinceCode = plate.charAt(0)
   const cityCode = plate.charAt(1)
 
