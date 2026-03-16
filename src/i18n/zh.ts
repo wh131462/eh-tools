@@ -93,7 +93,8 @@ export default {
     kinshipCalculator: '亲戚称呼',
     licensePlate: '车牌归属地',
     todoList: '待办清单',
-    sizeChart: '尺码对照'
+    sizeChart: '尺码对照',
+    numberToChinese: '大写数字'
   },
 
   // 首页
@@ -1063,6 +1064,27 @@ export default {
     },
     tips: '温馨提示',
     tipContent: '尺码仅供参考，不同品牌可能存在差异，建议以实际测量为准'
+  },
+
+  // 大写数字
+  numberToChinese: {
+    title: '大写数字转换',
+    subtitle: '数字转中文大写，财务必备',
+    inputPlaceholder: '请输入数字金额，如 1234.56',
+    result: '转换结果',
+    capitalAmount: '大写金额',
+    capitalNumber: '大写数字',
+    copy: '复制',
+    clear: '清空',
+    paste: '粘贴',
+    invalidInput: '请输入有效数字',
+    copySuccess: '已复制到剪贴板',
+    amountMode: '金额模式',
+    numberMode: '数字模式',
+    amountTip: '自动添加"元整/元角分"等金额后缀',
+    numberTip: '纯数字大写转换，不添加金额后缀',
+    example: '示例',
+    maxLength: '数字过大，请输入较小的数字'
   },
 
   // 秒表

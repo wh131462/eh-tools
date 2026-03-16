@@ -252,6 +252,12 @@
       "style": {
         "navigationBarTitleText": "秒表"
       }
+    },
+    {
+      "path": "pages/text/number-to-chinese/index",
+      "style": {
+        "navigationBarTitleText": "大写数字"
+      }
     }
   ],
   "globalStyle": {

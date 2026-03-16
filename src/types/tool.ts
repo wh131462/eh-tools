@@ -49,6 +49,7 @@ export const TOOLS: Tool[] = [
   { id: 'word-counter', name: '字数统计', nameKey: 'tool.wordCounter', icon: 'word-counter', path: '/pages/text/word-counter/index', category: 'text' },
   { id: 'regex-tester', name: '正则测试器', nameKey: 'tool.regexTester', icon: 'regex', path: '/pages/text/regex-tester/index', category: 'text' },
   { id: 'led-marquee', name: 'LED字幕', nameKey: 'tool.ledMarquee', icon: 'led-marquee', path: '/pages/text/led-marquee/index', category: 'text' },
+  { id: 'number-to-chinese', name: '大写数字', nameKey: 'tool.numberToChinese', icon: 'number-chinese', path: '/pages/text/number-to-chinese/index', category: 'text' },
 
   // 图片工具
   { id: 'compress', name: '图片压缩', nameKey: 'tool.compress', icon: 'compress', path: '/pages/image/compress/index', category: 'image' },

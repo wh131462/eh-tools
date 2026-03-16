@@ -93,7 +93,8 @@ export default {
     kinshipCalculator: 'Kinship',
     licensePlate: 'Plate',
     todoList: 'Todo',
-    sizeChart: 'Size'
+    sizeChart: 'Size',
+    numberToChinese: 'CN Num'
   },
 
   // Home
@@ -1061,6 +1062,27 @@ export default {
     },
     tips: 'Tips',
     tipContent: 'Sizes are for reference only. Different brands may vary. Please measure for best fit.'
+  },
+
+  // Number to Chinese
+  numberToChinese: {
+    title: 'Number to Chinese',
+    subtitle: 'Convert numbers to Chinese capitals',
+    inputPlaceholder: 'Enter a number, e.g. 1234.56',
+    result: 'Result',
+    capitalAmount: 'Capital Amount',
+    capitalNumber: 'Capital Number',
+    copy: 'Copy',
+    clear: 'Clear',
+    paste: 'Paste',
+    invalidInput: 'Please enter a valid number',
+    copySuccess: 'Copied to clipboard',
+    amountMode: 'Amount',
+    numberMode: 'Number',
+    amountTip: 'Auto append currency suffix',
+    numberTip: 'Pure number conversion',
+    example: 'Example',
+    maxLength: 'Number too large'
   },
 
   // Stopwatch

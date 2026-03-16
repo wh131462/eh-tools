@@ -166,6 +166,7 @@ const TOOL_ICONS: Record<string, string> = {
   'word-counter': '/static/icons/word-counter.svg',
   'regex-tester': '/static/icons/regex.svg',
   'led-marquee': '/static/icons/led-marquee.svg',
+  'number-to-chinese': '/static/icons/number-chinese.svg',
   'compress': '/static/icons/compress.svg',
   'color-tool': '/static/icons/color-card.svg',
   'color-picker': '/static/icons/color-picker.svg',

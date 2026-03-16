@@ -47,6 +47,7 @@ const TOOL_ICONS: Record<string, string> = {
   'word-counter': '/static/icons/word-counter.svg',
   'regex-tester': '/static/icons/regex.svg',
   'led-marquee': '/static/icons/led-marquee.svg',
+  'number-to-chinese': '/static/icons/number-chinese.svg',
   // 图片工具
   'compress': '/static/icons/compress.svg',
   'color-tool': '/static/icons/color-card.svg',
@@ -82,6 +83,7 @@ const TOOL_GRADIENTS: Record<string, string> = {
   'word-counter': 'var(--gradient-word-counter)',
   'regex-tester': 'var(--gradient-regex)',
   'led-marquee': 'var(--gradient-led-marquee)',
+  'number-to-chinese': 'var(--gradient-number-chinese)',
   'compress': 'var(--gradient-compress)',
   'color-tool': 'var(--gradient-color-tool)',
   'color-picker': 'var(--gradient-color-picker)',
